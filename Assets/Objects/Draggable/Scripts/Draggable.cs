@@ -7,7 +7,7 @@ public class Draggable : MonoBehaviour
     [SerializeField, Range(1f, 100f)] private float returnSpeed;
 
     // Текущее расположение на tilemap
-    public Vector3Int currentCell;
+    [HideInInspector] public Vector3Int currentCell;
 
     private Vector3 _startPosition;
     private Vector3 _lastMousePosition;
@@ -15,6 +15,8 @@ public class Draggable : MonoBehaviour
     private bool _moveBack = false;
 
     void FixedUpdate() {
+        
+
         // Движение объекта на прежнюю позицию
         if (_moveBack) {
             transform.position = Vector3.Lerp(transform.position, _startPosition, returnSpeed * Time.deltaTime);
@@ -44,6 +46,8 @@ public class Draggable : MonoBehaviour
         Vector3 newPosition = transform.position + new Vector3(difference.x, difference.y, 0);
         transform.position = newPosition;
         _lastMousePosition = currentMousePosition;
+
+        GameEvents.current.DraggableDrag();
     }
 
     private void OnMouseUp() {

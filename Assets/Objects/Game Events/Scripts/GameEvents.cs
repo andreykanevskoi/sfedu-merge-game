@@ -26,7 +26,7 @@ public class GameEvents : MonoBehaviour
     // Ивент перетаскивания объекта
     public event Action onDraggableGrag;
     // Тригер ивента
-    public void DraggableGrag() {
+    public void DraggableDrag() {
         if (onDraggableGrag != null) {
             onDraggableGrag();
         }

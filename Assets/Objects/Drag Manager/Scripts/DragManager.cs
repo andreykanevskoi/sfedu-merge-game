@@ -11,6 +11,9 @@ public class DragManager : MonoBehaviour
     // Tilemap в котором размещаются объекты
     [SerializeField] private Tilemap _tileMap;
 
+    // Маркер
+    [SerializeField] private Highlighter _highlighter;
+
     // Префаб для создания перетаскиваемых объектов
     [SerializeField] private Draggable _draggablePrefab;
 
@@ -44,13 +47,14 @@ public class DragManager : MonoBehaviour
     // На данный момент лучшее решение
     // (осуждаю использование out 👿)
     private bool SearchTile(Vector3 worldPosition, out Vector3Int cellPosition) {
+        // Берём тайл на нулевом уровне, если он есть
         worldPosition.z = 0;
         cellPosition = _tileMap.WorldToCell(worldPosition);
         if (_tileMap.HasTile(cellPosition)) {
             return true;
         }
 
-        // Цикл необходим для поиска тайлов с z != 0
+        // Ищем тайлы выше нулевого уровня
         for (int z = 1; z < 10; z++) {
             worldPosition.z = z;
             cellPosition = _tileMap.WorldToCell(worldPosition);
@@ -64,6 +68,8 @@ public class DragManager : MonoBehaviour
 
     // Обработка события прекращения перетаскивания объекта
     private void onDraggableDrop(Draggable draggable) {
+        _highlighter.Hide();
+
         Vector3Int cellPosition;
         if (SearchTile(GetMouseWorldPosition(), out cellPosition)) {
             if (isAvaliable(cellPosition)) {
@@ -79,8 +85,22 @@ public class DragManager : MonoBehaviour
         draggable.ReturnPosition();
     }
 
+    private void onDraggableGrag() {
+        Vector3Int cellPosition;
+        if (SearchTile(GetMouseWorldPosition(), out cellPosition)) {
+            if (isAvaliable(cellPosition)) {
+                _highlighter.SetPosition(_tileMap.CellToWorld(cellPosition));
+                _highlighter.Show();
+                return;
+            }
+        }
+
+        _highlighter.Hide();
+    }
+
     private void Start() {
         GameEvents.current.onDraggableDrop += onDraggableDrop;
+        GameEvents.current.onDraggableGrag += onDraggableGrag;
     }
 
     private void Update() {

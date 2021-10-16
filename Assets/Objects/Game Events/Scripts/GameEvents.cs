@@ -24,11 +24,11 @@ public class GameEvents : MonoBehaviour
     }
 
     // Ивент перетаскивания объекта
-    public event Action onDraggableGrag;
+    public event Action<Draggable> onDraggableGrag;
     // Тригер ивента
-    public void DraggableDrag() {
+    public void DraggableDrag(Draggable draggable) {
         if (onDraggableGrag != null) {
-            onDraggableGrag();
+            onDraggableGrag(draggable);
         }
     }
 }

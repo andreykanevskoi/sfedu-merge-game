@@ -18,7 +18,7 @@ public class DragManager : MonoBehaviour
     [SerializeField] private Draggable _draggablePrefab;
 
     // Проверка занятости ячейки
-    private bool isAvaliable(Vector3Int position) {
+    private bool isCanBePlaced(Vector3Int position) {
         if (!_locationsPlaceable.ContainsKey(position)) {
             return true;
         }
@@ -72,7 +72,7 @@ public class DragManager : MonoBehaviour
 
         Vector3Int cellPosition;
         if (SearchTile(GetMouseWorldPosition(), out cellPosition)) {
-            if (isAvaliable(cellPosition)) {
+            if (isCanBePlaced(cellPosition)) {
                 SetDraggableToCell(draggable.currentCell, null);
 
                 draggable.currentCell = cellPosition;
@@ -80,15 +80,18 @@ public class DragManager : MonoBehaviour
                 draggable.transform.position = GetCellWorldPosition(cellPosition);
                 return;
             }
+            if (cellPosition.Equals(draggable.currentCell)) {
+                draggable.transform.position = GetCellWorldPosition(cellPosition);
+            }
         }
 
         draggable.ReturnPosition();
     }
 
-    private void onDraggableGrag() {
+    private void onDraggableGrag(Draggable draggable) {
         Vector3Int cellPosition;
         if (SearchTile(GetMouseWorldPosition(), out cellPosition)) {
-            if (isAvaliable(cellPosition)) {
+            if (isCanBePlaced(cellPosition) || cellPosition.Equals(draggable.currentCell)) {
                 _highlighter.SetPosition(_tileMap.CellToWorld(cellPosition));
                 _highlighter.Show();
                 return;
@@ -109,7 +112,7 @@ public class DragManager : MonoBehaviour
         if (Input.GetMouseButtonDown(1)) {
             Vector3Int cellPosition;
             if (SearchTile(GetMouseWorldPosition(), out cellPosition)) {
-                if (isAvaliable(cellPosition)) {
+                if (isCanBePlaced(cellPosition)) {
                     Draggable draggable = Instantiate(_draggablePrefab);
                     draggable.currentCell = cellPosition;
                     draggable.transform.position = GetCellWorldPosition(cellPosition);

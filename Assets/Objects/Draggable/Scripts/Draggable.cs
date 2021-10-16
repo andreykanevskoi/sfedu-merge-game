@@ -47,7 +47,7 @@ public class Draggable : MonoBehaviour
         transform.position = newPosition;
         _lastMousePosition = currentMousePosition;
 
-        GameEvents.current.DraggableDrag();
+        GameEvents.current.DraggableDrag(this);
     }
 
     private void OnMouseUp() {

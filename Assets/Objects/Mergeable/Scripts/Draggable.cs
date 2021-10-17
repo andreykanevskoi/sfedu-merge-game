@@ -1,23 +1,28 @@
-using System.Collections;
+п»їusing System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class Draggable : MonoBehaviour
 {
     [SerializeField, Range(1f, 100f)] private float returnSpeed;
-
-    // Текущее расположение на tilemap
-    [HideInInspector] public Vector3Int currentCell;
-
     private Vector3 _startPosition;
     private Vector3 _lastMousePosition;
-
     private bool _moveBack = false;
 
-    void FixedUpdate() {
-        
+    [HideInInspector] public Mergeable parent;
 
-        // Движение объекта на прежнюю позицию
+    private Vector3 GetMouseWorldPosition() {
+        Vector3 vector = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+        return vector;
+    }
+
+    // РќР°С‡Р°С‚СЊ РІРѕР·РІСЂР°С‰РµРЅРёРµ РїРѕР·РёС†РёРё
+    public void ReturnPosition() {
+        _moveBack = true;
+    }
+
+    void Update() {
+        // Р”РІРёР¶РµРЅРёРµ РѕР±СЉРµРєС‚Р° РЅР° РїСЂРµР¶РЅСЋСЋ РїРѕР·РёС†РёСЋ
         if (_moveBack) {
             transform.position = Vector3.Lerp(transform.position, _startPosition, returnSpeed * Time.deltaTime);
 
@@ -27,11 +32,6 @@ public class Draggable : MonoBehaviour
                 _moveBack = false;
             }
         }
-    }
-
-    // Начать возвращение позиции
-    public void ReturnPosition() {
-        _moveBack = true;
     }
 
     void OnMouseDown() {
@@ -47,18 +47,12 @@ public class Draggable : MonoBehaviour
         transform.position = newPosition;
         _lastMousePosition = currentMousePosition;
 
-        GameEvents.current.DraggableDrag(this);
+        GameEvents.current.Drag(this);
     }
 
     private void OnMouseUp() {
         transform.position += new Vector3(0, 0, 1f);
 
-        GameEvents.current.DraggableDrop(this);
+        GameEvents.current.Drop(this);
     }
-
-    private Vector3 GetMouseWorldPosition() {
-        Vector3 vector = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-        return vector;
-    }
-
 }

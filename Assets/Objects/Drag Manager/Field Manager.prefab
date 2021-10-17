@@ -45,4 +45,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _tileMap: {fileID: 0}
   _highlighter: {fileID: 0}
-  _draggablePrefab: {fileID: 7202536007370130275, guid: b681b54c462388e48b70f8849f31f549, type: 3}
+  _draggablePrefab: {fileID: 0}

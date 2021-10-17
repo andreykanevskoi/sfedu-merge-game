@@ -15,20 +15,20 @@ public class GameEvents : MonoBehaviour
     }
 
     // Ивент прекращения перетаскивания объекта
-    public event Action<Draggable> onDraggableDrop;
+    public event Action<Draggable> onDragDrop;
     // Тригер ивента
-    public void DraggableDrop(Draggable draggable) {
-        if (onDraggableDrop != null) {
-            onDraggableDrop(draggable);
+    public void Drop(Draggable draggable) {
+        if (onDragDrop != null) {
+            onDragDrop(draggable);
         }
     }
 
     // Ивент перетаскивания объекта
-    public event Action<Draggable> onDraggableGrag;
+    public event Action<Draggable> onDrag;
     // Тригер ивента
-    public void DraggableDrag(Draggable draggable) {
-        if (onDraggableGrag != null) {
-            onDraggableGrag(draggable);
+    public void Drag(Draggable draggable) {
+        if (onDrag != null) {
+            onDrag(draggable);
         }
     }
 }

@@ -3,10 +3,10 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Tilemaps;
 
-public class DragManager : MonoBehaviour
+public class FieldManager : MonoBehaviour
 {
     // Словарь ячеек tilemap в которых находятся объект
-    private Dictionary<Vector3Int, Draggable> _locationsPlaceable = new Dictionary<Vector3Int, Draggable>();
+    private Dictionary<Vector3Int, Mergeable> _locationsPlaceable = new Dictionary<Vector3Int, Mergeable>();
 
     // Tilemap в котором размещаются объекты
     [SerializeField] private Tilemap _tileMap;
@@ -15,7 +15,7 @@ public class DragManager : MonoBehaviour
     [SerializeField] private Highlighter _highlighter;
 
     // Префаб для создания перетаскиваемых объектов
-    [SerializeField] private Draggable _draggablePrefab;
+    [SerializeField] private Mergeable _MergeablePrefab;
 
     // Проверка занятости ячейки
     private bool isCanBePlaced(Vector3Int position) {
@@ -25,8 +25,12 @@ public class DragManager : MonoBehaviour
         return _locationsPlaceable[position] == null ? true : false;
     }
 
+    private bool isCanBeMerge(Vector3Int position, Mergeable mergeable) {
+        return _locationsPlaceable[position].isMergeable(mergeable);
+    }
+
     // Привязка объекта к ячейки
-    private void SetDraggableToCell(Vector3Int position, Draggable draggable) {
+    private void SetDraggableToCell(Vector3Int position, Mergeable draggable) {
         if (!_locationsPlaceable.ContainsKey(position)) {
             _locationsPlaceable.Add(position, draggable);
         }
@@ -67,31 +71,40 @@ public class DragManager : MonoBehaviour
     }
 
     // Обработка события прекращения перетаскивания объекта
-    private void onDraggableDrop(Draggable draggable) {
+    private void onDrop(Draggable draggable) {
         _highlighter.Hide();
 
         Vector3Int cellPosition;
         if (SearchTile(GetMouseWorldPosition(), out cellPosition)) {
             if (isCanBePlaced(cellPosition)) {
-                SetDraggableToCell(draggable.currentCell, null);
+                SetDraggableToCell(draggable.parent.currentCell, null);
 
-                draggable.currentCell = cellPosition;
-                SetDraggableToCell(cellPosition, draggable);
+                draggable.parent.currentCell = cellPosition;
+                SetDraggableToCell(cellPosition, draggable.parent);
                 draggable.transform.position = GetCellWorldPosition(cellPosition);
                 return;
             }
-            if (cellPosition.Equals(draggable.currentCell)) {
+
+            if (cellPosition.Equals(draggable.parent.currentCell)) {
                 draggable.transform.position = GetCellWorldPosition(cellPosition);
+                return;
+            }
+
+            if (isCanBeMerge(cellPosition, draggable.parent)) {
+                _locationsPlaceable[cellPosition].Merge(draggable.parent);
+                SetDraggableToCell(draggable.parent.currentCell, null);
+                Destroy(draggable.parent.gameObject);
+                return;
             }
         }
 
         draggable.ReturnPosition();
     }
 
-    private void onDraggableGrag(Draggable draggable) {
+    private void onGrag(Draggable draggable) {
         Vector3Int cellPosition;
         if (SearchTile(GetMouseWorldPosition(), out cellPosition)) {
-            if (isCanBePlaced(cellPosition) || cellPosition.Equals(draggable.currentCell)) {
+            if (isCanBePlaced(cellPosition) || cellPosition.Equals(draggable.parent.currentCell) || isCanBeMerge(cellPosition, draggable.parent)) {
                 _highlighter.SetPosition(_tileMap.CellToWorld(cellPosition));
                 _highlighter.Show();
                 return;
@@ -102,8 +115,8 @@ public class DragManager : MonoBehaviour
     }
 
     private void Start() {
-        GameEvents.current.onDraggableDrop += onDraggableDrop;
-        GameEvents.current.onDraggableGrag += onDraggableGrag;
+        GameEvents.current.onDragDrop += onDrop;
+        GameEvents.current.onDrag += onGrag;
     }
 
     private void Update() {
@@ -113,10 +126,10 @@ public class DragManager : MonoBehaviour
             Vector3Int cellPosition;
             if (SearchTile(GetMouseWorldPosition(), out cellPosition)) {
                 if (isCanBePlaced(cellPosition)) {
-                    Draggable draggable = Instantiate(_draggablePrefab);
-                    draggable.currentCell = cellPosition;
-                    draggable.transform.position = GetCellWorldPosition(cellPosition);
-                    SetDraggableToCell(cellPosition, draggable);
+                    Mergeable mergeable = Instantiate(_MergeablePrefab);
+                    mergeable.currentCell = cellPosition;
+                    mergeable.transform.position = GetCellWorldPosition(cellPosition);
+                    SetDraggableToCell(cellPosition, mergeable);
                 }
             }
         }

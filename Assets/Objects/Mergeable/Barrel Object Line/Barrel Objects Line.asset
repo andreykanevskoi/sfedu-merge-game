@@ -13,6 +13,6 @@ MonoBehaviour:
   m_Name: Barrel Objects Line
   m_EditorClassIdentifier: Assembly-CSharp::Mergebale
   _objectLevels:
-  - {fileID: 6103386886999411409, guid: b681b54c462388e48b70f8849f31f549, type: 3}
-  - {fileID: 4069644434570076058, guid: 127e018c7408337498b304bbdb712aed, type: 3}
-  - {fileID: -7960124602881750074, guid: d47cb2e345e339a45b03ce362dc21668, type: 3}
+  - {fileID: 2366583710492240371, guid: b681b54c462388e48b70f8849f31f549, type: 3}
+  - {fileID: 4456654971851996033, guid: 127e018c7408337498b304bbdb712aed, type: 3}
+  - {fileID: 1658718572693885103, guid: d47cb2e345e339a45b03ce362dc21668, type: 3}

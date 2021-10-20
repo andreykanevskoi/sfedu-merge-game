@@ -5,11 +5,11 @@ using UnityEngine;
 [CreateAssetMenu(fileName = "New mergeable object", menuName = "Mergaeble")]
 public class MergebaleObjectsLine : ScriptableObject {
 
-    [SerializeField] private Draggable[] _objectLevels;
+    [SerializeField] private Mergeable[] _objectLevels;
 
     public int MaxLevel => _objectLevels.Length - 1;
 
-    public Draggable GetCurrentLevelObject(int level) {
+    public Mergeable GetCurrentLevelObject(int level) {
         return _objectLevels[level];
     }
 

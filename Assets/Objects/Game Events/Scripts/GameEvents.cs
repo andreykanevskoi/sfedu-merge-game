@@ -14,19 +14,19 @@ public class GameEvents : MonoBehaviour
         }
     }
 
+    public event Action onFieldClick;
+
     // Ивент прекращения перетаскивания объекта
-    public event Action<Draggable> onDragDrop;
-    // Тригер ивента
-    public void Drop(Draggable draggable) {
+    public event Action<Mergeable> onDragDrop;
+    public void Drop(Mergeable draggable) {
         if (onDragDrop != null) {
             onDragDrop(draggable);
         }
     }
 
     // Ивент перетаскивания объекта
-    public event Action<Draggable> onDrag;
-    // Тригер ивента
-    public void Drag(Draggable draggable) {
+    public event Action<Mergeable> onDrag;
+    public void Drag(Mergeable draggable) {
         if (onDrag != null) {
             onDrag(draggable);
         }

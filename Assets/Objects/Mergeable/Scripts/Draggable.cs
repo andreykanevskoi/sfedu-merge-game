@@ -46,13 +46,9 @@ public class Draggable : MonoBehaviour
         Vector3 newPosition = transform.position + new Vector3(difference.x, difference.y, 0);
         transform.position = newPosition;
         _lastMousePosition = currentMousePosition;
-
-        GameEvents.current.Drag(this);
     }
 
     private void OnMouseUp() {
         transform.position += new Vector3(0, 0, 1f);
-
-        GameEvents.current.Drop(this);
     }
 }

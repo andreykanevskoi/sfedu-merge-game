@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 7292901425666366842}
   - component: {fileID: 7586691612568312086}
   - component: {fileID: 1356816516522777859}
-  - component: {fileID: -7960124602881750074}
+  - component: {fileID: 1658718572693885103}
   m_Layer: 0
   m_Name: Level3Barrel
   m_TagString: Untagged
@@ -109,7 +109,7 @@ BoxCollider2D:
   serializedVersion: 2
   m_Size: {x: 0.7488823, y: 0.667078}
   m_EdgeRadius: 0
---- !u!114 &-7960124602881750074
+--- !u!114 &1658718572693885103
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -118,7 +118,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 354906792794669445}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 23949ef99b1b3a3448d09c45d5b5eb36, type: 3}
+  m_Script: {fileID: 11500000, guid: ddc3ab07bf941a84b8688fd6746639a4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   returnSpeed: 10
+  _line: {fileID: 11400000, guid: 192e71fc30e96ad4da5142ef14d6529f, type: 2}
+  _currentLevel: 2
+  currentCell: {x: 0, y: 0, z: 0}

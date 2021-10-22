@@ -14,7 +14,15 @@
                     "interactions": ""
                 },
                 {
-                    "name": "Drag",
+                    "name": "Release",
+                    "type": "Button",
+                    "id": "18b26687-87ab-404c-b49d-251343e69229",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": ""
+                },
+                {
+                    "name": "Hold",
                     "type": "Button",
                     "id": "2235648f-91d4-479a-a0f5-f4491528fed2",
                     "expectedControlType": "Button",
@@ -41,7 +49,18 @@
                     "interactions": "Hold(duration=0.15)",
                     "processors": "",
                     "groups": "Mouse",
-                    "action": "Drag",
+                    "action": "Hold",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "bde18056-e405-42fb-820d-d8dd9b4b21c7",
+                    "path": "<Mouse>/leftButton",
+                    "interactions": "Press(behavior=1)",
+                    "processors": "",
+                    "groups": "Mouse",
+                    "action": "Release",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

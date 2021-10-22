@@ -2,45 +2,52 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Tilemaps;
+using UnityEngine.InputSystem;
 
 public class FieldManager : MonoBehaviour
 {
     // Словарь ячеек tilemap в которых находятся объект
-    private Dictionary<Vector3Int, Mergeable> _locationsPlaceable = new Dictionary<Vector3Int, Mergeable>();
+    private Dictionary<Vector3Int, Placeable> _placedObjects = new Dictionary<Vector3Int, Placeable>();
 
     // Tilemap в котором размещаются объекты
     [SerializeField] private Tilemap _tileMap;
-
     // Маркер
     [SerializeField] private Highlighter _highlighter;
-
     // Префаб для создания перетаскиваемых объектов
     [SerializeField] private Mergeable _MergeablePrefab;
 
     // Проверка занятости ячейки
     private bool isCanBePlaced(Vector3Int position) {
-        if (!_locationsPlaceable.ContainsKey(position)) {
+        if (!_placedObjects.ContainsKey(position)) {
             return true;
         }
-        return _locationsPlaceable[position] == null ? true : false;
-    }
-
-    private bool isCanBeMerge(Vector3Int position, Mergeable mergeable) {
-        return _locationsPlaceable[position].isMergeable(mergeable);
-    }
-
-    // Привязка объекта к ячейки
-    private void SetDraggableToCell(Vector3Int position, Mergeable draggable) {
-        if (!_locationsPlaceable.ContainsKey(position)) {
-            _locationsPlaceable.Add(position, draggable);
-        }
-        else {
-            _locationsPlaceable[position] = draggable;
-        }
+        return _placedObjects[position] == null ? true : false;
     }
 
     private Vector3 GetMouseWorldPosition() {
-        return Camera.main.ScreenToWorldPoint(Input.mousePosition);
+        return Camera.main.ScreenToWorldPoint(Mouse.current.position.ReadValue());
+    }
+
+    private bool isCanBeMerge(Vector3Int position, Placeable placeable) {
+        if (placeable is Mergeable mergeable1 && _placedObjects[position] is Mergeable mergeable2)
+        {
+            return mergeable2.isMergeable(mergeable1);
+        }
+        return false;
+    }
+
+    // Привязка объекта к ячейки
+    private void SetObjectToCell(Vector3Int position, Placeable placeable) {
+        if (!placeable) {
+            _placedObjects.Remove(position);
+        }
+
+        if (!_placedObjects.ContainsKey(position)) {
+            _placedObjects.Add(position, placeable);
+        }
+        else {
+            _placedObjects[position] = placeable;
+        }
     }
 
     private Vector3 GetCellWorldPosition(Vector3Int position) {
@@ -71,52 +78,56 @@ public class FieldManager : MonoBehaviour
     }
 
     // Обработка события прекращения перетаскивания объекта
-    private void onDrop(Mergeable mergeable) {
+    private void onDrop(Placeable placeable) {
         _highlighter.Hide();
 
         Vector3Int cellPosition;
         if (SearchTile(GetMouseWorldPosition(), out cellPosition)) {
             if (isCanBePlaced(cellPosition)) {
-                SetDraggableToCell(mergeable.currentCell, null);
+                SetObjectToCell(placeable.currentCell, null);
 
-                mergeable.currentCell = cellPosition;
-                SetDraggableToCell(cellPosition, mergeable);
-                mergeable.transform.position = GetCellWorldPosition(cellPosition);
+                placeable.currentCell = cellPosition;
+                SetObjectToCell(cellPosition, placeable);
+                placeable.transform.position = GetCellWorldPosition(cellPosition);
                 return;
             }
 
-            if (cellPosition.Equals(mergeable.currentCell)) {
-                mergeable.transform.position = GetCellWorldPosition(cellPosition);
+            if (cellPosition.Equals(placeable.currentCell)) {
+                placeable.transform.position = GetCellWorldPosition(cellPosition);
                 return;
             }
 
-            if (isCanBeMerge(cellPosition, mergeable)) {
-                // Merge
-                Mergeable mergeableAtCell = _locationsPlaceable[cellPosition];
-                Mergeable newMergeable = Instantiate(mergeable.GetNextLevelObject());
-                newMergeable.transform.position = mergeableAtCell.transform.position;
-                newMergeable.currentCell = mergeableAtCell.currentCell;
+            if (placeable is Mergeable mergeable && _placedObjects[cellPosition] is Mergeable mergeableAtCell) {
+                if (mergeableAtCell.isMergeable(mergeable)) {
+                    SetObjectToCell(mergeable.currentCell, null);
 
-                SetDraggableToCell(mergeable.currentCell, null);
-                SetDraggableToCell(cellPosition, newMergeable);
+                    Mergeable newMergeable = mergeableAtCell.Merge(mergeable);
+                    SetObjectToCell(cellPosition, newMergeable);
 
-                Destroy(mergeableAtCell.gameObject);
-                Destroy(mergeable.gameObject);
-
-                return;
+                    return;
+                }
             }
+        
         }
 
-        mergeable.ReturnPosition();
+        placeable.ReturnPosition();
     }
 
-    private void onDrag(Mergeable mergeable) {
+    private void onDrag(Placeable placeable) {
         Vector3Int cellPosition;
-        if (SearchTile(GetMouseWorldPosition(), out cellPosition)) {
-            if (isCanBePlaced(cellPosition) || cellPosition.Equals(mergeable.currentCell) || isCanBeMerge(cellPosition, mergeable)) {
+        if (SearchTile(GetMouseWorldPosition(), out cellPosition))
+        {
+            if (isCanBePlaced(cellPosition) || cellPosition.Equals(placeable.currentCell)) {
                 _highlighter.SetPosition(_tileMap.CellToWorld(cellPosition));
                 _highlighter.Show();
                 return;
+            }
+            if (placeable is Mergeable mergeable && _placedObjects[cellPosition] is Mergeable mergeableAtCell) {
+                if (mergeableAtCell.isMergeable(mergeable)) {
+                    _highlighter.SetPosition(_tileMap.CellToWorld(cellPosition));
+                    _highlighter.Show();
+                    return;
+                }
             }
         }
 
@@ -124,25 +135,22 @@ public class FieldManager : MonoBehaviour
     }
 
     private void Start() {
-        GameEvents.current.onDragDrop += onDrop;
-        GameEvents.current.onDrag += onDrag;
+        GameEvents.current.OnDrop += onDrop;
+        GameEvents.current.OnDrag += onDrag;
     }
 
     private void Update()
     {
         // Для отладки
         // ПКМ создаёт на тайле перетаскиваемый объект
-        if (Input.GetMouseButtonDown(1))
-        {
+        if (Mouse.current.rightButton.isPressed) { 
             Vector3Int cellPosition;
-            if (SearchTile(GetMouseWorldPosition(), out cellPosition))
-            {
-                if (isCanBePlaced(cellPosition))
-                {
+            if (SearchTile(GetMouseWorldPosition(), out cellPosition)) {
+                if (isCanBePlaced(cellPosition)) {
                     Mergeable mergeable = Instantiate(_MergeablePrefab);
                     mergeable.currentCell = cellPosition;
                     mergeable.transform.position = GetCellWorldPosition(cellPosition);
-                    SetDraggableToCell(cellPosition, mergeable);
+                    SetObjectToCell(cellPosition, mergeable);
                 }
             }
         }

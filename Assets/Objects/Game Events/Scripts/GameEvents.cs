@@ -5,7 +5,6 @@ using System;
 
 public class GameEvents : MonoBehaviour
 {
-    // Для доступа из любого места
     public static GameEvents current;
 
     private void Awake() {
@@ -14,21 +13,15 @@ public class GameEvents : MonoBehaviour
         }
     }
 
-    public event Action onFieldClick;
+    // public event Action OnFieldClick;
 
-    // Ивент прекращения перетаскивания объекта
-    public event Action<Mergeable> onDragDrop;
-    public void Drop(Mergeable draggable) {
-        if (onDragDrop != null) {
-            onDragDrop(draggable);
-        }
+    public event Action<Placeable> OnDrop;
+    public void Drop(Placeable placeable) {
+        OnDrop?.Invoke(placeable);
     }
 
-    // Ивент перетаскивания объекта
-    public event Action<Mergeable> onDrag;
-    public void Drag(Mergeable draggable) {
-        if (onDrag != null) {
-            onDrag(draggable);
-        }
+    public event Action<Placeable> OnDrag;
+    public void Drag(Placeable placeable) {
+        OnDrag?.Invoke(placeable);
     }
 }

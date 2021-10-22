@@ -5,28 +5,33 @@ using UnityEngine.InputSystem;
 
 public class InputManager : MonoBehaviour
 {
+    // Текущее состояние
     private IInputManagerState _currentState;
     private InputControls _controls;
 
-    // Start is called before the first frame update
     void Start() {
         _currentState = new DragInputState();
         _controls = new InputControls();
-        _controls.Player.Enable();
 
+        _controls.Player.Enable();
+        // Привязка обработчиков к событиям ввода
         _controls.Player.Touch.performed += OnClick;
-        _controls.Player.Drag.performed += OnDrag;
+        _controls.Player.Release.performed += OnRelease;
+        _controls.Player.Hold.performed += OnHold;
     }
 
     public void OnClick(InputAction.CallbackContext context) {
         _currentState.OnClick();
     }
 
-    public void OnDrag(InputAction.CallbackContext context) {
-        _currentState.OnDrag();
+    public void OnRelease(InputAction.CallbackContext context) {
+        _currentState.OnRelease();
     }
 
-    // Update is called once per frame
+    public void OnHold(InputAction.CallbackContext context) {
+        _currentState.OnHold();
+    }
+
     void Update() {
         _currentState.Update();
     }

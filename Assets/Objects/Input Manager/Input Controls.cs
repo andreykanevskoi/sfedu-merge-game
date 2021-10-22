@@ -27,7 +27,15 @@ public class @InputControls : IInputActionCollection, IDisposable
                     ""interactions"": """"
                 },
                 {
-                    ""name"": ""Drag"",
+                    ""name"": ""Release"",
+                    ""type"": ""Button"",
+                    ""id"": ""18b26687-87ab-404c-b49d-251343e69229"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """"
+                },
+                {
+                    ""name"": ""Hold"",
                     ""type"": ""Button"",
                     ""id"": ""2235648f-91d4-479a-a0f5-f4491528fed2"",
                     ""expectedControlType"": ""Button"",
@@ -54,7 +62,18 @@ public class @InputControls : IInputActionCollection, IDisposable
                     ""interactions"": ""Hold(duration=0.15)"",
                     ""processors"": """",
                     ""groups"": ""Mouse"",
-                    ""action"": ""Drag"",
+                    ""action"": ""Hold"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""bde18056-e405-42fb-820d-d8dd9b4b21c7"",
+                    ""path"": ""<Mouse>/leftButton"",
+                    ""interactions"": ""Press(behavior=1)"",
+                    ""processors"": """",
+                    ""groups"": ""Mouse"",
+                    ""action"": ""Release"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 }
@@ -78,7 +97,8 @@ public class @InputControls : IInputActionCollection, IDisposable
         // Player
         m_Player = asset.FindActionMap("Player", throwIfNotFound: true);
         m_Player_Touch = m_Player.FindAction("Touch", throwIfNotFound: true);
-        m_Player_Drag = m_Player.FindAction("Drag", throwIfNotFound: true);
+        m_Player_Release = m_Player.FindAction("Release", throwIfNotFound: true);
+        m_Player_Hold = m_Player.FindAction("Hold", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -129,13 +149,15 @@ public class @InputControls : IInputActionCollection, IDisposable
     private readonly InputActionMap m_Player;
     private IPlayerActions m_PlayerActionsCallbackInterface;
     private readonly InputAction m_Player_Touch;
-    private readonly InputAction m_Player_Drag;
+    private readonly InputAction m_Player_Release;
+    private readonly InputAction m_Player_Hold;
     public struct PlayerActions
     {
         private @InputControls m_Wrapper;
         public PlayerActions(@InputControls wrapper) { m_Wrapper = wrapper; }
         public InputAction @Touch => m_Wrapper.m_Player_Touch;
-        public InputAction @Drag => m_Wrapper.m_Player_Drag;
+        public InputAction @Release => m_Wrapper.m_Player_Release;
+        public InputAction @Hold => m_Wrapper.m_Player_Hold;
         public InputActionMap Get() { return m_Wrapper.m_Player; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -148,9 +170,12 @@ public class @InputControls : IInputActionCollection, IDisposable
                 @Touch.started -= m_Wrapper.m_PlayerActionsCallbackInterface.OnTouch;
                 @Touch.performed -= m_Wrapper.m_PlayerActionsCallbackInterface.OnTouch;
                 @Touch.canceled -= m_Wrapper.m_PlayerActionsCallbackInterface.OnTouch;
-                @Drag.started -= m_Wrapper.m_PlayerActionsCallbackInterface.OnDrag;
-                @Drag.performed -= m_Wrapper.m_PlayerActionsCallbackInterface.OnDrag;
-                @Drag.canceled -= m_Wrapper.m_PlayerActionsCallbackInterface.OnDrag;
+                @Release.started -= m_Wrapper.m_PlayerActionsCallbackInterface.OnRelease;
+                @Release.performed -= m_Wrapper.m_PlayerActionsCallbackInterface.OnRelease;
+                @Release.canceled -= m_Wrapper.m_PlayerActionsCallbackInterface.OnRelease;
+                @Hold.started -= m_Wrapper.m_PlayerActionsCallbackInterface.OnHold;
+                @Hold.performed -= m_Wrapper.m_PlayerActionsCallbackInterface.OnHold;
+                @Hold.canceled -= m_Wrapper.m_PlayerActionsCallbackInterface.OnHold;
             }
             m_Wrapper.m_PlayerActionsCallbackInterface = instance;
             if (instance != null)
@@ -158,9 +183,12 @@ public class @InputControls : IInputActionCollection, IDisposable
                 @Touch.started += instance.OnTouch;
                 @Touch.performed += instance.OnTouch;
                 @Touch.canceled += instance.OnTouch;
-                @Drag.started += instance.OnDrag;
-                @Drag.performed += instance.OnDrag;
-                @Drag.canceled += instance.OnDrag;
+                @Release.started += instance.OnRelease;
+                @Release.performed += instance.OnRelease;
+                @Release.canceled += instance.OnRelease;
+                @Hold.started += instance.OnHold;
+                @Hold.performed += instance.OnHold;
+                @Hold.canceled += instance.OnHold;
             }
         }
     }
@@ -177,6 +205,7 @@ public class @InputControls : IInputActionCollection, IDisposable
     public interface IPlayerActions
     {
         void OnTouch(InputAction.CallbackContext context);
-        void OnDrag(InputAction.CallbackContext context);
+        void OnRelease(InputAction.CallbackContext context);
+        void OnHold(InputAction.CallbackContext context);
     }
 }

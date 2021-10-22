@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-[CreateAssetMenu(fileName = "New mergeable object", menuName = "Mergaeble")]
+[CreateAssetMenu(fileName = "New mergeable line", menuName = "Mergaeble line")]
 public class MergebaleObjectsLine : ScriptableObject {
 
     [SerializeField] private Mergeable[] _objectLevels;

@@ -6,5 +6,6 @@ public interface IInputManagerState
 {
     void Update();
     void OnClick();
-    void OnDrag();
+    void OnRelease();
+    void OnHold();
 }

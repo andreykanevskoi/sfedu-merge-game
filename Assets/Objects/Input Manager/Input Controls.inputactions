@@ -28,6 +28,14 @@
                     "expectedControlType": "Button",
                     "processors": "",
                     "interactions": ""
+                },
+                {
+                    "name": "Switch State",
+                    "type": "Button",
+                    "id": "1173794a-f632-40ed-a701-6082fe31dca6",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": ""
                 }
             ],
             "bindings": [
@@ -37,7 +45,7 @@
                     "path": "<Mouse>/leftButton",
                     "interactions": "Press",
                     "processors": "",
-                    "groups": "Mouse",
+                    "groups": "Mouse And Keyboard",
                     "action": "Touch",
                     "isComposite": false,
                     "isPartOfComposite": false
@@ -48,7 +56,7 @@
                     "path": "<Mouse>/leftButton",
                     "interactions": "Hold(duration=0.15)",
                     "processors": "",
-                    "groups": "Mouse",
+                    "groups": "Mouse And Keyboard",
                     "action": "Hold",
                     "isComposite": false,
                     "isPartOfComposite": false
@@ -59,8 +67,19 @@
                     "path": "<Mouse>/leftButton",
                     "interactions": "Press(behavior=1)",
                     "processors": "",
-                    "groups": "Mouse",
+                    "groups": "Mouse And Keyboard",
                     "action": "Release",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "f4b93010-287e-4081-b7ae-f1f9503fbd35",
+                    "path": "<Keyboard>/tab",
+                    "interactions": "Press",
+                    "processors": "",
+                    "groups": "Mouse And Keyboard",
+                    "action": "Switch State",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }
@@ -69,11 +88,16 @@
     ],
     "controlSchemes": [
         {
-            "name": "Mouse",
-            "bindingGroup": "Mouse",
+            "name": "Mouse And Keyboard",
+            "bindingGroup": "Mouse And Keyboard",
             "devices": [
                 {
                     "devicePath": "<Mouse>",
+                    "isOptional": false,
+                    "isOR": false
+                },
+                {
+                    "devicePath": "<Keyboard>",
                     "isOptional": false,
                     "isOR": false
                 }

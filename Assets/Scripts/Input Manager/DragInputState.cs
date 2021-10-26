@@ -34,7 +34,9 @@ public class DragInputState : IInputManagerState {
     public void OnRelease() {
         // Если цель перетаскивалась - бросить
         if (_isDrag) {
-            _target?.Drop(GetMousePosition());
+            Vector3 mousePosition = GetMousePosition();
+            _target?.Drop(mousePosition);
+            GameEvents.current.TriggerDrop(mousePosition, _target);
             Reset();
             return;
         }
@@ -60,6 +62,7 @@ public class DragInputState : IInputManagerState {
         if (_isDrag) {
             Vector3 mousePosition = GetMousePosition();
             _target.Drag(mousePosition);
+            GameEvents.current.TriggerDrag(mousePosition, _target);
         }
     }
 }

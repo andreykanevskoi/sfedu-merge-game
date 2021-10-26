@@ -19,6 +19,7 @@ public class InputManager : MonoBehaviour {
         _controls.Player.SwitchState.performed += OnSwitchState;
     }
 
+    // Сменить режим ввода на Tab
     public void OnSwitchState(InputAction.CallbackContext context) {
         if (_currentState is DragInputState) {
             _currentState = new DestroyInputState();

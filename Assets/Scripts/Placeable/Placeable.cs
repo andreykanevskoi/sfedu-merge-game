@@ -55,13 +55,9 @@ public class Placeable : MonoBehaviour {
         Vector3 newPosition = transform.position + new Vector3(difference.x, difference.y, 0);
         transform.position = newPosition;
         _lastMousePosition = currentMousePosition;
-
-        GameEvents.current.TriggerDrag(currentMousePosition, this);
     }
 
     public void Drop(Vector3 currentMousePosition) {
         _renderer.sortingOrder = 0;
-
-        GameEvents.current.TriggerDrop(currentMousePosition, this);
     }
 }

@@ -14,12 +14,15 @@ public class FieldManager : MonoBehaviour {
     // Префаб для создания перетаскиваемых объектов
     [SerializeField] private Mergeable _MergeablePrefab;
 
+    // Маска слоя тайлов
     private int _layerMask;
 
+    // Для дебага
     private Vector3 GetMouseWorldPosition() {
         return Camera.main.ScreenToWorldPoint(Mouse.current.position.ReadValue());
     }
 
+    // Проверка доступности тайла
     private bool isValidTile(Vector3Int position) {
         if (_tileMap.HasTile(position)) {
             if (isEmptyAbove(position)) {
@@ -56,6 +59,7 @@ public class FieldManager : MonoBehaviour {
         _placedObjects[position] = placeable;
     }
 
+    // Уничтожить тайл
     private void DestroyTile(Vector3Int position) {
         if (!_tileMap.GetTile<FieldTile>(position).destroyable) {
             return;
@@ -65,6 +69,7 @@ public class FieldManager : MonoBehaviour {
         GameEvents.current.TriggerTileDestroy(position);
     }
 
+    // Смерджить два объекта
     private void MergeAtCell(Mergeable mergeableAtCell, Mergeable mergeable) {
         Vector3Int position = mergeableAtCell.currentCell;
 
@@ -75,6 +80,7 @@ public class FieldManager : MonoBehaviour {
         }
     }
 
+    // Создать объект в точке
     private void SpawnObject(Vector3Int position) {
         if (isValidTile(position)) {
             Placeable placeable = Instantiate(_MergeablePrefab);
@@ -131,6 +137,7 @@ public class FieldManager : MonoBehaviour {
         placeable.ReturnPosition();
     }
 
+    // Подсветка тайла при перености объекта
     private void onDrag(Vector3 position, Placeable placeable) {
         Vector3Int cellPosition;
         if (!SearchTile(position, out cellPosition)) {

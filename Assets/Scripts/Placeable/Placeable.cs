@@ -8,7 +8,7 @@ public class Placeable : MonoBehaviour {
 
     private SpriteRenderer _renderer;
 
-    [HideInInspector]
+    // [HideInInspector]
     public Vector3Int currentCell;
 
     public Vector3 Position {

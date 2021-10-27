@@ -4,15 +4,12 @@ using UnityEngine.InputSystem;
 using UnityEngine.Tilemaps;
 
 public class FieldManager : MonoBehaviour {
-    // Словарь ячеек tilemap в которых находятся объект
-    private Dictionary<Vector3Int, Placeable> _placedObjects = new Dictionary<Vector3Int, Placeable>();
-
     // Tilemap в котором размещаются объекты
     [SerializeField] private Tilemap _tileMap;
     // Маркер
     [SerializeField] private Highlighter _highlighter;
-    // Префаб для создания перетаскиваемых объектов
-    [SerializeField] private Mergeable _MergeablePrefab;
+
+    [SerializeField] private ObjectManager _objectManager;
 
     // Маска слоя тайлов
     private int _layerMask;
@@ -20,6 +17,19 @@ public class FieldManager : MonoBehaviour {
     // Для дебага
     private Vector3 GetMouseWorldPosition() {
         return Camera.main.ScreenToWorldPoint(Mouse.current.position.ReadValue());
+    }
+
+    public void HideHighlighter() {
+        _highlighter.Hide();
+    }
+
+    public void ShowHighlighter() {
+        _highlighter.Show();
+    }
+
+    public void SetHighlighterPosition(Vector3Int position) {
+        _highlighter.SetPosition(GetCellWorldPosition(position));
+        ShowHighlighter();
     }
 
     // Проверка доступности тайла
@@ -40,23 +50,8 @@ public class FieldManager : MonoBehaviour {
         return true;
     }
 
-    private bool isFree(Vector3Int position) {
-        return !_placedObjects.ContainsKey(position);
-    }
-
     private bool isDestroyable(Vector3Int position) {
         return _tileMap.GetTile<FieldTile>(position).destroyable;
-    }
-
-    // Привязка объекта к ячейки
-    private void SetObjectToCell(Vector3Int position, Placeable placeable) {
-        if (!placeable) {
-            _placedObjects.Remove(position);
-            return;
-        }
-        placeable.currentCell = position;
-        placeable.Position = GetCellWorldPosition(position);
-        _placedObjects[position] = placeable;
     }
 
     // Уничтожить тайл
@@ -69,26 +64,7 @@ public class FieldManager : MonoBehaviour {
         GameEvents.current.TriggerTileDestroy(position);
     }
 
-    // Смерджить два объекта
-    private void MergeAtCell(Mergeable mergeableAtCell, Mergeable mergeable) {
-        Vector3Int position = mergeableAtCell.currentCell;
-
-        Mergeable newMergeable = mergeableAtCell.Merge(mergeable);
-        if (newMergeable) {
-            SetObjectToCell(mergeable.currentCell, null);
-            SetObjectToCell(position, newMergeable);
-        }
-    }
-
-    // Создать объект в точке
-    private void SpawnObject(Vector3Int position) {
-        if (isValidTile(position)) {
-            Placeable placeable = Instantiate(_MergeablePrefab);
-            SetObjectToCell(position, placeable);
-        }
-    }
-
-    private Vector3 GetCellWorldPosition(Vector3Int position) {
+    public Vector3 GetCellWorldPosition(Vector3Int position) {
         return _tileMap.GetCellCenterWorld(position);
     }
 
@@ -108,126 +84,48 @@ public class FieldManager : MonoBehaviour {
         return false;
     }
 
-    // Обработка события прекращения перетаскивания объекта
-    private void onDrop(Vector3 position, Placeable placeable) {
-        _highlighter.Hide();
-
-        Vector3Int cellPosition;
-        if (!SearchTile(position, out cellPosition)) {
-            placeable.ReturnPosition();
-            return;
-        }
-
-        if (isValidTile(cellPosition)) {
-            if (isFree(cellPosition)) {
-                SetObjectToCell(placeable.currentCell, null);
-                SetObjectToCell(cellPosition, placeable);
-                return;
-            }
-            else if (cellPosition.Equals(placeable.currentCell)) {
-                SetObjectToCell(cellPosition, placeable);
-                return;
-            }
-            else if (placeable is Mergeable mergeable && _placedObjects[cellPosition] is Mergeable mergeableAtCell) {
-                MergeAtCell(mergeableAtCell, mergeable);
-                return;
+    public bool GetValidCell(Vector3 position, out Vector3Int cellPosition) {
+        if (SearchTile(position, out cellPosition)) {
+            if (isValidTile(cellPosition)) {
+                return true;
             }
         }
-
-        placeable.ReturnPosition();
-    }
-
-    // Подсветка тайла при перености объекта
-    private void onDrag(Vector3 position, Placeable placeable) {
-        Vector3Int cellPosition;
-        if (!SearchTile(position, out cellPosition)) {
-            _highlighter.Hide();
-            return;
-        }
-
-        if (isValidTile(cellPosition)) {
-            if (isFree(cellPosition)) {
-                _highlighter.SetPosition(GetCellWorldPosition(cellPosition));
-                _highlighter.Show();
-                return;
-            }
-            else if (cellPosition.Equals(placeable.currentCell)) {
-                _highlighter.SetPosition(GetCellWorldPosition(cellPosition));
-                _highlighter.Show();
-                return;
-            }
-            else if (placeable is Mergeable mergeable && _placedObjects[cellPosition] is Mergeable mergeableAtCell) {
-                Debug.Log(mergeableAtCell.isMergeable(mergeable));
-                if (mergeableAtCell.isMergeable(mergeable)) {
-                    _highlighter.SetPosition(GetCellWorldPosition(cellPosition));
-                    _highlighter.Show();
-                    return;
-                }
-            }
-        }
-
-        _highlighter.Hide();
+        return false;
     }
 
     private void OnTileSelect(Vector3 position) {
         Vector3Int cellPosition;
-        if (!SearchTile(position, out cellPosition)) {
-            _highlighter.Hide();
-            return;
-        }
-
-        if (isValidTile(cellPosition)) {
-            if (isFree(cellPosition) && isDestroyable(cellPosition)) {
-                _highlighter.SetPosition(GetCellWorldPosition(cellPosition));
-                _highlighter.Show();
+        if (GetValidCell(position, out cellPosition)) {
+            if (_objectManager.IsFree(cellPosition) && isDestroyable(cellPosition)) {
+                SetHighlighterPosition(cellPosition);
                 return;
             }
         }
 
-        _highlighter.Hide();
+        HideHighlighter();
     }
 
     private void OnTileClick(Vector3 position) {
         Vector3Int cellPosition;
-        if (!SearchTile(position, out cellPosition)) {
-            return;
-        }
-
-        if (isValidTile(cellPosition)) {
-            if (isFree(cellPosition) && isDestroyable(cellPosition)) {
+        if (GetValidCell(position, out cellPosition)) {
+            if (_objectManager.IsFree(cellPosition) && isDestroyable(cellPosition)) {
                 DestroyTile(cellPosition);
             }
         }
     }
 
-    private void OnTileDestroy(Vector3Int position) {
-        Vector3Int positionUnder = position;
-        positionUnder.z -= 1;
-        SpawnObject(positionUnder);
-    }
-
     private void Start() {
         _layerMask = 1 << LayerMask.NameToLayer("Tiles");
 
-        GameEvents.current.OnDrop += onDrop;
-        GameEvents.current.OnDrag += onDrag;
-
         GameEvents.current.OnTileSelect += OnTileSelect;
         GameEvents.current.OnFieldClick += OnTileClick;
-
-        GameEvents.current.OnTileDestroy += OnTileDestroy;
 
         GameEvents.current.OnModeSwitch += _highlighter.Hide;
     }
 
     private void OnDisable() {
-        GameEvents.current.OnDrop -= onDrop;
-        GameEvents.current.OnDrag -= onDrag;
-
         GameEvents.current.OnTileSelect -= OnTileSelect;
         GameEvents.current.OnFieldClick -= OnTileClick;
-
-        GameEvents.current.OnTileDestroy -= OnTileDestroy;
 
         GameEvents.current.OnModeSwitch -= _highlighter.Hide;
     }
@@ -237,10 +135,8 @@ public class FieldManager : MonoBehaviour {
         // ПКМ создаёт на тайле перетаскиваемый объект
         if (Mouse.current.rightButton.isPressed) {
             Vector3Int cellPosition;
-            if (SearchTile(GetMouseWorldPosition(), out cellPosition)) {
-                if (isValidTile(cellPosition) && isFree(cellPosition)) {
-                    SpawnObject(cellPosition);
-                }
+            if (GetValidCell(GetMouseWorldPosition(), out cellPosition)) {
+                _objectManager.SpawnObject(cellPosition);
             }
         }
     }

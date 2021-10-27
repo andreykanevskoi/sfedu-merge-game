@@ -21,8 +21,8 @@ public class TimerPrint : MonoBehaviour
         for (var i = 0; i < _timerManager.GetNumberTimers(); i++)
         {
             string output = "";
-            output += "Timer" + _timerManager.GetTimer(i).GetComponent<Timer>().GetTimerName();
-            output += " , Time:" + _timerManager.GetTimer(i).GetComponent<Timer>().GetTime();
+            output += "Timer" + _timerManager.GetTimer(i).GetName;
+            output += " , Time:" + _timerManager.GetTimer(i).GetTime();
             Debug.Log(output);
         }
     }

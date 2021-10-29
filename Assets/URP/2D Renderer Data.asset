@@ -10,12 +10,12 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 11145981673336645838492a2d98e247, type: 3}
-  m_Name: New 2D Renderer Data
+  m_Name: 2D Renderer Data
   m_EditorClassIdentifier: 
   m_RendererFeatures: []
   m_RendererFeatureMap: 
   m_TransparencySortMode: 3
-  m_TransparencySortAxis: {x: 0, y: 1, z: -0.26}
+  m_TransparencySortAxis: {x: 0, y: 1, z: -0.35}
   m_HDREmulationScale: 1
   m_LightBlendStyles:
   - enabled: 0

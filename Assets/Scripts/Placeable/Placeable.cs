@@ -1,7 +1,11 @@
 ﻿using UnityEngine;
 
+[System.Serializable]
 public class Placeable : MonoBehaviour {
+    private static float _zOffset = 0.1f;
+
     [SerializeField, Range(1f, 100f)] private float returnSpeed;
+
     private Vector3 _startPosition;
     private Vector3 _lastMousePosition;
     private bool _moveBack = false;
@@ -14,7 +18,7 @@ public class Placeable : MonoBehaviour {
     public Vector3 Position {
         get => transform.position;
         set {
-            value.z += 1;
+            value.z += _zOffset;
             transform.position = value;
         }
     }
@@ -36,9 +40,18 @@ public class Placeable : MonoBehaviour {
             if (Vector3.Distance(transform.position, _startPosition) < 0.01f) {
                 transform.position = _startPosition;
                 _startPosition = Vector3.zero;
+                _renderer.sortingOrder = 0;
                 _moveBack = false;
             }
         }
+    }
+
+    public void Hide() {
+        gameObject.SetActive(false);
+    }
+
+    public void Show() {
+        gameObject.SetActive(true);
     }
 
     public void Click() {
@@ -58,6 +71,5 @@ public class Placeable : MonoBehaviour {
     }
 
     public void Drop(Vector3 currentMousePosition) {
-        _renderer.sortingOrder = 0;
     }
 }

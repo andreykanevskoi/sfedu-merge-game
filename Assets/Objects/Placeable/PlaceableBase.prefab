@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 6010809510800815432}
   - component: {fileID: 172632410219357060}
   m_Layer: 0
-  m_Name: Placeable
+  m_Name: PlaceableBase
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

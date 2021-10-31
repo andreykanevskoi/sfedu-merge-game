@@ -2,59 +2,54 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Object = UnityEngine.Object;
 
 
-public class TimerManager : MonoBehaviour
+public static class TimerManager
 {
-     [SerializeField] GameObject _timerPrefab;
+     [SerializeField] static GameObject _timerPrefab;
      
-     private List<Timer> _AllTimers = new List<Timer>();
-     private int _numberTimer = 0;
-    void Start()
+     private static List<Timer> _AllTimers = new List<Timer>();
+
+     static void CreateTimer(float time, string action, string name = "", bool activateTimer = true)
     {
-        SaveLoadTimer.Load();
-        LoadTimers(SaveLoadTimer.savedTimers);
-        CreateTimer(10, "ez", _numberTimer++.ToString());
-        CreateTimer(24, "www", _numberTimer++.ToString());
-        SaveLoadTimer.Save();
+        Timer newTimer = Object.Instantiate(_timerPrefab).GetComponent<Timer>();
+        newTimer.SetTimer(time, action, name);
+        _AllTimers.Add(newTimer);
+        if (activateTimer)
+        {
+            newTimer.StartTimer();
+        }
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
-
-    void CreateTimer(float time, string action, string name = "")
-    {
-        GameObject newTimer = Instantiate(_timerPrefab);
-        newTimer.GetComponent<Timer>().SetTimer(time, action, name + '_' + _AllTimers.Count);
-        _AllTimers.Add(newTimer.GetComponent<Timer>());
-    }
-
-    public int GetNumberTimers()
+    public static int GetNumberTimers()
     {
         return _AllTimers.Count;
     }
 
-    public Timer GetTimer(int index)
+    public static Timer GetTimer(int index)
     {
         return _AllTimers[index];
     }
 
-    public void DeleteTimer(Timer timer)
+    public static void DeleteTimer(Timer timer)
     {
-        Destroy(_AllTimers[_AllTimers.BinarySearch(timer)]);
+        Object.Destroy(_AllTimers[_AllTimers.BinarySearch(timer)]);
         _AllTimers.Remove(timer);
     }
 
-    void LoadTimers(List<SaveObject.TimerData> td)
+    public static void LoadTimersInGame(SaveObject so)
     {
-        Debug.Log(td.Count);
-        for (int i = 0; i < td.Count; i++)
+        Debug.Log(so.AllTimers.Count);
+        float offset = (float) (DateTime.UtcNow - so.RetentionTime).TotalSeconds;
+        foreach (var t in so.AllTimers)
         {
-            
-            Debug.Log(td[i].name);
+            CreateTimer(t.TimerTime - offset, t.Action, t.Name);
         }
+    }
+
+    public static void LoadTimerPrefab(GameObject t)
+    {
+        _timerPrefab = t;
     }
 }

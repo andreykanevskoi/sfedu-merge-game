@@ -5,13 +5,10 @@ using UnityEngine;
 
 public class Timer : MonoBehaviour
 {
-    public static Timer current;
-    private TimerManager _tm;
-
     [SerializeField] private float _timerTime = 0;
     [SerializeField] private string _action = null;
+    private string _name = null;
     private bool _isActived = false;
-    private string _name;
 
     //private const string EmptyAction = "Default";
     void Start()
@@ -19,7 +16,6 @@ public class Timer : MonoBehaviour
         if (_timerTime != 0)
         {
             StartTimer();
-            _tm = GameObject.FindObjectOfType<TimerManager>();
         }
     }
 
@@ -39,25 +35,29 @@ public class Timer : MonoBehaviour
     void TriggeringAction()
     {
         Debug.Log(_action);
-        _tm.DeleteTimer(this);
+        TimerManager.DeleteTimer(this);
     }
 
-    public void SetTimer(float time, string action, string name)
+    public void SetTimer(float time, string action, string name = "")
     {
         _timerTime = time;
         _action = action;
         _name = name;
-        StartTimer();
     }
 
-    void StartTimer()
+    public void StartTimer()
     {
         _isActived = true;
     }
 
-    public DateTime GetTime()
+    public DateTime GetTimeInSeconds()
     {
-        return DateTime.MinValue.AddSeconds(_timerTime);
+        if (_timerTime > 0)
+        {
+            return DateTime.MinValue.AddSeconds(_timerTime);
+        }
+
+        return DateTime.MinValue;
     }
 
     public float GetTimeTimer => _timerTime;

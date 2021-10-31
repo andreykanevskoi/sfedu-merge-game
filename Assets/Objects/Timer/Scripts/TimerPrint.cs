@@ -4,7 +4,6 @@ using UnityEngine;
 
 public class TimerPrint : MonoBehaviour
 {
-    [SerializeField] private TimerManager _timerManager;
     void Start()
     {
         
@@ -18,11 +17,11 @@ public class TimerPrint : MonoBehaviour
 
     void PrintTimers()
     {
-        for (var i = 0; i < _timerManager.GetNumberTimers(); i++)
+        for (var i = 0; i < TimerManager.GetNumberTimers(); i++)
         {
             string output = "";
-            output += "Timer" + _timerManager.GetTimer(i).GetName;
-            output += " , Time:" + _timerManager.GetTimer(i).GetTime();
+            output += "Timer" + TimerManager.GetTimer(i).GetName;
+            output += " , Time:" + TimerManager.GetTimer(i).GetTimeInSeconds();
             Debug.Log(output);
         }
     }

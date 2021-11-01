@@ -150,8 +150,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: abb033ebed7761949805f48204c8dd5e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _timerPrefab: {fileID: 2741661231280664149, guid: 25b6e5a6d976a674c939d7536e342c54,
-    type: 3}
 --- !u!4 &546310558
 Transform:
   m_ObjectHideFlags: 0
@@ -371,6 +369,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: TimerPrint
+      objectReference: {fileID: 0}
+    - target: {fileID: 7348098530283805243, guid: 5c865744fc870374880e2dba8f0f5b2e,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 7348098530283805245, guid: 5c865744fc870374880e2dba8f0f5b2e,
         type: 3}

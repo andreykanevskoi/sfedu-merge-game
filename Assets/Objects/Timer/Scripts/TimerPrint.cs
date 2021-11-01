@@ -1,15 +1,7 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
 public class TimerPrint : MonoBehaviour
 {
-    void Start()
-    {
-        
-    }
-
-    // Update is called once per frame
     void FixedUpdate()
     {
         PrintTimers();
@@ -17,11 +9,11 @@ public class TimerPrint : MonoBehaviour
 
     void PrintTimers()
     {
-        for (var i = 0; i < TimerManager.GetNumberTimers(); i++)
+        for (var i = 0; i < TimerManager.GetNumberTimers; i++)
         {
             string output = "";
             output += "Timer" + TimerManager.GetTimer(i).GetName;
-            output += " , Time:" + TimerManager.GetTimer(i).GetTimeInSeconds();
+            output += " , Time:" + TimerManager.GetTimer(i).GetRemainingTimerTime;
             Debug.Log(output);
         }
     }

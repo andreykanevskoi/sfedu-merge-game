@@ -1,67 +1,47 @@
 ﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
 
-public class Timer : MonoBehaviour
+public class Timer
 {
-    [SerializeField] private float _timerTime = 0;
-    [SerializeField] private string _action = null;
-    private string _name = null;
-    private bool _isActived = false;
+    private readonly DateTime _creationDate;
+    private TimeSpan _timerTime;
+    private readonly string _action;
+    private readonly string _name;
 
-    //private const string EmptyAction = "Default";
-    void Start()
+    public Timer(DateTime creationDate, TimeSpan timerTime, string action, string name = "")
     {
-        if (_timerTime != 0)
-        {
-            StartTimer();
-        }
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        if (_isActived)
-        {
-            _timerTime -= (Time.deltaTime);
-            if (_timerTime < 0)
-            {
-                TriggeringAction();
-            }
-        }
-    }
-
-    void TriggeringAction()
-    {
-        Debug.Log(_action);
-        TimerManager.DeleteTimer(this);
-    }
-
-    public void SetTimer(float time, string action, string name = "")
-    {
-        _timerTime = time;
+        _creationDate = creationDate;
+        _timerTime = timerTime;
         _action = action;
         _name = name;
     }
-
-    public void StartTimer()
+    
+    public Timer(TimeSpan timerTime, string action, string name = "")
     {
-        _isActived = true;
+        _creationDate = DateTime.UtcNow;
+        _timerTime = timerTime;
+        _action = action;
+        _name = name;
+    }
+    
+    private void TriggeringAction()
+    {
+        //здесь выполняем действие
+        TimerManager.DeleteTimer(this);
     }
 
-    public DateTime GetTimeInSeconds()
+    public void CheckTimer()
     {
-        if (_timerTime > 0)
+        if ((DateTime.UtcNow - _creationDate) >= _timerTime)
         {
-            return DateTime.MinValue.AddSeconds(_timerTime);
+            TriggeringAction();
         }
-
-        return DateTime.MinValue;
     }
 
-    public float GetTimeTimer => _timerTime;
+    public TimeSpan GetRemainingTimerTime => _timerTime - GetTimerAge;
+    private TimeSpan GetTimerAge => DateTime.UtcNow - _creationDate;
+    
+    public DateTime GetCreationTime => _creationDate;
+    public TimeSpan GetTimerTime => _timerTime;
     public string GetAction => _action;
-    public bool GetActive => _isActived;
     public string GetName => _name;
 }

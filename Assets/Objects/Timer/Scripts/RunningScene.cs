@@ -1,20 +1,18 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System;
 using UnityEngine;
 
 public class RunningScene: MonoBehaviour
 {
-    [SerializeField] GameObject _timerPrefab;
     void Start()
     {
-        SaveLoadTimer.Load();
-        TimerManager.LoadTimerPrefab(_timerPrefab);
-        TimerManager.LoadTimersInGame(SaveLoadTimer.So);
+        TimerManager.LoadTimersInGame();
+        //TimerManager.CreateTimer(new TimeSpan(0,0,30), "First");
+        //TimerManager.CreateTimer(new TimeSpan(0,0,1), "Second");
+        //SaveLoadTimer.Save();
     }
-
-    // Update is called once per frame
+    
     void Update()
     {
-        
+        TimerManager.CheckAllTimers();
     }
 }

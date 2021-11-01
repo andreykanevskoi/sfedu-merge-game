@@ -1,55 +1,50 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using Object = UnityEngine.Object;
 
 
 public static class TimerManager
 {
-     [SerializeField] static GameObject _timerPrefab;
-     
-     private static List<Timer> _AllTimers = new List<Timer>();
+    private static List<Timer> _allTimers = new List<Timer>();
 
-     static void CreateTimer(float time, string action, string name = "", bool activateTimer = true)
+    public static void CreateTimer(DateTime creationDate, TimeSpan timerTime, string action, string name = "")
     {
-        Timer newTimer = Object.Instantiate(_timerPrefab).GetComponent<Timer>();
-        newTimer.SetTimer(time, action, name);
-        _AllTimers.Add(newTimer);
-        if (activateTimer)
-        {
-            newTimer.StartTimer();
-        }
+        var newTimer = new Timer(creationDate, timerTime, action, name);
+        _allTimers.Add(newTimer);
+        SaveLoadTimer.Save();
     }
-
-    public static int GetNumberTimers()
+    public static void CreateTimer(TimeSpan timerTime, string action, string name = "")
     {
-        return _AllTimers.Count;
+        var newTimer = new Timer(timerTime, action, name);
+        _allTimers.Add(newTimer);
+        SaveLoadTimer.Save();
     }
-
-    public static Timer GetTimer(int index)
-    {
-        return _AllTimers[index];
-    }
-
+    
     public static void DeleteTimer(Timer timer)
     {
-        Object.Destroy(_AllTimers[_AllTimers.BinarySearch(timer)]);
-        _AllTimers.Remove(timer);
+        Debug.Log(timer.GetAction);
+        _allTimers.Remove(timer);
+        SaveLoadTimer.Save();
     }
+    
+    public static int GetNumberTimers => _allTimers.Count;
+    public static Timer GetTimer(int index) => _allTimers[index];
 
-    public static void LoadTimersInGame(SaveObject so)
+    public static void CheckAllTimers()
     {
-        Debug.Log(so.AllTimers.Count);
-        float offset = (float) (DateTime.UtcNow - so.RetentionTime).TotalSeconds;
-        foreach (var t in so.AllTimers)
+        for(int i = _allTimers.Count - 1; i >= 0; i--)
         {
-            CreateTimer(t.TimerTime - offset, t.Action, t.Name);
+            _allTimers[i].CheckTimer();
         }
     }
 
-    public static void LoadTimerPrefab(GameObject t)
+    public static void LoadTimersInGame()
     {
-        _timerPrefab = t;
+        SaveLoadTimer.Load();
+        Debug.Log(SaveLoadTimer.So.AllTimers.Count);
+        foreach (var t in SaveLoadTimer.So.AllTimers)
+        {
+            CreateTimer(t.CreationDate,t.TimerTime, t.Action, t.Name);
+        }
     }
 }

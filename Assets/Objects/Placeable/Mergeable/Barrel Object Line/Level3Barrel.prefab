@@ -70,8 +70,18 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7575690795873771539, guid: 15a09436f12cba44f9a7e54030bb78f3,
         type: 3}
+      propertyPath: BaseName
+      value: Level3Barrel
+      objectReference: {fileID: 0}
+    - target: {fileID: 7575690795873771539, guid: 15a09436f12cba44f9a7e54030bb78f3,
+        type: 3}
       propertyPath: _currentLevel
       value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 7575690795873771539, guid: 15a09436f12cba44f9a7e54030bb78f3,
+        type: 3}
+      propertyPath: uniquePrefabName
+      value: Level3Barrel
       objectReference: {fileID: 0}
     - target: {fileID: 8342956298407206701, guid: 15a09436f12cba44f9a7e54030bb78f3,
         type: 3}

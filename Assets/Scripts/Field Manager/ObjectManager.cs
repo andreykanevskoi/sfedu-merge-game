@@ -3,29 +3,43 @@ using UnityEngine;
 
 // Менеджер размещаемых объектов
 // Отвечает за размещение объектов на поле
-public class ObjectManager : MonoBehaviour
+public class ObjectManager
 {
     // Словарь ячеек tilemap в которых находятся объект
-    [SerializeField]
     private Dictionary<Vector3Int, Placeable> _placedObjects = new Dictionary<Vector3Int, Placeable>();
 
-    // Менеджер поля
-    [SerializeField] private FieldManager _fieldManager;
+    private FieldManager _fieldManager;
 
-    // Префаб для создания перетаскиваемых объектов
-    [SerializeField] private Mergeable _MergeablePrefab;
+    public ObjectManager(FieldManager fieldManager, Placeable[] placeables) {
+        _fieldManager = fieldManager;
+
+        foreach (Placeable placeable in placeables) {
+            // Для отладки
+            // Подсветить неправильно размещённые объекты
+            if (!_fieldManager.tileManager.HasTile(placeable.currentCell) || _placedObjects.ContainsKey(placeable.currentCell)) {
+                var renderer = placeable.GetComponent<SpriteRenderer>();
+                renderer.color = Color.red;
+                renderer.sortingOrder = 10;
+
+                Debug.LogError(placeable.name + " " + placeable.currentCell + " has invalid position");
+                continue;
+            }
+
+            // Добавить объект
+            _placedObjects.Add(placeable.currentCell, placeable);
+            // Скрыть объект, если он под тайлом
+            if (!_fieldManager.tileManager.IsNoTileAbove(placeable.currentCell)) {
+                placeable.Hide();
+                return;
+            }
+
+            _fieldManager.ObjectAppearance(placeable);
+        }
+    }
 
     // Занята ли ячейка
     public bool IsFree(Vector3Int position) {
         return !_placedObjects.ContainsKey(position);
-    }
-
-    // Создать объект в точке
-    public void SpawnObject(Vector3Int position) {
-        if (IsFree(position)) {
-            Placeable placeable = Instantiate(_MergeablePrefab);
-            SetObjectToCell(position, placeable);
-        }
     }
 
     // Взять объект в клетке
@@ -41,7 +55,7 @@ public class ObjectManager : MonoBehaviour
             return;
         }
         placeable.currentCell = position;
-        placeable.Position = _fieldManager.GetCellWorldPosition(position);
+        placeable.Position = _fieldManager.tileManager.GetCellWorldPosition(position);
         _placedObjects[position] = placeable;
     }
 
@@ -68,6 +82,12 @@ public class ObjectManager : MonoBehaviour
             if (newMergeable) {
                 SetObjectToCell(mergeable.currentCell, null);
                 SetObjectToCell(position, newMergeable);
+
+                _fieldManager.ObjectAppearance(newMergeable);
+
+                _fieldManager.ObjectDisappearance(mergeable);
+                _fieldManager.ObjectDisappearance(mergeableAtCell);
+
                 return true;
             }
         }
@@ -75,11 +95,9 @@ public class ObjectManager : MonoBehaviour
     }
 
     // Обработка события прекращения перетаскивания объекта
-    private void OnObjectDrop(Vector3 position, Placeable placeable) {
-        _fieldManager.HideHighlighter();
-
+    public void OnObjectDrop(Vector3 position, Placeable placeable) {
         Vector3Int cellPosition;
-        if (_fieldManager.GetValidCell(position, out cellPosition)) {
+        if (_fieldManager.tileManager.GetValidCell(position, out cellPosition)) {
             if (IsFree(cellPosition) || cellPosition.Equals(placeable.currentCell)) {
                 MoveObjectToCell(cellPosition, placeable);
                 return;
@@ -88,14 +106,13 @@ public class ObjectManager : MonoBehaviour
                 return;
             }
         }
-
         placeable.ReturnPosition();
     }
 
     // Подсветка тайла при перености объекта
-    private void OnDrag(Vector3 position, Placeable placeable) {
+    public void OnObjectDrag(Vector3 position, Placeable placeable) {
         Vector3Int cellPosition;
-        if (_fieldManager.GetValidCell(position, out cellPosition)) {
+        if (_fieldManager.tileManager.GetValidCell(position, out cellPosition)) {
             if (IsFree(cellPosition) || cellPosition.Equals(placeable.currentCell) || IsMergeableAtCell(cellPosition, placeable)) {
                 _fieldManager.SetHighlighterPosition(cellPosition);
                 return;
@@ -104,42 +121,13 @@ public class ObjectManager : MonoBehaviour
         _fieldManager.HideHighlighter();
     }
 
-    private void OnTileDestroy(Vector3Int position) {
+    public void OnTileDestroy(Vector3Int position) {
         Vector3Int positionUnder = position;
         positionUnder.z -= 1;
         Placeable placeable = GetObjectAtCell(positionUnder);
         if (!placeable) return;
 
         placeable.Show();
-    }
-
-    private void Awake() {
-        Placeable[] placeables = FindObjectsOfType<Placeable>();
-        if (placeables.Length == 0) return;
-
-        foreach (Placeable placeable in placeables) {
-            if (!_fieldManager.HasTile(placeable.currentCell) || _placedObjects.ContainsKey(placeable.currentCell)) {
-                Debug.LogError(placeable.name + " " + placeable.currentCell + "has invalid position");
-                continue;
-            }
-
-            _placedObjects.Add(placeable.currentCell, placeable);
-
-            if (!_fieldManager.IsEmptyAbove(placeable.currentCell)) placeable.Hide();
-        }
-    }
-
-    private void Start() {
-        GameEvents.current.OnDrop += OnObjectDrop;
-        GameEvents.current.OnDrag += OnDrag;
-
-        GameEvents.current.OnTileDestroy += OnTileDestroy;
-    }
-
-    private void OnDisable() {
-        GameEvents.current.OnDrop -= OnObjectDrop;
-        GameEvents.current.OnDrag -= OnDrag;
-
-        GameEvents.current.OnTileDestroy -= OnTileDestroy;
+        _fieldManager.ObjectAppearance(placeable);
     }
 }

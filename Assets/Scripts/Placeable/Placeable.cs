@@ -2,18 +2,21 @@
 
 [System.Serializable]
 public class Placeable : MonoBehaviour {
+    public string BaseName;
+
+    // [HideInInspector]
+    public Vector3Int currentCell;
+
     private static float _zOffset = 0.1f;
 
-    [SerializeField, Range(1f, 100f)] private float returnSpeed;
+    [SerializeField, Range(1f, 100f)]
+    private float returnSpeed = 10f;
 
     private Vector3 _startPosition;
     private Vector3 _lastMousePosition;
     private bool _moveBack = false;
 
     private SpriteRenderer _renderer;
-
-    // [HideInInspector]
-    public Vector3Int currentCell;
 
     public Vector3 Position {
         get => transform.position;
@@ -25,6 +28,7 @@ public class Placeable : MonoBehaviour {
 
     // Начать возвращение позиции
     public void ReturnPosition() {
+        _renderer.sortingOrder = 1;
         _moveBack = true;
     }
 
@@ -57,7 +61,7 @@ public class Placeable : MonoBehaviour {
     public void Click() {
     }
 
-    public void OnBeginDrag() {
+    public void BeginDrag() {
         _moveBack = false;
         _startPosition = _lastMousePosition = transform.position;
         _renderer.sortingOrder = 1;
@@ -71,5 +75,6 @@ public class Placeable : MonoBehaviour {
     }
 
     public void Drop(Vector3 currentMousePosition) {
+        _renderer.sortingOrder = 0;
     }
 }

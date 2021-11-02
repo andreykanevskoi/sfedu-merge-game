@@ -10,6 +10,11 @@ public class LevelBuilder : EditorWindow {
         GetWindow<LevelBuilder>("Level Builder");
     }
 
+    private void Awake() {
+        _fieldManager = FindObjectOfType<FieldManager>();
+        _fieldManager.InitTileManager();
+    }
+
     private void HandleKeyboard() {
         Event current = Event.current;
         if (current.type != EventType.KeyDown)
@@ -62,7 +67,7 @@ public class LevelBuilder : EditorWindow {
         if (placeables.Length == 0) return;
 
         foreach (Placeable placeable in placeables) {
-            if (!_fieldManager.HasTile(placeable.currentCell) || positions.ContainsKey(placeable.currentCell)) {
+            if (!_fieldManager.tileManager.HasTile(placeable.currentCell) || positions.ContainsKey(placeable.currentCell)) {
                 EditorGUIUtility.PingObject(placeable);
                 return;
             }
@@ -78,7 +83,7 @@ public class LevelBuilder : EditorWindow {
         if (placeables.Length == 0) return;
 
         foreach (Placeable placeable in placeables) {
-            if (!_fieldManager.HasTile(placeable.currentCell) || positions.ContainsKey(placeable.currentCell)) {
+            if (!_fieldManager.tileManager.HasTile(placeable.currentCell) || positions.ContainsKey(placeable.currentCell)) {
                 DestroyImmediate(placeable.gameObject);
                 continue;
             }

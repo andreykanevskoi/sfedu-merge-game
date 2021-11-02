@@ -15,7 +15,7 @@ public class Mergeable : Placeable {
         if (_currentLevel == _line.MaxLevel || _currentLevel != other.Level) {
             return false;
         }
-        return _line.isMergeable(other.ObjectLine);
+        return _line.Equals(other.ObjectLine);
     }
 
     public Mergeable GetNextLevelObject() {

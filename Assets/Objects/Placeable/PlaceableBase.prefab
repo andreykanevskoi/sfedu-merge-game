@@ -95,8 +95,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9d13f3aa1e9a09b4aaa17c7fdb094cf9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  returnSpeed: 10
+  BaseName: PlaceableName
   currentCell: {x: 0, y: 0, z: 0}
+  returnSpeed: 10
 --- !u!61 &172632410219357060
 BoxCollider2D:
   m_ObjectHideFlags: 0

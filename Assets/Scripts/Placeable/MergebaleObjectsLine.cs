@@ -10,8 +10,4 @@ public class MergebaleObjectsLine : ScriptableObject {
     public Mergeable GetCurrentLevelObject(int level) {
         return _objectLevels[level];
     }
-
-    public bool isMergeable(MergebaleObjectsLine line) {
-        return Types.Equals(this, line);
-    }
 }

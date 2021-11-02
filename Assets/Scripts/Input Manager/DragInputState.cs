@@ -54,7 +54,7 @@ public class DragInputState : IInputManagerState {
         }
         // Начать перетаскивание цели
         _isDrag = true;
-        _target.OnBeginDrag();
+        _target.BeginDrag();
     }
 
     public void Update() {

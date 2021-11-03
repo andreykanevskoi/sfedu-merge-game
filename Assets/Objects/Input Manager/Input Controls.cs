@@ -6,11 +6,9 @@ using System.Collections.Generic;
 using UnityEngine.InputSystem;
 using UnityEngine.InputSystem.Utilities;
 
-public class @InputControls : IInputActionCollection, IDisposable
-{
+public class @InputControls : IInputActionCollection, IDisposable {
     public InputActionAsset asset { get; }
-    public @InputControls()
-    {
+    public @InputControls() {
         asset = InputActionAsset.FromJson(@"{
     ""name"": ""Input Controls"",
     ""maps"": [
@@ -41,6 +39,14 @@ public class @InputControls : IInputActionCollection, IDisposable
                     ""expectedControlType"": ""Button"",
                     ""processors"": """",
                     ""interactions"": """"
+                },
+                {
+                    ""name"": ""Switch State"",
+                    ""type"": ""Button"",
+                    ""id"": ""1173794a-f632-40ed-a701-6082fe31dca6"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """"
                 }
             ],
             ""bindings"": [
@@ -50,7 +56,7 @@ public class @InputControls : IInputActionCollection, IDisposable
                     ""path"": ""<Mouse>/leftButton"",
                     ""interactions"": ""Press"",
                     ""processors"": """",
-                    ""groups"": ""Mouse"",
+                    ""groups"": ""Mouse And Keyboard"",
                     ""action"": ""Touch"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
@@ -61,7 +67,7 @@ public class @InputControls : IInputActionCollection, IDisposable
                     ""path"": ""<Mouse>/leftButton"",
                     ""interactions"": ""Hold(duration=0.15)"",
                     ""processors"": """",
-                    ""groups"": ""Mouse"",
+                    ""groups"": ""Mouse And Keyboard"",
                     ""action"": ""Hold"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
@@ -72,8 +78,19 @@ public class @InputControls : IInputActionCollection, IDisposable
                     ""path"": ""<Mouse>/leftButton"",
                     ""interactions"": ""Press(behavior=1)"",
                     ""processors"": """",
-                    ""groups"": ""Mouse"",
+                    ""groups"": ""Mouse And Keyboard"",
                     ""action"": ""Release"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""f4b93010-287e-4081-b7ae-f1f9503fbd35"",
+                    ""path"": ""<Keyboard>/tab"",
+                    ""interactions"": ""Press"",
+                    ""processors"": """",
+                    ""groups"": ""Mouse And Keyboard"",
+                    ""action"": ""Switch State"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 }
@@ -82,11 +99,16 @@ public class @InputControls : IInputActionCollection, IDisposable
     ],
     ""controlSchemes"": [
         {
-            ""name"": ""Mouse"",
-            ""bindingGroup"": ""Mouse"",
+            ""name"": ""Mouse And Keyboard"",
+            ""bindingGroup"": ""Mouse And Keyboard"",
             ""devices"": [
                 {
                     ""devicePath"": ""<Mouse>"",
+                    ""isOptional"": false,
+                    ""isOR"": false
+                },
+                {
+                    ""devicePath"": ""<Keyboard>"",
                     ""isOptional"": false,
                     ""isOR"": false
                 }
@@ -99,49 +121,42 @@ public class @InputControls : IInputActionCollection, IDisposable
         m_Player_Touch = m_Player.FindAction("Touch", throwIfNotFound: true);
         m_Player_Release = m_Player.FindAction("Release", throwIfNotFound: true);
         m_Player_Hold = m_Player.FindAction("Hold", throwIfNotFound: true);
+        m_Player_SwitchState = m_Player.FindAction("Switch State", throwIfNotFound: true);
     }
 
-    public void Dispose()
-    {
+    public void Dispose() {
         UnityEngine.Object.Destroy(asset);
     }
 
-    public InputBinding? bindingMask
-    {
+    public InputBinding? bindingMask {
         get => asset.bindingMask;
         set => asset.bindingMask = value;
     }
 
-    public ReadOnlyArray<InputDevice>? devices
-    {
+    public ReadOnlyArray<InputDevice>? devices {
         get => asset.devices;
         set => asset.devices = value;
     }
 
     public ReadOnlyArray<InputControlScheme> controlSchemes => asset.controlSchemes;
 
-    public bool Contains(InputAction action)
-    {
+    public bool Contains(InputAction action) {
         return asset.Contains(action);
     }
 
-    public IEnumerator<InputAction> GetEnumerator()
-    {
+    public IEnumerator<InputAction> GetEnumerator() {
         return asset.GetEnumerator();
     }
 
-    IEnumerator IEnumerable.GetEnumerator()
-    {
+    IEnumerator IEnumerable.GetEnumerator() {
         return GetEnumerator();
     }
 
-    public void Enable()
-    {
+    public void Enable() {
         asset.Enable();
     }
 
-    public void Disable()
-    {
+    public void Disable() {
         asset.Disable();
     }
 
@@ -151,22 +166,21 @@ public class @InputControls : IInputActionCollection, IDisposable
     private readonly InputAction m_Player_Touch;
     private readonly InputAction m_Player_Release;
     private readonly InputAction m_Player_Hold;
-    public struct PlayerActions
-    {
+    private readonly InputAction m_Player_SwitchState;
+    public struct PlayerActions {
         private @InputControls m_Wrapper;
         public PlayerActions(@InputControls wrapper) { m_Wrapper = wrapper; }
         public InputAction @Touch => m_Wrapper.m_Player_Touch;
         public InputAction @Release => m_Wrapper.m_Player_Release;
         public InputAction @Hold => m_Wrapper.m_Player_Hold;
+        public InputAction @SwitchState => m_Wrapper.m_Player_SwitchState;
         public InputActionMap Get() { return m_Wrapper.m_Player; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
         public bool enabled => Get().enabled;
         public static implicit operator InputActionMap(PlayerActions set) { return set.Get(); }
-        public void SetCallbacks(IPlayerActions instance)
-        {
-            if (m_Wrapper.m_PlayerActionsCallbackInterface != null)
-            {
+        public void SetCallbacks(IPlayerActions instance) {
+            if (m_Wrapper.m_PlayerActionsCallbackInterface != null) {
                 @Touch.started -= m_Wrapper.m_PlayerActionsCallbackInterface.OnTouch;
                 @Touch.performed -= m_Wrapper.m_PlayerActionsCallbackInterface.OnTouch;
                 @Touch.canceled -= m_Wrapper.m_PlayerActionsCallbackInterface.OnTouch;
@@ -176,10 +190,12 @@ public class @InputControls : IInputActionCollection, IDisposable
                 @Hold.started -= m_Wrapper.m_PlayerActionsCallbackInterface.OnHold;
                 @Hold.performed -= m_Wrapper.m_PlayerActionsCallbackInterface.OnHold;
                 @Hold.canceled -= m_Wrapper.m_PlayerActionsCallbackInterface.OnHold;
+                @SwitchState.started -= m_Wrapper.m_PlayerActionsCallbackInterface.OnSwitchState;
+                @SwitchState.performed -= m_Wrapper.m_PlayerActionsCallbackInterface.OnSwitchState;
+                @SwitchState.canceled -= m_Wrapper.m_PlayerActionsCallbackInterface.OnSwitchState;
             }
             m_Wrapper.m_PlayerActionsCallbackInterface = instance;
-            if (instance != null)
-            {
+            if (instance != null) {
                 @Touch.started += instance.OnTouch;
                 @Touch.performed += instance.OnTouch;
                 @Touch.canceled += instance.OnTouch;
@@ -189,23 +205,24 @@ public class @InputControls : IInputActionCollection, IDisposable
                 @Hold.started += instance.OnHold;
                 @Hold.performed += instance.OnHold;
                 @Hold.canceled += instance.OnHold;
+                @SwitchState.started += instance.OnSwitchState;
+                @SwitchState.performed += instance.OnSwitchState;
+                @SwitchState.canceled += instance.OnSwitchState;
             }
         }
     }
     public PlayerActions @Player => new PlayerActions(this);
-    private int m_MouseSchemeIndex = -1;
-    public InputControlScheme MouseScheme
-    {
-        get
-        {
-            if (m_MouseSchemeIndex == -1) m_MouseSchemeIndex = asset.FindControlSchemeIndex("Mouse");
-            return asset.controlSchemes[m_MouseSchemeIndex];
+    private int m_MouseAndKeyboardSchemeIndex = -1;
+    public InputControlScheme MouseAndKeyboardScheme {
+        get {
+            if (m_MouseAndKeyboardSchemeIndex == -1) m_MouseAndKeyboardSchemeIndex = asset.FindControlSchemeIndex("Mouse And Keyboard");
+            return asset.controlSchemes[m_MouseAndKeyboardSchemeIndex];
         }
     }
-    public interface IPlayerActions
-    {
+    public interface IPlayerActions {
         void OnTouch(InputAction.CallbackContext context);
         void OnRelease(InputAction.CallbackContext context);
         void OnHold(InputAction.CallbackContext context);
+        void OnSwitchState(InputAction.CallbackContext context);
     }
 }

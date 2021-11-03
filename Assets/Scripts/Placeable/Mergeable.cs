@@ -24,17 +24,12 @@ public class Mergeable : Placeable {
     }
 
     public override void Interact(Placeable placeable, ObjectManager objectManager) {
-        if (placeable == this) {
-            placeable.ReturnPosition();
-            return;
-        }
-
-        if (placeable is Mergeable mergeable) {
+        if (placeable != this && placeable is Mergeable mergeable) {
             if (IsMergeable(mergeable)) {
-                Mergeable newMergeable = Instantiate(GetNextLevelObject());
+                Mergeable newMergeable = Instantiate(GetNextLevelObject(), transform.parent);
 
                 newMergeable.currentCell = currentCell;
-                newMergeable.transform.position = mergeable.Position;
+                newMergeable.transform.position = Position;
 
                 objectManager.DestroyObject(this);
                 objectManager.DestroyObject(mergeable);

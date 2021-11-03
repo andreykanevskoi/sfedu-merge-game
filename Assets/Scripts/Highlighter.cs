@@ -34,7 +34,7 @@ public class Highlighter : MonoBehaviour {
     /// </summary>
     /// <param name="position">Позиция в мире</param>
     public void SetPosition(Vector3 position) {
-        transform.localPosition = position;
+        transform.position = position;
     }
 
     private void Awake() {

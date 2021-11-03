@@ -1,133 +1,120 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
 
-// Менеджер размещаемых объектов
-// Отвечает за размещение объектов на поле
+/// <summary>
+/// Менеджер размещаемых объектов.
+/// </summary>
 public class ObjectManager
 {
-    // Словарь ячеек tilemap в которых находятся объект
+    /// <summary>
+    /// Словарь ячеек tilemap, в которых находятся объекты.
+    /// </summary>
     private Dictionary<Vector3Int, Placeable> _placedObjects = new Dictionary<Vector3Int, Placeable>();
 
+    /// <summary>
+    /// Менеджер поля.
+    /// </summary>
     private FieldManager _fieldManager;
 
-    public ObjectManager(FieldManager fieldManager, Placeable[] placeables) {
+    public ObjectManager(FieldManager fieldManager) {
         _fieldManager = fieldManager;
+    }
 
-        foreach (Placeable placeable in placeables) {
-            // Для отладки
-            // Подсветить неправильно размещённые объекты
-            if (!_fieldManager.tileManager.HasTile(placeable.currentCell) || _placedObjects.ContainsKey(placeable.currentCell)) {
-                var renderer = placeable.GetComponent<SpriteRenderer>();
-                renderer.color = Color.red;
-                renderer.sortingOrder = 10;
+    /// <summary>
+    /// Добавить объект без вызова события появления объекта.
+    /// Используется во время инициализации уровня.
+    /// </summary>
+    /// <param name="placeable">Добавляемый объект</param>
+    public void Add(Placeable placeable) {
+        _placedObjects.Add(placeable.currentCell, placeable);
+    }
 
-                Debug.LogError(placeable.name + " " + placeable.currentCell + " has invalid position");
-                continue;
-            }
-
-            // Добавить объект
-            _placedObjects.Add(placeable.currentCell, placeable);
-            // Скрыть объект, если он под тайлом
-            if (!_fieldManager.tileManager.IsNoTileAbove(placeable.currentCell)) {
-                placeable.Hide();
-                return;
-            }
-
-            _fieldManager.ObjectAppearance(placeable);
+    // Эти методы используются для обработки последствий взаимодействия объектов
+    /// <summary>
+    /// Добавить объект и вызвать событие появления объекта.
+    /// </summary>
+    /// <param name="placeable">Добавляемый объект</param>
+    public void AddObject(Placeable placeable) {
+        Add(placeable);
+        _fieldManager.ObjectAppearance(placeable);
+    }
+    /// <summary>
+    /// Уничтожить объект.
+    /// </summary>
+    /// <param name="placeable">Уничтожаемый объект</param>
+    public void DestroyObject(Placeable placeable) {
+        if (!IsFree(placeable.currentCell)) {
+            DeletePosition(placeable.currentCell);
         }
+        Object.Destroy(placeable.gameObject);
+        _fieldManager.ObjectDisappearance(placeable);
     }
 
-    // Занята ли ячейка
-    public bool IsFree(Vector3Int position) {
-        return !_placedObjects.ContainsKey(position);
+    /// <summary>
+    /// Проверка занятости клетки.
+    /// </summary>
+    /// <param name="cellPosition">Проверяемая клетка</param>
+    /// <returns></returns>
+    public bool IsFree(Vector3Int cellPosition) {
+        return !_placedObjects.ContainsKey(cellPosition);
     }
 
-    // Взять объект в клетке
-    private Placeable GetObjectAtCell(Vector3Int position) {
-        if (IsFree(position)) return null;
-        return _placedObjects[position];
+    /// <summary>
+    /// Взять объект в клетке.
+    /// </summary>
+    /// <param name="cellPosition">Клетка</param>
+    /// <returns>
+    /// null - если клетка пуста.
+    /// Placeable объект, если клетка не пуста.
+    /// </returns>
+    public Placeable GetObjectAtCell(Vector3Int cellPosition) {
+        if (IsFree(cellPosition)) return null;
+        return _placedObjects[cellPosition];
     }
 
-    // Привязка объекта к ячейки
-    private void SetObjectToCell(Vector3Int position, Placeable placeable) {
-        if (!placeable) {
-            _placedObjects.Remove(position);
-            return;
-        }
-        placeable.currentCell = position;
-        placeable.Position = _fieldManager.tileManager.GetCellWorldPosition(position);
-        _placedObjects[position] = placeable;
+    /// <summary>
+    /// Удалить клетку.
+    /// </summary>
+    /// <param name="position">Клетка</param>
+    private void DeletePosition(Vector3Int position) {
+        _placedObjects.Remove(position);
     }
 
-    // Перемещение объекта на новую клетку
-    private void MoveObjectToCell(Vector3Int position, Placeable placeable) {
-        SetObjectToCell(placeable.currentCell, null);
-        SetObjectToCell(position, placeable);
+    /// <summary>
+    /// Установить объект в клетку.
+    /// </summary>
+    /// <param name="cellPosition">Клетка</param>
+    /// <param name="placeable">Устанавливаемый объект</param>
+    private void SetObjectToCell(Vector3Int cellPosition, Placeable placeable) {
+        placeable.currentCell = cellPosition;
+        _placedObjects[cellPosition] = placeable;
+        placeable.Position = _fieldManager.GetCellWorldPosition(cellPosition);
     }
 
-    // Могут ли предметы объедениться в клетке
-    private bool IsMergeableAtCell(Vector3Int position, Placeable placeable) {
-        Placeable placeableAtCell = GetObjectAtCell(position);
-        if (placeable is Mergeable mergeable && placeableAtCell is Mergeable mergeableAtCell) {
-            return mergeableAtCell.isMergeable(mergeable);
-        }
-        return false;
+    /// <summary>
+    /// Перенести объект на новую клетку.
+    /// </summary>
+    /// <param name="cellPosition">Клетка</param>
+    /// <param name="placeable">Переносимый объект</param>
+    public void MoveObjectToCell(Vector3Int cellPosition, Placeable placeable) {
+        // Удаляем старую клетку
+        DeletePosition(placeable.currentCell);
+        // Устанавливаем на новую
+        SetObjectToCell(cellPosition, placeable);
     }
 
-    // Объеденить объекты в клетке
-    private bool TryMergeAtCell(Vector3Int position, Placeable placeable) {
-        Placeable placeableAtCell = GetObjectAtCell(position);
-        if (placeable is Mergeable mergeable && placeableAtCell is Mergeable mergeableAtCell) {
-            Mergeable newMergeable = mergeableAtCell.Merge(mergeable);
-            if (newMergeable) {
-                SetObjectToCell(mergeable.currentCell, null);
-                SetObjectToCell(position, newMergeable);
-
-                _fieldManager.ObjectAppearance(newMergeable);
-
-                _fieldManager.ObjectDisappearance(mergeable);
-                _fieldManager.ObjectDisappearance(mergeableAtCell);
-
-                return true;
-            }
-        }
-        return false;
-    }
-
-    // Обработка события прекращения перетаскивания объекта
-    public void OnObjectDrop(Vector3 position, Placeable placeable) {
-        Vector3Int cellPosition;
-        if (_fieldManager.tileManager.GetValidCell(position, out cellPosition)) {
-            if (IsFree(cellPosition) || cellPosition.Equals(placeable.currentCell)) {
-                MoveObjectToCell(cellPosition, placeable);
-                return;
-            }
-            else if (TryMergeAtCell(cellPosition, placeable)) {
-                return;
-            }
-        }
-        placeable.ReturnPosition();
-    }
-
-    // Подсветка тайла при перености объекта
-    public void OnObjectDrag(Vector3 position, Placeable placeable) {
-        Vector3Int cellPosition;
-        if (_fieldManager.tileManager.GetValidCell(position, out cellPosition)) {
-            if (IsFree(cellPosition) || cellPosition.Equals(placeable.currentCell) || IsMergeableAtCell(cellPosition, placeable)) {
-                _fieldManager.SetHighlighterPosition(cellPosition);
-                return;
-            }
-        }
-        _fieldManager.HideHighlighter();
-    }
-
-    public void OnTileDestroy(Vector3Int position) {
-        Vector3Int positionUnder = position;
+    /// <summary>
+    /// Обработчик события уничтожения тайла.
+    /// Проверяет, есть ли под разрушенным тайлом объект и показывает его.
+    /// </summary>
+    /// <param name="cellPosition">Клетка</param>
+    public void OnTileDestroy(Vector3Int cellPosition) {
+        Vector3Int positionUnder = cellPosition;
         positionUnder.z -= 1;
+
         Placeable placeable = GetObjectAtCell(positionUnder);
         if (!placeable) return;
 
         placeable.Show();
-        _fieldManager.ObjectAppearance(placeable);
     }
 }

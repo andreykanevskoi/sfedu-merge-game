@@ -2,75 +2,189 @@
 using UnityEngine.InputSystem;
 using UnityEngine.Tilemaps;
 
-// Менеджер игрового поля
-// Отвечает за взаимодействие с тайлами
+/// <summary>
+/// Менеджер игрового поля.
+/// Отвечает за взаимодействие с тайлами.
+/// </summary>
 public class FieldManager : MonoBehaviour {
     public TileManager tileManager { get; private set; }
     public ObjectManager objectManager { get; private set; }
 
+    /// <summary>
+    /// Тег игрового поля.
+    /// </summary>
     private static string _gameFieldTag = "GameField";
 
+    /// <summary>
+    /// Менеджер уровня.
+    /// </summary>
     [SerializeField] private LevelManager _levelManager;
+
+    /// <summary>
+    /// Маркер.
+    /// </summary>
     [SerializeField] private Highlighter _highlighter;
 
-    // Перевести координаты клекти сетки в позицию в мире
-    public Vector3 GetCellWorldPosition(Vector3Int position) {
-        return tileManager.GetCellWorldPosition(position);
+    /// <summary>
+    /// Перевести координаты клекти сетки в позицию в мире.
+    /// </summary>
+    /// <param name="cellPosition">Координаты клетки</param>
+    /// <returns>Позиция в мире</returns>
+    public Vector3 GetCellWorldPosition(Vector3Int cellPosition) {
+        return tileManager.GetCellWorldPosition(cellPosition);
     }
 
-    // Убрать маркер
-    public void HideHighlighter() {
+    /// <summary>
+    /// Скрыть маркер.
+    /// </summary>
+    private void HideHighlighter() {
         _highlighter.Hide();
     }
 
-    // Показать маркер
-    public void ShowHighlighter() {
+    /// <summary>
+    /// Показать маркер.
+    /// </summary>
+    private void ShowHighlighter() {
         _highlighter.Show();
     }
 
-    // Установить маркер на тайл и показать его
-    public void SetHighlighterPosition(Vector3Int position) {
+    /// <summary>
+    /// Установить маркер на позицию тайла.
+    /// </summary>
+    /// <param name="position">Позиция тайла</param>
+    private void SetHighlighterPosition(Vector3Int position) {
         _highlighter.SetPosition(tileManager.GetCellWorldPosition(position));
         ShowHighlighter();
     }
 
-    public void OnObjectDrop(Vector3 position, Placeable placeable) {
+    /// <summary>
+    /// Обработчик события прекращения перетаскивания объекта.
+    /// </summary>
+    /// <param name="position">Позиция остановки в мире</param>
+    /// <param name="placeable">Перетаскиваемый объект</param>
+    private void OnObjectDrop(Vector3 position, Placeable placeable) {
         HideHighlighter();
-        objectManager.OnObjectDrop(position, placeable);
+
+        Vector3Int cellPosition;
+        if (tileManager.GetValidCell(position, out cellPosition)) {
+            if (objectManager.IsFree(cellPosition) || cellPosition.Equals(placeable.currentCell)) {
+                objectManager.MoveObjectToCell(cellPosition, placeable);
+                return;
+            }
+            Placeable objectAtCell = objectManager.GetObjectAtCell(cellPosition);
+            objectAtCell?.Interact(placeable, objectManager);
+        }
+        placeable.ReturnPosition();
     }
 
-    public void OnObjectDrag(Vector3 position, Placeable placeable) {
-        objectManager.OnObjectDrag(position, placeable);
+    /// <summary>
+    /// Обработчик события перетаскивания объекта.
+    /// </summary>
+    /// <param name="position">Текущее положение в мире</param>
+    /// <param name="placeable">Перетаскиваемый объект</param>
+    private void OnObjectDrag(Vector3 position, Placeable placeable) {
+        Vector3Int cellPosition;
+        if (tileManager.GetValidCell(position, out cellPosition)) {
+            // Какой ох*енный у меня if conditional
+            // Здоровый сука!
+            if (objectManager.IsFree(cellPosition) || cellPosition.Equals(placeable.currentCell) || (bool)objectManager.GetObjectAtCell(cellPosition)?.IsInteractable(placeable)) {
+                SetHighlighterPosition(cellPosition);
+                return;
+            }
+        }
+        HideHighlighter();
     }
 
-    public void OnTileSelect(Vector3 position) {
-        tileManager.OnTileSelect(position);
+    /// <summary>
+    /// Обработчик события выбора тайла для разрушения.
+    /// </summary>
+    /// <param name="position">Позиция курсора в мире</param>
+    private void OnTileSelect(Vector3 position) {
+        Vector3Int cellPosition;
+        if (tileManager.GetValidCell(position, out cellPosition)) {
+            if (objectManager.IsFree(cellPosition) && tileManager.IsDestroyable(cellPosition)) {
+                SetHighlighterPosition(cellPosition);
+                return;
+            }
+        }
+        HideHighlighter();
     }
 
-    public void OnTileClick(Vector3 position) {
-        tileManager.OnTileClick(position);
+    /// <summary>
+    /// Обработчик нажания на поле.
+    /// </summary>
+    /// <param name="position">Позиция нажатия в мире</param>
+    private void OnTileClick(Vector3 position) {
+        Vector3Int cellPosition;
+        if (tileManager.GetValidCell(position, out cellPosition)) {
+            if (objectManager.IsFree(cellPosition) && tileManager.IsDestroyable(cellPosition)) {
+                tileManager.DestroyTile(cellPosition);
+                objectManager.OnTileDestroy(cellPosition);
+            }
+        }
     }
 
+    /// <summary>
+    /// Событие появление объекта.
+    /// </summary>
+    /// <param name="placeable">Появившийся объект</param>
     public void ObjectAppearance(Placeable placeable) {
         _levelManager.ObjectAppearance(placeable);
     }
 
+    /// <summary>
+    /// Событие исчезновения объекта.
+    /// </summary>
+    /// <param name="placeable">Исчезнувший объект</param>
     public void ObjectDisappearance(Placeable placeable) {
         _levelManager.ObjectDisappearance(placeable);
     }
 
+    /// <summary>
+    /// Инициализация Менеджера тайлов.
+    /// Публичный, потому что Менеджер тайлов используется в редакторе уровня.
+    /// </summary>
     public void InitTileManager() {
+        // Тайлмап, на котором размещаются объекты
         Tilemap tilemap = GameObject.FindGameObjectWithTag(_gameFieldTag).GetComponent<Tilemap>();
         if (!tilemap) {
             Debug.LogError("No Tilemap with GameField tag");
             return;
         }
-        tileManager = new TileManager(this, tilemap);
+        tileManager = new TileManager(tilemap);
     }
 
+    /// <summary>
+    /// Инициализация Менеджера объектов.
+    /// </summary>
     private void InitObjectManager() {
+        objectManager = new ObjectManager(this);
+
+        // Все объекты на поле
         Placeable[] placeables = FindObjectsOfType<Placeable>();
-        objectManager = new ObjectManager(this, placeables);
+
+        foreach (Placeable placeable in placeables) {
+            // Для отладки
+            // Подсветить неправильно размещённые объекты
+            if (!tileManager.HasTile(placeable.currentCell) || !objectManager.IsFree(placeable.currentCell)) {
+                var renderer = placeable.GetComponent<SpriteRenderer>();
+                renderer.color = Color.red;
+                renderer.sortingOrder = 10;
+
+                Debug.LogError(placeable.name + " " + placeable.currentCell + " has invalid position");
+                continue;
+            }
+            // Добавить объект в менеджер
+            objectManager.Add(placeable);
+
+            // Скрыть объект, если он под тайлом
+            if (!tileManager.IsNoTileAbove(placeable.currentCell)) {
+                placeable.Hide();
+                return;
+            }
+
+            ObjectAppearance(placeable);
+        }
     }
 
     private void Start() {

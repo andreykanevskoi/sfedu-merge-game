@@ -9,10 +9,7 @@ public class TileManager {
     // Маска слоя тайлов
     private static int _layerMask = 1 << LayerMask.NameToLayer("Tiles");
 
-    private FieldManager _fieldManager;
-
-    public TileManager(FieldManager fieldManager, Tilemap tilemap) {
-        _fieldManager = fieldManager;
+    public TileManager(Tilemap tilemap) {
         _tileMap = tilemap;
     }
 
@@ -45,15 +42,14 @@ public class TileManager {
     }
 
     // Является ли тайл разрушаемым
-    private bool IsDestroyable(Vector3Int position) {
+    public bool IsDestroyable(Vector3Int position) {
         return _tileMap.GetTile<FieldTile>(position).destroyable;
     }
 
-    // Уничтожить тайл
-    private void DestroyTile(Vector3Int position) {
-        _tileMap.SetTile(position, null);
 
-        _fieldManager.objectManager.OnTileDestroy(position);
+    // Уничтожить тайл
+    public void DestroyTile(Vector3Int position) {
+        _tileMap.SetTile(position, null);
     }
 
     // Поиск ячейки на tilemap по позиции в мире
@@ -82,25 +78,5 @@ public class TileManager {
             }
         }
         return false;
-    }
-
-    public void OnTileSelect(Vector3 position) {
-        Vector3Int cellPosition;
-        if (GetValidCell(position, out cellPosition)) {
-            if (_fieldManager.objectManager.IsFree(cellPosition) && IsDestroyable(cellPosition)) {
-                _fieldManager.SetHighlighterPosition(cellPosition);
-                return;
-            }
-        }
-        _fieldManager.HideHighlighter();
-    }
-
-    public void OnTileClick(Vector3 position) {
-        Vector3Int cellPosition;
-        if (GetValidCell(position, out cellPosition)) {
-            if (_fieldManager.objectManager.IsFree(cellPosition) && IsDestroyable(cellPosition)) {
-                DestroyTile(cellPosition);
-            }
-        }
     }
 }

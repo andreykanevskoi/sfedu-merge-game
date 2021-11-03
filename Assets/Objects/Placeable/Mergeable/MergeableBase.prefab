@@ -12,8 +12,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ddc3ab07bf941a84b8688fd6746639a4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  returnSpeed: 10
+  BaseName: MergeableBase
   currentCell: {x: 0, y: 0, z: 0}
+  returnSpeed: 10
   _line: {fileID: 0}
   _currentLevel: 0
 --- !u!1001 &8361456193398777474
@@ -26,7 +27,7 @@ PrefabInstance:
     - target: {fileID: 573055513725341943, guid: 00120176e4dcc5b429917249f6afcbd6,
         type: 3}
       propertyPath: m_Name
-      value: Mergeable Base
+      value: MergeableBase
       objectReference: {fileID: 0}
     - target: {fileID: 4991343289736731822, guid: 00120176e4dcc5b429917249f6afcbd6,
         type: 3}

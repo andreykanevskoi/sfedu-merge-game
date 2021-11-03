@@ -68,6 +68,11 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 11400000, guid: 192e71fc30e96ad4da5142ef14d6529f,
         type: 2}
+    - target: {fileID: 7820197770974067256, guid: 53e0d0f9aeb5a5445bb4bf953b2a9879,
+        type: 3}
+      propertyPath: BaseName
+      value: BarrelBase
+      objectReference: {fileID: 0}
     - target: {fileID: 8357056858735490677, guid: 53e0d0f9aeb5a5445bb4bf953b2a9879,
         type: 3}
       propertyPath: m_Name

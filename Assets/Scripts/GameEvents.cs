@@ -25,18 +25,13 @@ public class GameEvents : MonoBehaviour {
         OnTileSelect?.Invoke(position);
     }
 
-    public event Action<Vector3Int> OnTileDestroy;
-    public void TriggerTileDestroy(Vector3Int position) {
-        OnTileDestroy?.Invoke(position);
-    }
-
-    public event Action<Vector3, Placeable> OnDrop;
+    public event Action<Vector3, Placeable> OnObjectDrop;
     public void TriggerDrop(Vector3 position, Placeable placeable) {
-        OnDrop?.Invoke(position, placeable);
+        OnObjectDrop?.Invoke(position, placeable);
     }
 
-    public event Action<Vector3, Placeable> OnDrag;
+    public event Action<Vector3, Placeable> OnObjectDrag;
     public void TriggerDrag(Vector3 position, Placeable placeable) {
-        OnDrag?.Invoke(position, placeable);
+        OnObjectDrag?.Invoke(position, placeable);
     }
 }

@@ -158,10 +158,14 @@ public class FieldManager : MonoBehaviour {
     /// Инициализация Менеджера объектов.
     /// </summary>
     private void InitObjectManager() {
+        Debug.Log("InitObjectManager");
+
         objectManager = new ObjectManager(this);
 
         // Все объекты на поле
         Placeable[] placeables = FindObjectsOfType<Placeable>();
+
+        Debug.Log(placeables.Length);
 
         foreach (Placeable placeable in placeables) {
             // Для отладки
@@ -180,7 +184,7 @@ public class FieldManager : MonoBehaviour {
             // Скрыть объект, если он под тайлом
             if (!tileManager.IsNoTileAbove(placeable.currentCell)) {
                 placeable.Hide();
-                return;
+                continue;
             }
 
             ObjectAppearance(placeable);

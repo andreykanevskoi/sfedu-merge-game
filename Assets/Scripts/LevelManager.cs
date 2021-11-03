@@ -19,8 +19,6 @@ public class VictoryRequirement
     }
 
     private void Update() {
-        Debug.Log(_currentAmount);
-        Debug.Log(amount);
         _requirementElement.UpdateElement(_currentAmount, amount);
     }
 

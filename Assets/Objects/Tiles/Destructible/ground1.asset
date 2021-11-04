@@ -10,9 +10,9 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 9c57485a1c45eb94fa34cfed275ab0da, type: 3}
-  m_Name: Dirt_W
+  m_Name: ground1
   m_EditorClassIdentifier: 
-  m_Sprite: {fileID: 21300000, guid: c26f1e2db1aad374982273ea3e39faef, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 66689ef6234995245979ad27925d6c0f, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_Transform:
     e00: 1
@@ -35,4 +35,4 @@ MonoBehaviour:
     type: 3}
   m_Flags: 1
   m_ColliderType: 1
-  destroyable: 1
+  destructible: 1

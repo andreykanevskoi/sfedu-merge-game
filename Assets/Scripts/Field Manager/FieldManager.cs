@@ -26,6 +26,11 @@ public class FieldManager : MonoBehaviour {
     [SerializeField] private Highlighter _highlighter;
 
     /// <summary>
+    /// Префаб разрушаемого тайла
+    /// </summary>
+    [SerializeField] private DestructedTile _destructedTilePrefab;
+
+    /// <summary>
     /// Перевести координаты клекти сетки в позицию в мире.
     /// </summary>
     /// <param name="cellPosition">Координаты клетки</param>
@@ -102,7 +107,7 @@ public class FieldManager : MonoBehaviour {
     private void OnTileSelect(Vector3 position) {
         Vector3Int cellPosition;
         if (tileManager.GetValidCell(position, out cellPosition)) {
-            if (objectManager.IsFree(cellPosition) && tileManager.IsDestroyable(cellPosition)) {
+            if (objectManager.IsFree(cellPosition) && tileManager.IsDestructible(cellPosition)) {
                 SetHighlighterPosition(cellPosition);
                 return;
             }
@@ -117,8 +122,13 @@ public class FieldManager : MonoBehaviour {
     private void OnTileClick(Vector3 position) {
         Vector3Int cellPosition;
         if (tileManager.GetValidCell(position, out cellPosition)) {
-            if (objectManager.IsFree(cellPosition) && tileManager.IsDestroyable(cellPosition)) {
-                tileManager.DestroyTile(cellPosition);
+            if (objectManager.IsFree(cellPosition) && tileManager.IsDestructible(cellPosition)) {
+                FieldTile fieldTile = tileManager.DestroyTile(cellPosition);
+
+                DestructedTile destructedTile = Instantiate(_destructedTilePrefab, transform);
+                destructedTile.Sprite = fieldTile.sprite;
+                destructedTile.transform.position = GetCellWorldPosition(cellPosition);
+
                 objectManager.OnTileDestroy(cellPosition);
             }
         }
@@ -158,10 +168,14 @@ public class FieldManager : MonoBehaviour {
     /// Инициализация Менеджера объектов.
     /// </summary>
     private void InitObjectManager() {
+        Debug.Log("InitObjectManager");
+
         objectManager = new ObjectManager(this);
 
         // Все объекты на поле
         Placeable[] placeables = FindObjectsOfType<Placeable>();
+
+        Debug.Log(placeables.Length);
 
         foreach (Placeable placeable in placeables) {
             // Для отладки
@@ -180,7 +194,7 @@ public class FieldManager : MonoBehaviour {
             // Скрыть объект, если он под тайлом
             if (!tileManager.IsNoTileAbove(placeable.currentCell)) {
                 placeable.Hide();
-                return;
+                continue;
             }
 
             ObjectAppearance(placeable);

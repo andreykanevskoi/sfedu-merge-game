@@ -42,14 +42,19 @@ public class TileManager {
     }
 
     // Является ли тайл разрушаемым
-    public bool IsDestroyable(Vector3Int position) {
-        return _tileMap.GetTile<FieldTile>(position).destroyable;
+    public bool IsDestructible(Vector3Int position) {
+        return _tileMap.GetTile<FieldTile>(position).destructible;
     }
 
 
     // Уничтожить тайл
-    public void DestroyTile(Vector3Int position) {
-        _tileMap.SetTile(position, null);
+    public FieldTile DestroyTile(Vector3Int position) {
+        FieldTile fieldTile = _tileMap.GetTile<FieldTile>(position);
+        if (fieldTile) {
+            _tileMap.SetTile(position, null);
+            return fieldTile;
+        }
+        return null;
     }
 
     // Поиск ячейки на tilemap по позиции в мире

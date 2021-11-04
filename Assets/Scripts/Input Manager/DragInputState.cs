@@ -26,7 +26,7 @@ public class DragInputState : IInputManagerState {
         Collider2D targetObject = Physics2D.OverlapPoint(GetMousePosition(), _layerMask);
         Debug.Log(targetObject?.name);
         if (targetObject) {
-            _target = targetObject.GetComponentInParent<Mergeable>();
+            _target = targetObject.GetComponentInParent<Placeable>();
         }
     }
 
@@ -53,8 +53,7 @@ public class DragInputState : IInputManagerState {
             return;
         }
         // Начать перетаскивание цели
-        _isDrag = true;
-        _target.BeginDrag();
+        _isDrag = _target.BeginDrag();
     }
 
     public void Update() {

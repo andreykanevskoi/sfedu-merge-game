@@ -24,6 +24,7 @@ public static class TimerManager
     {
         Debug.Log(timer.GetAction);
         _allTimers.Remove(timer);
+        
         SaveLoadTimer.Save();
     }
     

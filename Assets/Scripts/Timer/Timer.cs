@@ -1,4 +1,5 @@
 ﻿using System;
+using UnityEngine;
 
 public class Timer
 {
@@ -25,7 +26,7 @@ public class Timer
     
     private void TriggeringAction()
     {
-        //здесь выполняем действие
+        ChestOpeningEventSystem.TriggeringEvent(this);
         TimerManager.DeleteTimer(this);
     }
 

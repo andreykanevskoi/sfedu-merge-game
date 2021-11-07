@@ -44,4 +44,14 @@ public class GameEvents : MonoBehaviour {
     public void TriggerObjectDisappearance(Placeable placeable) {
         OnObjectDisappearance?.Invoke(placeable);
     }
+
+    public event Action<Placeable> OnObjectSpawn;
+    public void TriggerObjectSpawn(Placeable placeable) {
+        OnObjectSpawn?.Invoke(placeable);
+    }
+
+    public event Action<Placeable> OnObjectDestroy;
+    public void TriggerObjectDestroy(Placeable placeable) {
+        OnObjectDestroy?.Invoke(placeable);
+    }
 }

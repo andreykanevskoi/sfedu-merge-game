@@ -23,7 +23,7 @@ public class Mergeable : Placeable {
         return false;
     }
 
-    public override void Interact(Placeable placeable, ObjectManager objectManager) {
+    public override void Interact(Placeable placeable) {
         if (placeable != this && placeable is Mergeable mergeable) {
             if (IsMergeable(mergeable)) {
                 Mergeable newMergeable = Instantiate(GetNextLevelObject(), transform.parent);
@@ -31,10 +31,14 @@ public class Mergeable : Placeable {
                 newMergeable.currentCell = currentCell;
                 newMergeable.transform.position = Position;
 
-                objectManager.DestroyObject(this);
-                objectManager.DestroyObject(mergeable);
+                GameEvents.current.TriggerObjectDestroy(this);
+                GameEvents.current.TriggerObjectDestroy(placeable);
 
-                objectManager.AddObject(newMergeable);
+                GameEvents.current.TriggerObjectSpawn(newMergeable);
+
+                Destroy(gameObject);
+                Destroy(placeable.gameObject);
+
                 return;
             }
         }

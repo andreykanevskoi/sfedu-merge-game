@@ -72,7 +72,7 @@ public class FieldManager : MonoBehaviour {
                 return;
             }
             Placeable objectAtCell = objectManager.GetObjectAtCell(cellPosition);
-            objectAtCell?.Interact(placeable, objectManager);
+            objectAtCell?.Interact(placeable);
         }
         placeable.ReturnPosition();
     }
@@ -145,6 +145,16 @@ public class FieldManager : MonoBehaviour {
         GameEvents.current.TriggerObjectDisappearance(placeable);
     }
 
+    private void OnObjectSpawn(Placeable placeable) {
+        objectManager.Add(placeable);
+        ObjectAppearance(placeable);
+    }
+
+    private void OnObjectDestroy(Placeable placeable) {
+        objectManager.RemoveObject(placeable);
+        ObjectDisappearance(placeable);
+    }
+
     /// <summary>
     /// Инициализация Менеджера тайлов.
     /// Публичный, потому что Менеджер тайлов используется в редакторе уровня.
@@ -198,18 +208,30 @@ public class FieldManager : MonoBehaviour {
     private void Start() {
         InitTileManager();
         InitObjectManager();
+    }
 
+    private void OnEnable() {
         GameEvents.current.OnModeSwitch += HideHighlighter;
+
         GameEvents.current.OnObjectDrag += OnObjectDrag;
         GameEvents.current.OnObjectDrop += OnObjectDrop;
+
+        GameEvents.current.OnObjectDestroy += OnObjectDestroy;
+        GameEvents.current.OnObjectSpawn += OnObjectSpawn;
+
         GameEvents.current.OnTileSelect += OnTileSelect;
         GameEvents.current.OnFieldClick += OnTileClick;
     }
 
     private void OnDisable() {
         GameEvents.current.OnModeSwitch -= HideHighlighter;
+
         GameEvents.current.OnObjectDrag -= OnObjectDrag;
         GameEvents.current.OnObjectDrop -= OnObjectDrop;
+
+        GameEvents.current.OnObjectDestroy -= OnObjectDestroy;
+        GameEvents.current.OnObjectSpawn -= OnObjectSpawn;
+
         GameEvents.current.OnTileSelect -= OnTileSelect;
         GameEvents.current.OnFieldClick -= OnTileClick;
     }

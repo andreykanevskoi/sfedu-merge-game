@@ -26,28 +26,23 @@ public class ObjectManager
     /// </summary>
     /// <param name="placeable">Добавляемый объект</param>
     public void Add(Placeable placeable) {
-        _placedObjects.Add(placeable.currentCell, placeable);
+        if (IsFree(placeable.currentCell)) {
+            _placedObjects.Add(placeable.currentCell, placeable);
+            return;
+        }
+        Debug.LogError("Нельзя добавить объект в уже занятую ячейку");
     }
 
-    // Эти методы используются для обработки последствий взаимодействия объектов
-    /// <summary>
-    /// Добавить объект и вызвать событие появления объекта.
-    /// </summary>
-    /// <param name="placeable">Добавляемый объект</param>
-    public void AddObject(Placeable placeable) {
-        Add(placeable);
-        _fieldManager.ObjectAppearance(placeable);
-    }
-    /// <summary>
-    /// Уничтожить объект.
-    /// </summary>
-    /// <param name="placeable">Уничтожаемый объект</param>
-    public void DestroyObject(Placeable placeable) {
+    ///// <summary>
+    ///// Очистить ячейку
+    ///// </summary>
+    ///// <param name="placeable">Уничтожаемый объект</param>
+    public void RemoveObject(Placeable placeable) {
         if (!IsFree(placeable.currentCell)) {
             DeletePosition(placeable.currentCell);
+            return;
         }
-        Object.Destroy(placeable.gameObject);
-        _fieldManager.ObjectDisappearance(placeable);
+        Debug.LogError("Попытка удаление объекта в пустой ячейке");
     }
 
     /// <summary>

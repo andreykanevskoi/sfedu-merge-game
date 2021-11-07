@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System.Collections;
+using UnityEngine;
 
 [System.Serializable]
 public class Placeable : MonoBehaviour {
@@ -41,7 +42,7 @@ public class Placeable : MonoBehaviour {
     /// <summary>
     /// Состояние возврата позиции.
     /// </summary>
-    private bool _moveBack = false;
+    private bool _isDraggable = true;
 
     /// <summary>
     /// Компонен отрисовки объекта.
@@ -55,6 +56,8 @@ public class Placeable : MonoBehaviour {
     /// Порядок сортировки при перемещении.
     /// </summary>
     private static int _dragSortingOrder = 1;
+
+    private WaitForFixedUpdate _waitForFixedUpdate = new WaitForFixedUpdate();
 
     public Vector3 Position {
         get => transform.position;
@@ -79,7 +82,7 @@ public class Placeable : MonoBehaviour {
     /// </summary>
     /// <param name="placeable">Объект для взаимодействия</param>
     /// <param name="objectManager"></param>
-    public virtual void Interact(Placeable placeable, ObjectManager objectManager) {
+    public virtual void Interact(Placeable placeable) {
         placeable.ReturnPosition();
     }
 
@@ -87,8 +90,23 @@ public class Placeable : MonoBehaviour {
     /// Начать возвращение позиции.
     /// </summary>
     public void ReturnPosition() {
+        StartCoroutine(MoveBack());
+    }
+
+    private IEnumerator MoveBack() {
         _renderer.sortingOrder = _dragSortingOrder;
-        _moveBack = true;
+        _isDraggable = false;
+
+        while (Vector3.Distance(transform.position, _startPosition) > 0.01f) {
+            transform.position = Vector3.Lerp(transform.position, _startPosition, returnSpeed * Time.deltaTime);
+            yield return _waitForFixedUpdate;
+        }
+
+        // Объект вернулся на начальную позицию
+        transform.position = _startPosition;
+
+        _renderer.sortingOrder = _defaultSortingOrder;
+        _isDraggable = true;
     }
 
     /// <summary>
@@ -115,7 +133,7 @@ public class Placeable : MonoBehaviour {
     /// Начать перемещение объекта.
     /// </summary>
     public Placeable BeginDrag() {
-        if (_moveBack) {
+        if (!_isDraggable) {
             return null;
         }
 
@@ -150,21 +168,5 @@ public class Placeable : MonoBehaviour {
         _renderer = GetComponent<SpriteRenderer>();
 
         _defaultSortingOrder = _renderer.sortingOrder;
-    }
-
-    // Перенести из апдейта в карутину
-    void Update() {
-        // Движение объекта на прежнюю позицию
-        if (_moveBack) {
-            transform.position = Vector3.Lerp(transform.position, _startPosition, returnSpeed * Time.deltaTime);
-
-            if (Vector3.Distance(transform.position, _startPosition) < 0.01f) {
-                // Объект вернулся на начальную позицию
-                transform.position = _startPosition;
-                _startPosition = Vector3.zero;
-                _renderer.sortingOrder = _defaultSortingOrder;
-                _moveBack = false;
-            }
-        }
     }
 }

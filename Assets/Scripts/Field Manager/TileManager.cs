@@ -75,7 +75,6 @@ public class TileManager {
             // Взять верхний коллайдер
             var collider = colliders[colliders.Length - 1];
             cellPosition = _tileMap.WorldToCell(collider.transform.position);
-            Debug.Log(collider.gameObject.layer);
             return true;
         }
 

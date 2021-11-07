@@ -23,10 +23,10 @@ public class InputManager : MonoBehaviour {
     public void OnSwitchState(InputAction.CallbackContext context) {
         if (_currentState is DragInputState) {
             _currentState = new DestroyInputState();
+            GameEvents.current.TriggerModeSwitch();
             return;
         }
         _currentState = new DragInputState();
-
         GameEvents.current.TriggerModeSwitch();
     }
 

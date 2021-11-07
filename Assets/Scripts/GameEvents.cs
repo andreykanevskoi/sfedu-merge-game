@@ -4,7 +4,7 @@ using UnityEngine;
 public class GameEvents : MonoBehaviour {
     public static GameEvents current;
 
-    private void Awake() {
+    private void OnEnable() {
         if (!current) {
             current = this;
         }
@@ -33,5 +33,15 @@ public class GameEvents : MonoBehaviour {
     public event Action<Vector3, Placeable> OnObjectDrag;
     public void TriggerDrag(Vector3 position, Placeable placeable) {
         OnObjectDrag?.Invoke(position, placeable);
+    }
+
+    public event Action<Placeable> OnObjectAppearance;
+    public void TriggerObjectAppearance(Placeable placeable) {
+        OnObjectAppearance?.Invoke(placeable);
+    }
+
+    public event Action<Placeable> OnObjectDisappearance;
+    public void TriggerObjectDisappearance(Placeable placeable) {
+        OnObjectDisappearance?.Invoke(placeable);
     }
 }

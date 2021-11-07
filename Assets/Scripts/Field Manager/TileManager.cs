@@ -7,7 +7,8 @@ public class TileManager {
     // Tilemap в котором размещаются объекты
     private Tilemap _tileMap;
     // Маска слоя тайлов
-    private static int _layerMask = 1 << LayerMask.NameToLayer("Tiles");
+    private static int _tilesLayerMask = 1 << LayerMask.NameToLayer("Tiles");
+    private static int _smogLayerMask = 1 << LayerMask.NameToLayer("Smog");
 
     public TileManager(Tilemap tilemap) {
         _tileMap = tilemap;
@@ -60,24 +61,30 @@ public class TileManager {
     // Поиск ячейки на tilemap по позиции в мире
     // На данный момент лучшее решение
     // (осуждаю использование out 👿)
-    private bool SearchTile(Vector3 worldPosition, out Vector3Int cellPosition) {
+    private bool SearchTile(Vector3 worldPosition, ref Vector3Int cellPosition) {
+        //var smog = Physics2D.OverlapPoint(worldPosition, _smogLayerMask).gameObject;
+        //Debug.Log(smog.layer);
+        if (Physics2D.OverlapPoint(worldPosition, _smogLayerMask)) {
+            return false;
+        }
+
         // Все 2D коллайдеры в точке
-        var colliders = Physics2D.OverlapPointAll(worldPosition, _layerMask, 0f, Mathf.Infinity);
+        var colliders = Physics2D.OverlapPointAll(worldPosition, _tilesLayerMask, 0f, Mathf.Infinity);
 
         if (colliders.Length != 0) {
             // Взять верхний коллайдер
             var collider = colliders[colliders.Length - 1];
             cellPosition = _tileMap.WorldToCell(collider.transform.position);
+            Debug.Log(collider.gameObject.layer);
             return true;
         }
 
-        cellPosition = new Vector3Int();
         return false;
     }
 
     // Взятие доступного тайла
-    public bool GetValidCell(Vector3 position, out Vector3Int cellPosition) {
-        if (SearchTile(position, out cellPosition)) {
+    public bool GetValidCell(Vector3 position, ref Vector3Int cellPosition) {
+        if (SearchTile(position, ref cellPosition)) {
             if (IsValidTile(cellPosition)) {
                 return true;
             }

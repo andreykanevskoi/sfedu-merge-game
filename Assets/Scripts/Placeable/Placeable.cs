@@ -114,16 +114,16 @@ public class Placeable : MonoBehaviour {
     /// <summary>
     /// Начать перемещение объекта.
     /// </summary>
-    public bool BeginDrag() {
+    public Placeable BeginDrag() {
         if (_moveBack) {
-            return false;
+            return null;
         }
 
         _startPosition = _lastMousePosition = transform.position;
         // Изменить порядок сортировки объекта при рендеренге, для отрисовки поверх всех объектов
         _renderer.sortingOrder = _dragSortingOrder;
 
-        return true;
+        return this;
     }
 
     /// <summary>

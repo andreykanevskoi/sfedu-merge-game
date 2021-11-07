@@ -16,11 +16,6 @@ public class FieldManager : MonoBehaviour {
     private static string _gameFieldTag = "GameField";
 
     /// <summary>
-    /// Менеджер уровня.
-    /// </summary>
-    [SerializeField] private LevelManager _levelManager;
-
-    /// <summary>
     /// Маркер.
     /// </summary>
     [SerializeField] private Highlighter _highlighter;
@@ -70,8 +65,8 @@ public class FieldManager : MonoBehaviour {
     private void OnObjectDrop(Vector3 position, Placeable placeable) {
         HideHighlighter();
 
-        Vector3Int cellPosition;
-        if (tileManager.GetValidCell(position, out cellPosition)) {
+        Vector3Int cellPosition = Vector3Int.zero;
+        if (tileManager.GetValidCell(position, ref cellPosition)) {
             if (objectManager.IsFree(cellPosition) || cellPosition.Equals(placeable.currentCell)) {
                 objectManager.MoveObjectToCell(cellPosition, placeable);
                 return;
@@ -88,8 +83,8 @@ public class FieldManager : MonoBehaviour {
     /// <param name="position">Текущее положение в мире</param>
     /// <param name="placeable">Перетаскиваемый объект</param>
     private void OnObjectDrag(Vector3 position, Placeable placeable) {
-        Vector3Int cellPosition;
-        if (tileManager.GetValidCell(position, out cellPosition)) {
+        Vector3Int cellPosition = Vector3Int.zero;
+        if (tileManager.GetValidCell(position, ref cellPosition)) {
             // Какой ох*енный у меня if conditional
             // Здоровый сука!
             if (objectManager.IsFree(cellPosition) || cellPosition.Equals(placeable.currentCell) || (bool)objectManager.GetObjectAtCell(cellPosition)?.IsInteractable(placeable)) {
@@ -105,8 +100,8 @@ public class FieldManager : MonoBehaviour {
     /// </summary>
     /// <param name="position">Позиция курсора в мире</param>
     private void OnTileSelect(Vector3 position) {
-        Vector3Int cellPosition;
-        if (tileManager.GetValidCell(position, out cellPosition)) {
+        Vector3Int cellPosition = Vector3Int.zero;
+        if (tileManager.GetValidCell(position, ref cellPosition)) {
             if (objectManager.IsFree(cellPosition) && tileManager.IsDestructible(cellPosition)) {
                 SetHighlighterPosition(cellPosition);
                 return;
@@ -120,8 +115,8 @@ public class FieldManager : MonoBehaviour {
     /// </summary>
     /// <param name="position">Позиция нажатия в мире</param>
     private void OnTileClick(Vector3 position) {
-        Vector3Int cellPosition;
-        if (tileManager.GetValidCell(position, out cellPosition)) {
+        Vector3Int cellPosition = Vector3Int.zero;
+        if (tileManager.GetValidCell(position, ref cellPosition)) {
             if (objectManager.IsFree(cellPosition) && tileManager.IsDestructible(cellPosition)) {
                 FieldTile fieldTile = tileManager.DestroyTile(cellPosition);
 
@@ -139,7 +134,7 @@ public class FieldManager : MonoBehaviour {
     /// </summary>
     /// <param name="placeable">Появившийся объект</param>
     public void ObjectAppearance(Placeable placeable) {
-        _levelManager.ObjectAppearance(placeable);
+        GameEvents.current.TriggerObjectAppearance(placeable);
     }
 
     /// <summary>
@@ -147,7 +142,7 @@ public class FieldManager : MonoBehaviour {
     /// </summary>
     /// <param name="placeable">Исчезнувший объект</param>
     public void ObjectDisappearance(Placeable placeable) {
-        _levelManager.ObjectDisappearance(placeable);
+        GameEvents.current.TriggerObjectDisappearance(placeable);
     }
 
     /// <summary>
@@ -168,14 +163,10 @@ public class FieldManager : MonoBehaviour {
     /// Инициализация Менеджера объектов.
     /// </summary>
     private void InitObjectManager() {
-        Debug.Log("InitObjectManager");
-
         objectManager = new ObjectManager(this);
 
         // Все объекты на поле
         Placeable[] placeables = FindObjectsOfType<Placeable>();
-
-        Debug.Log(placeables.Length);
 
         foreach (Placeable placeable in placeables) {
             // Для отладки
@@ -199,6 +190,9 @@ public class FieldManager : MonoBehaviour {
 
             ObjectAppearance(placeable);
         }
+    }
+
+    private void Awake() {
     }
 
     private void Start() {

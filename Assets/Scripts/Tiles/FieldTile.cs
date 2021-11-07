@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using UnityEngine.Tilemaps;
 
-[CreateAssetMenu(fileName = "Field tile")]
+[CreateAssetMenu(fileName = "Field tile", menuName = "Custom tiles/Create field tile")]
 public class FieldTile : Tile {
     public bool destructible;
 }

@@ -394,6 +394,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   speed: 4
+  leftLimit: -4
+  rightLimit: 4
+  bottomLimit: -4
+  upperLimit: 3
 --- !u!1 &664114863
 GameObject:
   m_ObjectHideFlags: 0

@@ -15,21 +15,22 @@ public class CameraHandler : MonoBehaviour
     private float targetPosY;
 
     // Переменные для зума
-    private float zoom = 5f;
     private float maxZoom = 5f;
     private float minZoom = 1f;
+    private float zoomSpeed = 40f;
 
-    // Область перемещения камеры
-    private float minX = -2f;
-    private float maxX = 2f;
-    private float minY = -2f;
-    private float maxY = 2f;
+    // Ограничения перемещения камеры
+    public float leftLimit = -4f;
+    public float rightLimit = 4f;
+    public float bottomLimit = -5f;
+    public float upperLimit = 3f;
 
     private void Start()
     {
         cam = GetComponent<Camera>();        
         targetPosX = transform.position.x;
         targetPosY = transform.position.y;
+        //OnDrawGizmos();
     }
 
     private void Update()
@@ -41,32 +42,50 @@ public class CameraHandler : MonoBehaviour
     // Перемещение камеры при нажатой СКМ
     private void Move()
     {
+        // В момент нажатия на СКМ задается стартовая точка, от которой идет перемещение камеры
         if (Input.GetMouseButtonDown(2))
         {
             startPos = cam.ScreenToWorldPoint(Input.mousePosition);
         }
+        // Если СКМ удерживается, перемещаем камеру и вычисляем "целевую" позицию для плавного перемещения
         else if (Input.GetMouseButton(2))
         {
             float posX = cam.ScreenToWorldPoint(Input.mousePosition).x - startPos.x;
             float posY = cam.ScreenToWorldPoint(Input.mousePosition).y - startPos.y;
-            targetPosX = Mathf.Clamp(transform.position.x - posX, minX, maxX);
-            targetPosY = Mathf.Clamp(transform.position.y - posY, minY, maxY);
+            targetPosX = Mathf.Clamp(transform.position.x - posX, leftLimit, rightLimit);
+            targetPosY = Mathf.Clamp(transform.position.y - posY, bottomLimit, upperLimit);
         }
-        transform.position = new Vector3(Mathf.Lerp(transform.position.x, targetPosX, speed * Time.deltaTime), Mathf.Lerp(transform.position.y, targetPosY, speed * Time.deltaTime));
+        // Плавная доводка камеры до "целевой" позиции
+        transform.position = new Vector3
+            (
+            Mathf.Lerp(transform.position.x, targetPosX, speed * Time.deltaTime), 
+            Mathf.Lerp(transform.position.y, targetPosY, speed * Time.deltaTime), 
+            transform.position.z
+            );
     }
 
     // Приближение/отдаление камеры на колесико мыши
     private void Zoom()
     {
-        float zoomChangeAmount = 4f;
-        if (Input.GetKey(KeyCode.Mouse0))
+        // Если крутим колесико на себя (отдаляем)
+        if (Input.mouseScrollDelta.y < 0f)
         {
-            zoom = Mathf.Clamp(zoom - zoomChangeAmount * Time.deltaTime, minZoom, maxZoom);
+            cam.orthographicSize = Mathf.Clamp(cam.orthographicSize + zoomSpeed * Time.deltaTime, minZoom, maxZoom);
         }
-        if (Input.GetKey(KeyCode.Mouse1))
+        // Если крутим колесико от себя (приближаем)
+        if (Input.mouseScrollDelta.y > 0f)
         {
-            zoom = Mathf.Clamp(zoom + zoomChangeAmount * Time.deltaTime, minZoom, maxZoom);
+            cam.orthographicSize = Mathf.Clamp(cam.orthographicSize - zoomSpeed * Time.deltaTime, minZoom, maxZoom);
         }
-        cam.orthographicSize = zoom;
+    }
+
+    // Функция, выводящая линии ограничения камеры (не в видны в игре)
+    private void OnDrawGizmos()
+    {
+        Gizmos.color = Color.red;
+        Gizmos.DrawLine(new Vector2(leftLimit, upperLimit), new Vector2(rightLimit, upperLimit));
+        Gizmos.DrawLine(new Vector2(leftLimit, bottomLimit), new Vector2(rightLimit, bottomLimit));
+        Gizmos.DrawLine(new Vector2(leftLimit, upperLimit), new Vector2(leftLimit, bottomLimit));
+        Gizmos.DrawLine(new Vector2(rightLimit, upperLimit), new Vector2(rightLimit, bottomLimit));
     }
 }

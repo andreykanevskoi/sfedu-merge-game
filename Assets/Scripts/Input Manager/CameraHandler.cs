@@ -17,7 +17,8 @@ public class CameraHandler : MonoBehaviour
     // Переменные для зума
     private float maxZoom = 5f;
     private float minZoom = 1f;
-    private float zoomSpeed = 40f;
+    private float zoomSpeedPC = 40f;
+    private float zoomSpeedPhone = 0.01f;
 
     // Ограничения перемещения камеры
     public float leftLimit = -4f;
@@ -25,12 +26,14 @@ public class CameraHandler : MonoBehaviour
     public float bottomLimit = -5f;
     public float upperLimit = 3f;
 
+    // Переменная для управления пальцем
+    private bool holding = false;
+
     private void Start()
     {
         cam = GetComponent<Camera>();        
         targetPosX = transform.position.x;
         targetPosY = transform.position.y;
-        //OnDrawGizmos();
     }
 
     private void Update()
@@ -47,14 +50,42 @@ public class CameraHandler : MonoBehaviour
         {
             startPos = cam.ScreenToWorldPoint(Input.mousePosition);
         }
+
         // Если СКМ удерживается, перемещаем камеру и вычисляем "целевую" позицию для плавного перемещения
         else if (Input.GetMouseButton(2))
         {
             float posX = cam.ScreenToWorldPoint(Input.mousePosition).x - startPos.x;
             float posY = cam.ScreenToWorldPoint(Input.mousePosition).y - startPos.y;
+
             targetPosX = Mathf.Clamp(transform.position.x - posX, leftLimit, rightLimit);
             targetPosY = Mathf.Clamp(transform.position.y - posY, bottomLimit, upperLimit);
         }
+
+        // Управление пальцем
+        Touch touch;
+        if (Input.touchCount == 1)
+        {
+            touch = Input.GetTouch(0);
+
+            if (holding)
+            {
+                float posX = cam.ScreenToWorldPoint(touch.position).x - startPos.x;
+                float posY = cam.ScreenToWorldPoint(touch.position).y - startPos.y;
+
+                targetPosX = Mathf.Clamp(transform.position.x - posX, leftLimit, rightLimit);
+                targetPosY = Mathf.Clamp(transform.position.y - posY, bottomLimit, upperLimit);
+            }
+            else
+            {
+                startPos = cam.ScreenToWorldPoint(touch.position);
+                holding = true;
+            }
+        }
+        else
+        {
+            holding = false;
+        }
+
         // Плавная доводка камеры до "целевой" позиции
         transform.position = new Vector3
             (
@@ -70,12 +101,29 @@ public class CameraHandler : MonoBehaviour
         // Если крутим колесико на себя (отдаляем)
         if (Input.mouseScrollDelta.y < 0f)
         {
-            cam.orthographicSize = Mathf.Clamp(cam.orthographicSize + zoomSpeed * Time.deltaTime, minZoom, maxZoom);
+            cam.orthographicSize = Mathf.Clamp(cam.orthographicSize + zoomSpeedPC * Time.deltaTime, minZoom, maxZoom);
         }
         // Если крутим колесико от себя (приближаем)
-        if (Input.mouseScrollDelta.y > 0f)
+        else if (Input.mouseScrollDelta.y > 0f)
         {
-            cam.orthographicSize = Mathf.Clamp(cam.orthographicSize - zoomSpeed * Time.deltaTime, minZoom, maxZoom);
+            cam.orthographicSize = Mathf.Clamp(cam.orthographicSize - zoomSpeedPC * Time.deltaTime, minZoom, maxZoom);
+        }
+
+        // Зум двумя пальцами на смартфоне
+        if (Input.touchCount == 2)
+        {
+            Touch touchZero = Input.GetTouch(0);
+            Touch touchOne = Input.GetTouch(1);
+
+            Vector2 touchZeroPrevPos = touchZero.position - touchZero.deltaPosition;
+            Vector2 touchOnePrevPos = touchOne.position - touchOne.deltaPosition;
+
+            float prevMagnitude = (touchZeroPrevPos - touchOnePrevPos).magnitude;
+            float currentMagnitude = (touchZero.position - touchOne.position).magnitude;
+
+            float difference = currentMagnitude - prevMagnitude;
+
+            cam.orthographicSize = Mathf.Clamp(cam.orthographicSize - difference * zoomSpeedPhone, minZoom, maxZoom);
         }
     }
 

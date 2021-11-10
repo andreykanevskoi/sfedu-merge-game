@@ -6,8 +6,8 @@ using UnityEngine;
 public class Chest : Placeable
 {
     [SerializeField] private Sprite _openChest;
-    //[SerializeField] private Sprite _closeChest;
     [SerializeField] private GameObject _timerView;
+    [SerializeField] private List<GameObject> _itemsInChest;
     private Timer _timer;
     void OnEnable()
     {

@@ -118,12 +118,12 @@ MonoBehaviour:
   m_GameObject: {fileID: 5174417290691048524}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f435379abd4e59940a158a0351400193, type: 3}
+  m_Script: {fileID: 11500000, guid: 9092f8df4a785784db4ac2448b306270, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   BaseName: Chest
   currentCell: {x: 0, y: 0, z: 0}
   returnSpeed: 10
   _openChest: {fileID: 21300000, guid: 3baa067a2b9dba143b53a66d7bd2cb00, type: 3}
-  _timerView: {fileID: 7485425050389101439, guid: d21e571e0833cfd4f99256f0f76dd181,
-    type: 3}
+  _timerView: {fileID: 0}
+  _itemsInChest: []

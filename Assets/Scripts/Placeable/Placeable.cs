@@ -57,6 +57,8 @@ public class Placeable : MonoBehaviour {
     /// </summary>
     private static int _dragSortingOrder = 1;
 
+    public FieldManager fieldManager;
+
     private WaitForFixedUpdate _waitForFixedUpdate = new WaitForFixedUpdate();
 
     public Vector3 Position {

@@ -145,12 +145,12 @@ public class FieldManager : MonoBehaviour {
         GameEvents.current.TriggerObjectDisappearance(placeable);
     }
 
-    private void OnObjectSpawn(Placeable placeable) {
+    public void AddObject(Placeable placeable) {
         objectManager.Add(placeable);
         ObjectAppearance(placeable);
     }
 
-    private void OnObjectDestroy(Placeable placeable) {
+    public void RemoveObject(Placeable placeable) {
         objectManager.RemoveObject(placeable);
         ObjectDisappearance(placeable);
     }
@@ -189,6 +189,9 @@ public class FieldManager : MonoBehaviour {
                 Debug.LogError(placeable.name + " " + placeable.currentCell + " has invalid position");
                 continue;
             }
+
+            placeable.fieldManager = this;
+
             // Добавить объект в менеджер
             objectManager.Add(placeable);
 
@@ -216,9 +219,6 @@ public class FieldManager : MonoBehaviour {
         GameEvents.current.OnObjectDrag += OnObjectDrag;
         GameEvents.current.OnObjectDrop += OnObjectDrop;
 
-        GameEvents.current.OnObjectDestroy += OnObjectDestroy;
-        GameEvents.current.OnObjectSpawn += OnObjectSpawn;
-
         GameEvents.current.OnTileSelect += OnTileSelect;
         GameEvents.current.OnFieldClick += OnTileClick;
     }
@@ -228,9 +228,6 @@ public class FieldManager : MonoBehaviour {
 
         GameEvents.current.OnObjectDrag -= OnObjectDrag;
         GameEvents.current.OnObjectDrop -= OnObjectDrop;
-
-        GameEvents.current.OnObjectDestroy -= OnObjectDestroy;
-        GameEvents.current.OnObjectSpawn -= OnObjectSpawn;
 
         GameEvents.current.OnTileSelect -= OnTileSelect;
         GameEvents.current.OnFieldClick -= OnTileClick;

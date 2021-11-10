@@ -2,7 +2,7 @@
 using UnityEngine.InputSystem;
 
 public class DragInputState : IInputManagerState {
-    // Сосотояняе обработчика ввода
+    // Состояние обработчика ввода
     // Способен отличать простой клик от перетаскивания
 
     bool _isDragging;

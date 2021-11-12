@@ -98,7 +98,6 @@ public class CampManager : MonoBehaviour {
         while (color.a > 0) {
             // Новый цвет тайлов
             color.a -= Time.deltaTime * _fadeSpeed;
-            Debug.Log(color.a);
             // Для каждого тайла области
             foreach (var pos in _smogTiles[tile]) {
                 // Установить новый цвет

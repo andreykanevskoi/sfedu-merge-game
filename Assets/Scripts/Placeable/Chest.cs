@@ -7,8 +7,9 @@ public class Chest : Placeable
 {
     [SerializeField] private Sprite _openChest;
     [SerializeField] private GameObject _timerView;
-    [SerializeField] private List<GameObject> _itemsInChest;
+    [SerializeField] private List<Mergeable> _itemsInChest;
     private Timer _timer;
+    
     void OnEnable()
     {
         ChestOpeningEventSystem.SighUpForEvent(OpenChest);
@@ -34,4 +35,31 @@ public class Chest : Placeable
             GetComponent<SpriteRenderer>().sprite = _openChest;
         }
     }
+
+    public void AddItem(Mergeable[] items)
+    {
+        foreach (var i in items)
+        {
+            _itemsInChest.Add(i);
+        }
+    }
+
+    public void DeleteItem(Mergeable[] items)
+    {
+        if (_itemsInChest.Count == 0) return;
+        foreach (var i in items)
+        {
+            _itemsInChest.Remove(i); 
+        }
+    }
+
+    public void GiveItem()
+    {
+        //выдать предмет на поле
+        if (_itemsInChest.Count == 0) return;
+        Mergeable newMergeable = Instantiate(_itemsInChest[_itemsInChest.Count - 1], transform.parent);
+        _itemsInChest.RemoveAt(_itemsInChest.Count - 1);
+    }
+
+   
 }

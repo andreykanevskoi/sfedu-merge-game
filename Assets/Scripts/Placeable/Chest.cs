@@ -9,10 +9,12 @@ public class Chest : Placeable
     [SerializeField] private GameObject _timerView;
     [SerializeField] private List<Mergeable> _itemsInChest;
     private Timer _timer;
+    private bool _isOpen = false;
     
     void OnEnable()
     {
         ChestOpeningEventSystem.SighUpForEvent(OpenChest);
+         InitChest(new Timer(new TimeSpan(0, 0, 10), "TestOpen", "TestChest"));
     }
 
     private void OnDisable()
@@ -20,20 +22,20 @@ public class Chest : Placeable
         ChestOpeningEventSystem.UnsubscribeFromEvent(OpenChest);
     }
 
-    public void SetTimer(Timer timer)
+    public void InitChest(Timer timer)
     {
         _timer = timer;
         TimerView tv = Instantiate(_timerView, transform).GetComponent<TimerView>();
-        tv.SetTimer(_timer);
+        tv.InitTimerView(_timer);
     }
 
     void OpenChest(Timer timer)
     {
-        if (_timer == timer)
-        {
-            Debug.Log("Открыть сундук");
-            GetComponent<SpriteRenderer>().sprite = _openChest;
-        }
+        if (_timer != timer) return;
+        Debug.Log("Открыть сундук");
+        _isOpen = true;
+        GetComponent<SpriteRenderer>().sprite = _openChest;
+        //GiveItem();
     }
 
     public void AddItem(Mergeable[] items)
@@ -53,13 +55,33 @@ public class Chest : Placeable
         }
     }
 
-    public void GiveItem()
+    private void GiveItem()
     {
-        //выдать предмет на поле
-        if (_itemsInChest.Count == 0) return;
+        if(!_isOpen) return;
+        switch(_itemsInChest.Count)
+        {
+            case 0:
+                Destroy(gameObject);
+                break;
+            case 1:
+                GiveItemInGame();
+                Destroy(gameObject);
+                break;
+            default:
+                GiveItemInGame();
+                break;
+        }
+    }
+
+    private void GiveItemInGame()
+    {
         Mergeable newMergeable = Instantiate(_itemsInChest[_itemsInChest.Count - 1], transform.parent);
         _itemsInChest.RemoveAt(_itemsInChest.Count - 1);
     }
+    
 
-   
+    public override void Click()
+    {
+        GiveItem();
+    }
 }

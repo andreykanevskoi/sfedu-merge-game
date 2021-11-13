@@ -7,6 +7,10 @@ public static class TimerManager
 {
     private static List<Timer> _allTimers = new List<Timer>();
 
+    static TimerManager()
+    {
+        TimerManager.InitTimerManager();    
+    }
     public static void CreateTimer(DateTime creationDate, TimeSpan timerTime, string action, string name = "")
     {
         var newTimer = new Timer(creationDate, timerTime, action, name);
@@ -39,7 +43,7 @@ public static class TimerManager
         }
     }
 
-    public static void LoadTimersInGame()
+    private static void InitTimerManager()
     {
         SaveLoadTimer.Load();
         Debug.Log(SaveLoadTimer.So.AllTimers.Count);

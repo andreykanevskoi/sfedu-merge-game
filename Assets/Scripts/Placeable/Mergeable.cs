@@ -29,12 +29,13 @@ public class Mergeable : Placeable {
                 Mergeable newMergeable = Instantiate(GetNextLevelObject(), transform.parent);
 
                 newMergeable.currentCell = currentCell;
+                newMergeable.fieldManager = fieldManager;
                 newMergeable.transform.position = Position;
 
-                GameEvents.current.TriggerObjectDestroy(this);
-                GameEvents.current.TriggerObjectDestroy(placeable);
+                fieldManager.RemoveObject(this);
+                fieldManager.RemoveObject(placeable);
 
-                GameEvents.current.TriggerObjectSpawn(newMergeable);
+                fieldManager.AddObject(newMergeable);
 
                 Destroy(gameObject);
                 Destroy(placeable.gameObject);

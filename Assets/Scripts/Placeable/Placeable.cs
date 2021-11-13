@@ -57,6 +57,8 @@ public class Placeable : MonoBehaviour {
     /// </summary>
     private static int _dragSortingOrder = 1;
 
+    public FieldManager fieldManager;
+
     private WaitForFixedUpdate _waitForFixedUpdate = new WaitForFixedUpdate();
 
     public Vector3 Position {
@@ -126,22 +128,22 @@ public class Placeable : MonoBehaviour {
     /// <summary>
     /// Обработчик нажатия на объект.
     /// </summary>
-    public void Click() {
+    public virtual void Click() {
     }
 
     /// <summary>
     /// Начать перемещение объекта.
     /// </summary>
-    public Placeable BeginDrag() {
+    public virtual bool BeginDrag() {
         if (!_isDraggable) {
-            return null;
+            return false;
         }
 
         _startPosition = _lastMousePosition = transform.position;
         // Изменить порядок сортировки объекта при рендеренге, для отрисовки поверх всех объектов
         _renderer.sortingOrder = _dragSortingOrder;
 
-        return this;
+        return true;
     }
 
     /// <summary>

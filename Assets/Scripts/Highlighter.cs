@@ -7,13 +7,13 @@ public class Highlighter : MonoBehaviour {
     /// <summary>
     /// Амплитуда колебания маркера.
     /// </summary>
-    [SerializeField, Range(.1f, 5f)]
-    private float amplitude = 0.5f;
-    /// <summary>
-    /// Частота колебания маркера.
-    /// </summary>
-    [SerializeField, Range(.1f, 5f)]
-    private float frequency = 1f;
+    //[SerializeField, Range(0f, 5f)]
+    //private float amplitude = 0.5f;
+    ///// <summary>
+    ///// Частота колебания маркера.
+    ///// </summary>
+    //[SerializeField, Range(0f, 5f)]
+    //private float frequency = 1f;
 
     /// <summary>
     /// Скрыть маркер.
@@ -39,12 +39,5 @@ public class Highlighter : MonoBehaviour {
 
     private void Awake() {
         Hide();
-    }
-
-    private void Update() {
-        // Колебание маркера
-        Vector3 tempPos = transform.position;
-        tempPos.y += Mathf.Abs(Mathf.Sin(Time.fixedTime * Mathf.PI * frequency) * amplitude);
-        transform.position = tempPos;
     }
 }

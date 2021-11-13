@@ -38,6 +38,7 @@ public class FieldManager : MonoBehaviour {
     /// Скрыть маркер.
     /// </summary>
     private void HideHighlighter() {
+        Debug.Log("Hide");
         _highlighter.Hide();
     }
 
@@ -45,6 +46,7 @@ public class FieldManager : MonoBehaviour {
     /// Показать маркер.
     /// </summary>
     private void ShowHighlighter() {
+        Debug.Log("Show");
         _highlighter.Show();
     }
 
@@ -53,6 +55,7 @@ public class FieldManager : MonoBehaviour {
     /// </summary>
     /// <param name="position">Позиция тайла</param>
     private void SetHighlighterPosition(Vector3Int position) {
+        Debug.Log(position);
         _highlighter.SetPosition(tileManager.GetCellWorldPosition(position));
         ShowHighlighter();
     }
@@ -63,6 +66,7 @@ public class FieldManager : MonoBehaviour {
     /// <param name="position">Позиция остановки в мире</param>
     /// <param name="placeable">Перетаскиваемый объект</param>
     private void OnObjectDrop(Vector3 position, Placeable placeable) {
+        Debug.Log("OnObjectDrop");
         HideHighlighter();
 
         Vector3Int cellPosition = Vector3Int.zero;
@@ -80,11 +84,12 @@ public class FieldManager : MonoBehaviour {
     /// <summary>
     /// Обработчик события перетаскивания объекта.
     /// </summary>
-    /// <param name="position">Текущее положение в мире</param>
+    /// <param name="worldPosition">Текущее положение в мире</param>
     /// <param name="placeable">Перетаскиваемый объект</param>
-    private void OnObjectDrag(Vector3 position, Placeable placeable) {
+    private void OnObjectDrag(Vector3 worldPosition, Placeable placeable) {
+        Debug.Log("OnObjectDrag");
         Vector3Int cellPosition = Vector3Int.zero;
-        if (tileManager.GetValidCell(position, ref cellPosition)) {
+        if (tileManager.GetValidCell(worldPosition, ref cellPosition)) {
             // Какой ох*енный у меня if conditional
             // Здоровый сука!
             if (objectManager.IsFree(cellPosition) || cellPosition.Equals(placeable.currentCell) || (bool)objectManager.GetObjectAtCell(cellPosition)?.IsInteractable(placeable)) {
@@ -100,6 +105,7 @@ public class FieldManager : MonoBehaviour {
     /// </summary>
     /// <param name="position">Позиция курсора в мире</param>
     private void OnTileSelect(Vector3 position) {
+        Debug.Log("OnTileSelect");
         Vector3Int cellPosition = Vector3Int.zero;
         if (tileManager.GetValidCell(position, ref cellPosition)) {
             if (objectManager.IsFree(cellPosition) && tileManager.IsDestructible(cellPosition)) {
@@ -145,12 +151,12 @@ public class FieldManager : MonoBehaviour {
         GameEvents.current.TriggerObjectDisappearance(placeable);
     }
 
-    private void OnObjectSpawn(Placeable placeable) {
+    public void AddObject(Placeable placeable) {
         objectManager.Add(placeable);
         ObjectAppearance(placeable);
     }
 
-    private void OnObjectDestroy(Placeable placeable) {
+    public void RemoveObject(Placeable placeable) {
         objectManager.RemoveObject(placeable);
         ObjectDisappearance(placeable);
     }
@@ -189,6 +195,9 @@ public class FieldManager : MonoBehaviour {
                 Debug.LogError(placeable.name + " " + placeable.currentCell + " has invalid position");
                 continue;
             }
+
+            placeable.fieldManager = this;
+
             // Добавить объект в менеджер
             objectManager.Add(placeable);
 
@@ -216,9 +225,6 @@ public class FieldManager : MonoBehaviour {
         GameEvents.current.OnObjectDrag += OnObjectDrag;
         GameEvents.current.OnObjectDrop += OnObjectDrop;
 
-        GameEvents.current.OnObjectDestroy += OnObjectDestroy;
-        GameEvents.current.OnObjectSpawn += OnObjectSpawn;
-
         GameEvents.current.OnTileSelect += OnTileSelect;
         GameEvents.current.OnFieldClick += OnTileClick;
     }
@@ -228,9 +234,6 @@ public class FieldManager : MonoBehaviour {
 
         GameEvents.current.OnObjectDrag -= OnObjectDrag;
         GameEvents.current.OnObjectDrop -= OnObjectDrop;
-
-        GameEvents.current.OnObjectDestroy -= OnObjectDestroy;
-        GameEvents.current.OnObjectSpawn -= OnObjectSpawn;
 
         GameEvents.current.OnTileSelect -= OnTileSelect;
         GameEvents.current.OnFieldClick -= OnTileClick;

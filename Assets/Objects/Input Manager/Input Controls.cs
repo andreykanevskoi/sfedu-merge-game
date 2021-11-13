@@ -6,9 +6,11 @@ using System.Collections.Generic;
 using UnityEngine.InputSystem;
 using UnityEngine.InputSystem.Utilities;
 
-public class @InputControls : IInputActionCollection, IDisposable {
+public class @InputControls : IInputActionCollection, IDisposable
+{
     public InputActionAsset asset { get; }
-    public @InputControls() {
+    public @InputControls()
+    {
         asset = InputActionAsset.FromJson(@"{
     ""name"": ""Input Controls"",
     ""maps"": [
@@ -17,7 +19,15 @@ public class @InputControls : IInputActionCollection, IDisposable {
             ""id"": ""f4b66115-e18a-45c5-b198-8f5b3125943d"",
             ""actions"": [
                 {
-                    ""name"": ""Touch"",
+                    ""name"": ""MousePosition"",
+                    ""type"": ""Value"",
+                    ""id"": ""3d99f23b-be61-46e6-8562-b2521cd0fe14"",
+                    ""expectedControlType"": ""Vector2"",
+                    ""processors"": """",
+                    ""interactions"": """"
+                },
+                {
+                    ""name"": ""Left Click"",
                     ""type"": ""Button"",
                     ""id"": ""d3b4d535-accf-482e-a24b-d9e7b48a36f2"",
                     ""expectedControlType"": ""Button"",
@@ -25,10 +35,10 @@ public class @InputControls : IInputActionCollection, IDisposable {
                     ""interactions"": """"
                 },
                 {
-                    ""name"": ""Release"",
-                    ""type"": ""Button"",
-                    ""id"": ""18b26687-87ab-404c-b49d-251343e69229"",
-                    ""expectedControlType"": ""Button"",
+                    ""name"": ""Mouse Scroll"",
+                    ""type"": ""PassThrough"",
+                    ""id"": ""5696767d-887b-4427-ae28-21c333e7ac63"",
+                    ""expectedControlType"": ""Axis"",
                     ""processors"": """",
                     ""interactions"": """"
                 },
@@ -41,12 +51,36 @@ public class @InputControls : IInputActionCollection, IDisposable {
                     ""interactions"": """"
                 },
                 {
-                    ""name"": ""Switch State"",
-                    ""type"": ""Button"",
-                    ""id"": ""1173794a-f632-40ed-a701-6082fe31dca6"",
-                    ""expectedControlType"": ""Button"",
+                    ""name"": ""PrimaryFingerPosition"",
+                    ""type"": ""Value"",
+                    ""id"": ""115520f9-56ab-4c5d-9b24-e884466a9cdd"",
+                    ""expectedControlType"": ""Vector2"",
                     ""processors"": """",
                     ""interactions"": """"
+                },
+                {
+                    ""name"": ""SecondaryFingerPosition"",
+                    ""type"": ""Value"",
+                    ""id"": ""23ddbf27-a624-4d3e-b1c7-96d213be3dfe"",
+                    ""expectedControlType"": ""Vector2"",
+                    ""processors"": """",
+                    ""interactions"": """"
+                },
+                {
+                    ""name"": ""PrimaryTouchContact"",
+                    ""type"": ""Button"",
+                    ""id"": ""8644e9ab-a9fe-4edc-9e77-45e5d39fc6da"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": ""Press""
+                },
+                {
+                    ""name"": ""SecondaryTouchContact"",
+                    ""type"": ""Button"",
+                    ""id"": ""8f55ac01-02c9-4616-abd0-9c423049e67d"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": ""Press""
                 }
             ],
             ""bindings"": [
@@ -57,7 +91,73 @@ public class @InputControls : IInputActionCollection, IDisposable {
                     ""interactions"": ""Press"",
                     ""processors"": """",
                     ""groups"": ""Mouse And Keyboard"",
-                    ""action"": ""Touch"",
+                    ""action"": ""Left Click"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""4f628bba-c809-4cca-8cf0-43420dee9d49"",
+                    ""path"": ""<Mouse>/scroll/y"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Mouse And Keyboard"",
+                    ""action"": ""Mouse Scroll"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""62287713-61d8-4b93-b993-36dbae666736"",
+                    ""path"": ""<Touchscreen>/touch0/position"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Touchscreen"",
+                    ""action"": ""PrimaryFingerPosition"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""b628c219-8f4e-4622-8acd-aebb4f501885"",
+                    ""path"": ""<Touchscreen>/touch1/position"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Touchscreen"",
+                    ""action"": ""SecondaryFingerPosition"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""0acc2b1f-1eec-4f2e-a84d-a5ac1f6351be"",
+                    ""path"": ""<Touchscreen>/touch1/press"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Touchscreen"",
+                    ""action"": ""SecondaryTouchContact"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""bce20dae-e4b9-4159-b2a4-e4cadf25706d"",
+                    ""path"": ""<Touchscreen>/touch0/press"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Touchscreen"",
+                    ""action"": ""PrimaryTouchContact"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""820691f3-39d5-4aaa-94bd-90c2ad7a4736"",
+                    ""path"": ""<Mouse>/position"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Mouse And Keyboard"",
+                    ""action"": ""MousePosition"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 },
@@ -74,23 +174,12 @@ public class @InputControls : IInputActionCollection, IDisposable {
                 },
                 {
                     ""name"": """",
-                    ""id"": ""bde18056-e405-42fb-820d-d8dd9b4b21c7"",
-                    ""path"": ""<Mouse>/leftButton"",
-                    ""interactions"": ""Press(behavior=1)"",
+                    ""id"": ""f9c3e938-3ada-426d-929c-ebe693822643"",
+                    ""path"": ""<Touchscreen>/touch0/press"",
+                    ""interactions"": ""Hold(duration=0.15)"",
                     ""processors"": """",
-                    ""groups"": ""Mouse And Keyboard"",
-                    ""action"": ""Release"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": false
-                },
-                {
-                    ""name"": """",
-                    ""id"": ""f4b93010-287e-4081-b7ae-f1f9503fbd35"",
-                    ""path"": ""<Keyboard>/tab"",
-                    ""interactions"": ""Press"",
-                    ""processors"": """",
-                    ""groups"": ""Mouse And Keyboard"",
-                    ""action"": ""Switch State"",
+                    ""groups"": ""Touchscreen"",
+                    ""action"": ""Hold"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 }
@@ -113,116 +202,191 @@ public class @InputControls : IInputActionCollection, IDisposable {
                     ""isOR"": false
                 }
             ]
+        },
+        {
+            ""name"": ""Touchscreen"",
+            ""bindingGroup"": ""Touchscreen"",
+            ""devices"": [
+                {
+                    ""devicePath"": ""<Touchscreen>"",
+                    ""isOptional"": false,
+                    ""isOR"": false
+                }
+            ]
         }
     ]
 }");
         // Player
         m_Player = asset.FindActionMap("Player", throwIfNotFound: true);
-        m_Player_Touch = m_Player.FindAction("Touch", throwIfNotFound: true);
-        m_Player_Release = m_Player.FindAction("Release", throwIfNotFound: true);
+        m_Player_MousePosition = m_Player.FindAction("MousePosition", throwIfNotFound: true);
+        m_Player_LeftClick = m_Player.FindAction("Left Click", throwIfNotFound: true);
+        m_Player_MouseScroll = m_Player.FindAction("Mouse Scroll", throwIfNotFound: true);
         m_Player_Hold = m_Player.FindAction("Hold", throwIfNotFound: true);
-        m_Player_SwitchState = m_Player.FindAction("Switch State", throwIfNotFound: true);
+        m_Player_PrimaryFingerPosition = m_Player.FindAction("PrimaryFingerPosition", throwIfNotFound: true);
+        m_Player_SecondaryFingerPosition = m_Player.FindAction("SecondaryFingerPosition", throwIfNotFound: true);
+        m_Player_PrimaryTouchContact = m_Player.FindAction("PrimaryTouchContact", throwIfNotFound: true);
+        m_Player_SecondaryTouchContact = m_Player.FindAction("SecondaryTouchContact", throwIfNotFound: true);
     }
 
-    public void Dispose() {
+    public void Dispose()
+    {
         UnityEngine.Object.Destroy(asset);
     }
 
-    public InputBinding? bindingMask {
+    public InputBinding? bindingMask
+    {
         get => asset.bindingMask;
         set => asset.bindingMask = value;
     }
 
-    public ReadOnlyArray<InputDevice>? devices {
+    public ReadOnlyArray<InputDevice>? devices
+    {
         get => asset.devices;
         set => asset.devices = value;
     }
 
     public ReadOnlyArray<InputControlScheme> controlSchemes => asset.controlSchemes;
 
-    public bool Contains(InputAction action) {
+    public bool Contains(InputAction action)
+    {
         return asset.Contains(action);
     }
 
-    public IEnumerator<InputAction> GetEnumerator() {
+    public IEnumerator<InputAction> GetEnumerator()
+    {
         return asset.GetEnumerator();
     }
 
-    IEnumerator IEnumerable.GetEnumerator() {
+    IEnumerator IEnumerable.GetEnumerator()
+    {
         return GetEnumerator();
     }
 
-    public void Enable() {
+    public void Enable()
+    {
         asset.Enable();
     }
 
-    public void Disable() {
+    public void Disable()
+    {
         asset.Disable();
     }
 
     // Player
     private readonly InputActionMap m_Player;
     private IPlayerActions m_PlayerActionsCallbackInterface;
-    private readonly InputAction m_Player_Touch;
-    private readonly InputAction m_Player_Release;
+    private readonly InputAction m_Player_MousePosition;
+    private readonly InputAction m_Player_LeftClick;
+    private readonly InputAction m_Player_MouseScroll;
     private readonly InputAction m_Player_Hold;
-    private readonly InputAction m_Player_SwitchState;
-    public struct PlayerActions {
+    private readonly InputAction m_Player_PrimaryFingerPosition;
+    private readonly InputAction m_Player_SecondaryFingerPosition;
+    private readonly InputAction m_Player_PrimaryTouchContact;
+    private readonly InputAction m_Player_SecondaryTouchContact;
+    public struct PlayerActions
+    {
         private @InputControls m_Wrapper;
         public PlayerActions(@InputControls wrapper) { m_Wrapper = wrapper; }
-        public InputAction @Touch => m_Wrapper.m_Player_Touch;
-        public InputAction @Release => m_Wrapper.m_Player_Release;
+        public InputAction @MousePosition => m_Wrapper.m_Player_MousePosition;
+        public InputAction @LeftClick => m_Wrapper.m_Player_LeftClick;
+        public InputAction @MouseScroll => m_Wrapper.m_Player_MouseScroll;
         public InputAction @Hold => m_Wrapper.m_Player_Hold;
-        public InputAction @SwitchState => m_Wrapper.m_Player_SwitchState;
+        public InputAction @PrimaryFingerPosition => m_Wrapper.m_Player_PrimaryFingerPosition;
+        public InputAction @SecondaryFingerPosition => m_Wrapper.m_Player_SecondaryFingerPosition;
+        public InputAction @PrimaryTouchContact => m_Wrapper.m_Player_PrimaryTouchContact;
+        public InputAction @SecondaryTouchContact => m_Wrapper.m_Player_SecondaryTouchContact;
         public InputActionMap Get() { return m_Wrapper.m_Player; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
         public bool enabled => Get().enabled;
         public static implicit operator InputActionMap(PlayerActions set) { return set.Get(); }
-        public void SetCallbacks(IPlayerActions instance) {
-            if (m_Wrapper.m_PlayerActionsCallbackInterface != null) {
-                @Touch.started -= m_Wrapper.m_PlayerActionsCallbackInterface.OnTouch;
-                @Touch.performed -= m_Wrapper.m_PlayerActionsCallbackInterface.OnTouch;
-                @Touch.canceled -= m_Wrapper.m_PlayerActionsCallbackInterface.OnTouch;
-                @Release.started -= m_Wrapper.m_PlayerActionsCallbackInterface.OnRelease;
-                @Release.performed -= m_Wrapper.m_PlayerActionsCallbackInterface.OnRelease;
-                @Release.canceled -= m_Wrapper.m_PlayerActionsCallbackInterface.OnRelease;
+        public void SetCallbacks(IPlayerActions instance)
+        {
+            if (m_Wrapper.m_PlayerActionsCallbackInterface != null)
+            {
+                @MousePosition.started -= m_Wrapper.m_PlayerActionsCallbackInterface.OnMousePosition;
+                @MousePosition.performed -= m_Wrapper.m_PlayerActionsCallbackInterface.OnMousePosition;
+                @MousePosition.canceled -= m_Wrapper.m_PlayerActionsCallbackInterface.OnMousePosition;
+                @LeftClick.started -= m_Wrapper.m_PlayerActionsCallbackInterface.OnLeftClick;
+                @LeftClick.performed -= m_Wrapper.m_PlayerActionsCallbackInterface.OnLeftClick;
+                @LeftClick.canceled -= m_Wrapper.m_PlayerActionsCallbackInterface.OnLeftClick;
+                @MouseScroll.started -= m_Wrapper.m_PlayerActionsCallbackInterface.OnMouseScroll;
+                @MouseScroll.performed -= m_Wrapper.m_PlayerActionsCallbackInterface.OnMouseScroll;
+                @MouseScroll.canceled -= m_Wrapper.m_PlayerActionsCallbackInterface.OnMouseScroll;
                 @Hold.started -= m_Wrapper.m_PlayerActionsCallbackInterface.OnHold;
                 @Hold.performed -= m_Wrapper.m_PlayerActionsCallbackInterface.OnHold;
                 @Hold.canceled -= m_Wrapper.m_PlayerActionsCallbackInterface.OnHold;
-                @SwitchState.started -= m_Wrapper.m_PlayerActionsCallbackInterface.OnSwitchState;
-                @SwitchState.performed -= m_Wrapper.m_PlayerActionsCallbackInterface.OnSwitchState;
-                @SwitchState.canceled -= m_Wrapper.m_PlayerActionsCallbackInterface.OnSwitchState;
+                @PrimaryFingerPosition.started -= m_Wrapper.m_PlayerActionsCallbackInterface.OnPrimaryFingerPosition;
+                @PrimaryFingerPosition.performed -= m_Wrapper.m_PlayerActionsCallbackInterface.OnPrimaryFingerPosition;
+                @PrimaryFingerPosition.canceled -= m_Wrapper.m_PlayerActionsCallbackInterface.OnPrimaryFingerPosition;
+                @SecondaryFingerPosition.started -= m_Wrapper.m_PlayerActionsCallbackInterface.OnSecondaryFingerPosition;
+                @SecondaryFingerPosition.performed -= m_Wrapper.m_PlayerActionsCallbackInterface.OnSecondaryFingerPosition;
+                @SecondaryFingerPosition.canceled -= m_Wrapper.m_PlayerActionsCallbackInterface.OnSecondaryFingerPosition;
+                @PrimaryTouchContact.started -= m_Wrapper.m_PlayerActionsCallbackInterface.OnPrimaryTouchContact;
+                @PrimaryTouchContact.performed -= m_Wrapper.m_PlayerActionsCallbackInterface.OnPrimaryTouchContact;
+                @PrimaryTouchContact.canceled -= m_Wrapper.m_PlayerActionsCallbackInterface.OnPrimaryTouchContact;
+                @SecondaryTouchContact.started -= m_Wrapper.m_PlayerActionsCallbackInterface.OnSecondaryTouchContact;
+                @SecondaryTouchContact.performed -= m_Wrapper.m_PlayerActionsCallbackInterface.OnSecondaryTouchContact;
+                @SecondaryTouchContact.canceled -= m_Wrapper.m_PlayerActionsCallbackInterface.OnSecondaryTouchContact;
             }
             m_Wrapper.m_PlayerActionsCallbackInterface = instance;
-            if (instance != null) {
-                @Touch.started += instance.OnTouch;
-                @Touch.performed += instance.OnTouch;
-                @Touch.canceled += instance.OnTouch;
-                @Release.started += instance.OnRelease;
-                @Release.performed += instance.OnRelease;
-                @Release.canceled += instance.OnRelease;
+            if (instance != null)
+            {
+                @MousePosition.started += instance.OnMousePosition;
+                @MousePosition.performed += instance.OnMousePosition;
+                @MousePosition.canceled += instance.OnMousePosition;
+                @LeftClick.started += instance.OnLeftClick;
+                @LeftClick.performed += instance.OnLeftClick;
+                @LeftClick.canceled += instance.OnLeftClick;
+                @MouseScroll.started += instance.OnMouseScroll;
+                @MouseScroll.performed += instance.OnMouseScroll;
+                @MouseScroll.canceled += instance.OnMouseScroll;
                 @Hold.started += instance.OnHold;
                 @Hold.performed += instance.OnHold;
                 @Hold.canceled += instance.OnHold;
-                @SwitchState.started += instance.OnSwitchState;
-                @SwitchState.performed += instance.OnSwitchState;
-                @SwitchState.canceled += instance.OnSwitchState;
+                @PrimaryFingerPosition.started += instance.OnPrimaryFingerPosition;
+                @PrimaryFingerPosition.performed += instance.OnPrimaryFingerPosition;
+                @PrimaryFingerPosition.canceled += instance.OnPrimaryFingerPosition;
+                @SecondaryFingerPosition.started += instance.OnSecondaryFingerPosition;
+                @SecondaryFingerPosition.performed += instance.OnSecondaryFingerPosition;
+                @SecondaryFingerPosition.canceled += instance.OnSecondaryFingerPosition;
+                @PrimaryTouchContact.started += instance.OnPrimaryTouchContact;
+                @PrimaryTouchContact.performed += instance.OnPrimaryTouchContact;
+                @PrimaryTouchContact.canceled += instance.OnPrimaryTouchContact;
+                @SecondaryTouchContact.started += instance.OnSecondaryTouchContact;
+                @SecondaryTouchContact.performed += instance.OnSecondaryTouchContact;
+                @SecondaryTouchContact.canceled += instance.OnSecondaryTouchContact;
             }
         }
     }
     public PlayerActions @Player => new PlayerActions(this);
     private int m_MouseAndKeyboardSchemeIndex = -1;
-    public InputControlScheme MouseAndKeyboardScheme {
-        get {
+    public InputControlScheme MouseAndKeyboardScheme
+    {
+        get
+        {
             if (m_MouseAndKeyboardSchemeIndex == -1) m_MouseAndKeyboardSchemeIndex = asset.FindControlSchemeIndex("Mouse And Keyboard");
             return asset.controlSchemes[m_MouseAndKeyboardSchemeIndex];
         }
     }
-    public interface IPlayerActions {
-        void OnTouch(InputAction.CallbackContext context);
-        void OnRelease(InputAction.CallbackContext context);
+    private int m_TouchscreenSchemeIndex = -1;
+    public InputControlScheme TouchscreenScheme
+    {
+        get
+        {
+            if (m_TouchscreenSchemeIndex == -1) m_TouchscreenSchemeIndex = asset.FindControlSchemeIndex("Touchscreen");
+            return asset.controlSchemes[m_TouchscreenSchemeIndex];
+        }
+    }
+    public interface IPlayerActions
+    {
+        void OnMousePosition(InputAction.CallbackContext context);
+        void OnLeftClick(InputAction.CallbackContext context);
+        void OnMouseScroll(InputAction.CallbackContext context);
         void OnHold(InputAction.CallbackContext context);
-        void OnSwitchState(InputAction.CallbackContext context);
+        void OnPrimaryFingerPosition(InputAction.CallbackContext context);
+        void OnSecondaryFingerPosition(InputAction.CallbackContext context);
+        void OnPrimaryTouchContact(InputAction.CallbackContext context);
+        void OnSecondaryTouchContact(InputAction.CallbackContext context);
     }
 }

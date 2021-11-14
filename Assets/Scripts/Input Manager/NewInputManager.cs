@@ -204,10 +204,9 @@ public class NewInputManager : MonoBehaviour {
 
         _controls.Player.Hold.performed += OnHold;
 
-        _controls.Player.LeftClick.performed += _ => OnTouch(_controls.Player.LeftClick, _controls.Player.MousePosition);
+        _controls.Player.PrimaryTouchContact.performed += _ => OnTouch(_.action, _controls.Player.PrimaryFingerPosition);
         _controls.Player.MouseScroll.performed += _ => _zoomChange = _.ReadValue<float>();
 
-        _controls.Player.PrimaryTouchContact.performed += _ => OnTouch(_controls.Player.PrimaryTouchContact, _controls.Player.PrimaryFingerPosition);
         _controls.Player.SecondaryTouchContact.performed += _ => StartCoroutine(ZoomDetection());
     }
 

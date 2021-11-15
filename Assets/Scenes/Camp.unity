@@ -684,8 +684,7 @@ GameObject:
   - component: {fileID: 409407773}
   - component: {fileID: 409407776}
   - component: {fileID: 409407775}
-  - component: {fileID: 409407774}
-  m_Layer: 9
+  m_Layer: 0
   m_Name: Smogmap
   m_TagString: SmogTilemap
   m_Icon: {fileID: 0}
@@ -706,22 +705,6 @@ Transform:
   m_Father: {fileID: 40321730}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!19719996 &409407774
-TilemapCollider2D:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 409407772}
-  m_Enabled: 1
-  m_Density: 1
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_UsedByEffector: 0
-  m_UsedByComposite: 0
-  m_Offset: {x: 0, y: 0}
-  m_MaximumTileChangeCount: 1000
-  m_ExtrusionFactor: 0.00001
 --- !u!483693784 &409407775
 TilemapRenderer:
   m_ObjectHideFlags: 0

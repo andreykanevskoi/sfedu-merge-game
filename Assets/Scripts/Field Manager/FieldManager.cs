@@ -1,4 +1,5 @@
 ﻿using System.Collections;
+using System.Linq;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Tilemaps;
@@ -87,6 +88,22 @@ public class FieldManager : MonoBehaviour {
         DestructedTile destructedTile = Instantiate(_destructedTilePrefab, transform);
         destructedTile.transform.position = GetCellWorldPosition(cellPosition);
         destructedTile.Sprite = tile.sprite;
+    }
+
+    /// <summary>
+    /// Получить ближайшую свободную позицию.
+    /// </summary>
+    /// <param name="startPosition"></param>
+    /// <returns></returns>
+    public bool GetNearestPosition(Vector3Int startPosition, ref Vector3Int nearestPosition) {
+        if (_freeTilesPositions.Count == 0) {
+            return false;
+        }
+
+        nearestPosition = _freeTilesPositions
+                            .OrderBy(position => (startPosition - position).sqrMagnitude)
+                            .First();
+        return true;
     }
 
     /// <summary>

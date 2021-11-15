@@ -128,7 +128,10 @@ public class Placeable : MonoBehaviour {
     /// <summary>
     /// Обработчик нажатия на объект.
     /// </summary>
-    public virtual void Click() {
+    public virtual void Click() { }
+
+    public bool IsTargetable() {
+        return !fieldManager.smogManager.IsSmoged(currentCell);
     }
 
     /// <summary>

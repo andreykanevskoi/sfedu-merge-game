@@ -1,5 +1,6 @@
-﻿using UnityEngine;
-using UnityEngine.InputSystem;
+﻿using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
 using UnityEngine.Tilemaps;
 
 /// <summary>
@@ -9,11 +10,21 @@ using UnityEngine.Tilemaps;
 public class FieldManager : MonoBehaviour {
     public TileManager tileManager { get; private set; }
     public ObjectManager objectManager { get; private set; }
+    public SmogManager smogManager { get; private set; }
 
     /// <summary>
     /// Тег игрового поля.
     /// </summary>
     private static string _gameFieldTag = "GameField";
+    /// <summary>
+    /// Тег поля с туманом.
+    /// </summary>
+    private static string _smogTilemapTag = "SmogTilemap";
+
+    /// <summary>
+    /// Все свободные доступные позиции на поле.
+    /// </summary>
+    private static HashSet<Vector3Int> _freeTilesPositions;
 
     /// <summary>
     /// Маркер.
@@ -35,10 +46,19 @@ public class FieldManager : MonoBehaviour {
     }
 
     /// <summary>
+    /// Получить позицию на один тайл ниже.
+    /// </summary>
+    /// <param name="cellPosition">Начальная позиция</param>
+    /// <returns>Позиция под начальной позицией</returns>
+    private Vector3Int GetPositionBellow(Vector3Int cellPosition) {
+        cellPosition.z -= 1;
+        return cellPosition;
+    }
+
+    /// <summary>
     /// Скрыть маркер.
     /// </summary>
     private void HideHighlighter() {
-        Debug.Log("Hide");
         _highlighter.Hide();
     }
 
@@ -46,7 +66,6 @@ public class FieldManager : MonoBehaviour {
     /// Показать маркер.
     /// </summary>
     private void ShowHighlighter() {
-        Debug.Log("Show");
         _highlighter.Show();
     }
 
@@ -55,9 +74,41 @@ public class FieldManager : MonoBehaviour {
     /// </summary>
     /// <param name="position">Позиция тайла</param>
     private void SetHighlighterPosition(Vector3Int position) {
-        Debug.Log(position);
         _highlighter.SetPosition(tileManager.GetCellWorldPosition(position));
         ShowHighlighter();
+    }
+
+    /// <summary>
+    /// Создать на указаном тайле объект для проигрывания анимации разрушения.
+    /// </summary>
+    /// <param name="tile">Вид уничтожаемого тайла</param>
+    /// <param name="cellPosition">Позиция тайла</param>
+    private void SetDestructedTile(FieldTile tile, Vector3Int cellPosition) {
+        DestructedTile destructedTile = Instantiate(_destructedTilePrefab, transform);
+        destructedTile.transform.position = GetCellWorldPosition(cellPosition);
+        destructedTile.Sprite = tile.sprite;
+    }
+
+    /// <summary>
+    /// Получить доступную позицию тайла.
+    /// Также проверяет есть ли на тайле туман.
+    /// </summary>
+    /// <param name="position">Позиция в мире</param>
+    /// <param name="cellPosition">Найденная позиция</param>
+    /// <returns>Найдена ли позиция</returns>
+    private bool GetValidCell(Vector3 position, ref Vector3Int cellPosition) {
+        if (tileManager.GetValidCell(position, ref cellPosition)) {
+            return !smogManager.IsSmoged(cellPosition);
+        }
+        return false;
+    }
+
+    private bool TileCanBeDestroed(Vector3Int cellPosition) {
+        return objectManager.IsFree(cellPosition) && tileManager.IsDestructible(cellPosition);
+    }
+
+    private bool TileIsFree(Vector3Int cellPosition, Placeable placeable) {
+        return objectManager.IsFree(cellPosition) || cellPosition.Equals(placeable.currentCell);
     }
 
     /// <summary>
@@ -66,19 +117,31 @@ public class FieldManager : MonoBehaviour {
     /// <param name="position">Позиция остановки в мире</param>
     /// <param name="placeable">Перетаскиваемый объект</param>
     private void OnObjectDrop(Vector3 position, Placeable placeable) {
-        Debug.Log("OnObjectDrop");
+        // Скрыть маркер
         HideHighlighter();
 
+        // Проверяем тайл по позиции в мире
         Vector3Int cellPosition = Vector3Int.zero;
-        if (tileManager.GetValidCell(position, ref cellPosition)) {
-            if (objectManager.IsFree(cellPosition) || cellPosition.Equals(placeable.currentCell)) {
-                objectManager.MoveObjectToCell(cellPosition, placeable);
-                return;
-            }
-            Placeable objectAtCell = objectManager.GetObjectAtCell(cellPosition);
-            objectAtCell?.Interact(placeable);
+        if (!GetValidCell(position, ref cellPosition)) {
+            // Вернуть объект на исходное место
+            placeable.ReturnPosition();
+            return;
         }
-        placeable.ReturnPosition();
+
+        if (TileIsFree(cellPosition, placeable)) {
+            // Меняем доступность тайлов
+            RemoveFreeTilePosition(cellPosition);
+            AddFreeTilePosition(placeable.currentCell);
+
+            // Устанавливаем объект на новую позицию
+            objectManager.MoveObjectToCell(cellPosition, placeable);
+            placeable.Position = GetCellWorldPosition(cellPosition);
+            return;
+        }
+
+        // Проверяем взаимодействие между объектами
+        Placeable objectAtCell = objectManager.GetObjectAtCell(cellPosition);
+        objectAtCell?.Interact(placeable);
     }
 
     /// <summary>
@@ -87,16 +150,25 @@ public class FieldManager : MonoBehaviour {
     /// <param name="worldPosition">Текущее положение в мире</param>
     /// <param name="placeable">Перетаскиваемый объект</param>
     private void OnObjectDrag(Vector3 worldPosition, Placeable placeable) {
-        Debug.Log("OnObjectDrag");
+        // Проверяем тайл по позиции в мире
         Vector3Int cellPosition = Vector3Int.zero;
-        if (tileManager.GetValidCell(worldPosition, ref cellPosition)) {
-            // Какой ох*енный у меня if conditional
-            // Здоровый сука!
-            if (objectManager.IsFree(cellPosition) || cellPosition.Equals(placeable.currentCell) || (bool)objectManager.GetObjectAtCell(cellPosition)?.IsInteractable(placeable)) {
-                SetHighlighterPosition(cellPosition);
-                return;
-            }
+        if (!GetValidCell(worldPosition, ref cellPosition)) {
+            HideHighlighter();
+            return;
         }
+
+        if (TileIsFree(cellPosition, placeable)) {
+            SetHighlighterPosition(cellPosition);
+            return;
+        }
+
+        // Проверяем взаимодействие между объектами
+        Placeable objectAtCell = objectManager.GetObjectAtCell(cellPosition);
+        if (objectAtCell.IsInteractable(placeable)) {
+            SetHighlighterPosition(cellPosition);
+            return;
+        }
+
         HideHighlighter();
     }
 
@@ -105,15 +177,13 @@ public class FieldManager : MonoBehaviour {
     /// </summary>
     /// <param name="position">Позиция курсора в мире</param>
     private void OnTileSelect(Vector3 position) {
-        Debug.Log("OnTileSelect");
         Vector3Int cellPosition = Vector3Int.zero;
-        if (tileManager.GetValidCell(position, ref cellPosition)) {
-            if (objectManager.IsFree(cellPosition) && tileManager.IsDestructible(cellPosition)) {
-                SetHighlighterPosition(cellPosition);
-                return;
-            }
+        // Проверяем может ли тайл быть разрушенным
+        if (!GetValidCell(position, ref cellPosition) && !TileCanBeDestroed(cellPosition)) {
+            HideHighlighter();
+            return;
         }
-        HideHighlighter();
+        SetHighlighterPosition(cellPosition);
     }
 
     /// <summary>
@@ -122,17 +192,51 @@ public class FieldManager : MonoBehaviour {
     /// <param name="position">Позиция нажатия в мире</param>
     private void OnTileClick(Vector3 position) {
         Vector3Int cellPosition = Vector3Int.zero;
-        if (tileManager.GetValidCell(position, ref cellPosition)) {
-            if (objectManager.IsFree(cellPosition) && tileManager.IsDestructible(cellPosition)) {
-                FieldTile fieldTile = tileManager.DestroyTile(cellPosition);
+        // Проверяем может ли тайл быть разрушенным
+        if (!GetValidCell(position, ref cellPosition) && !TileCanBeDestroed(cellPosition)) return;
 
-                DestructedTile destructedTile = Instantiate(_destructedTilePrefab, transform);
-                destructedTile.Sprite = fieldTile.sprite;
-                destructedTile.transform.position = GetCellWorldPosition(cellPosition);
+        // Позиция разрушенного тайла больше не доступна
+        RemoveFreeTilePosition(cellPosition);
 
-                objectManager.OnTileDestroy(cellPosition);
+        // Уничтожаем позицию
+        FieldTile fieldTile = tileManager.DestroyTile(cellPosition);
+        // Проигрываем анимацию
+        SetDestructedTile(fieldTile, cellPosition);
+
+        // Проверяем, есть ли объект под разрушенным тайлом
+        Vector3Int positionBelow = GetPositionBellow(cellPosition);
+        if (tileManager.HasTile(positionBelow)) {
+            objectManager.OnTileDestroy(positionBelow);
+
+            if (objectManager.IsFree(positionBelow)) {
+                // Добавляем новую свободную позицию
+                AddFreeTilePosition(positionBelow);
             }
         }
+    }
+
+    /// <summary>
+    /// Уничтожить область тумана.
+    /// </summary>
+    /// <param name="tile">Определитель области</param>
+    public void RemoveSmogedArea(Tile tile) {
+        // Получаем область
+        var area = smogManager.GetSmogedArea(tile);
+        if (area == null) {
+            return;
+        }
+
+        // Обновляем свободные позиции
+        foreach(var position in area) {
+            Vector3Int positionBelow = GetPositionBellow(position);
+
+            if (tileManager.HasTile(positionBelow) && objectManager.IsFree(positionBelow)) {
+                AddFreeTilePosition(positionBelow);
+            }
+        }
+
+        // Проигрываем анимацию увядания
+        StartCoroutine(smogManager.Fade(tile));
     }
 
     /// <summary>
@@ -151,14 +255,40 @@ public class FieldManager : MonoBehaviour {
         GameEvents.current.TriggerObjectDisappearance(placeable);
     }
 
-    public void AddObject(Placeable placeable) {
-        objectManager.Add(placeable);
-        ObjectAppearance(placeable);
+    /// <summary>
+    /// Добавить новую свободную позицию.
+    /// </summary>
+    /// <param name="tilePosition">Позиция тайла</param>
+    private void AddFreeTilePosition(Vector3Int tilePosition) {
+        _freeTilesPositions.Add(tilePosition);
     }
 
-    public void RemoveObject(Placeable placeable) {
+    /// <summary>
+    /// Убрать свободную позицию.
+    /// </summary>
+    /// <param name="tilePosition">Позиция тайла</param>
+    private void RemoveFreeTilePosition(Vector3Int tilePosition) {
+        _freeTilesPositions.Remove(tilePosition);
+    }
+
+    /// <summary>
+    /// Добавить на поле объект.
+    /// </summary>
+    /// <param name="placeable">Добавляемый объект</param>
+    public void AddPlaceableToField(Placeable placeable) {
+        objectManager.Add(placeable);
+        ObjectAppearance(placeable);
+        RemoveFreeTilePosition(placeable.currentCell);
+    }
+
+    /// <summary>
+    /// Удалить с поля объект.
+    /// </summary>
+    /// <param name="placeable">Удаляемый объект</param>
+    public void RemovePlaceableToField(Placeable placeable) {
         objectManager.RemoveObject(placeable);
         ObjectDisappearance(placeable);
+        AddFreeTilePosition(placeable.currentCell);
     }
 
     /// <summary>
@@ -173,13 +303,30 @@ public class FieldManager : MonoBehaviour {
             return;
         }
         tileManager = new TileManager(tilemap);
+
+        GetTopTiles(tilemap);
+    }
+
+    /// <summary>
+    /// Отметить верхние тайлы поля свободными.
+    /// </summary>
+    /// <param name="tilemap">Поле</param>
+    private void GetTopTiles(Tilemap tilemap) {
+        foreach (Vector3Int pos in tilemap.cellBounds.allPositionsWithin) {
+            Vector3Int positionAbove = pos;
+            positionAbove.z += 1;
+
+            if (!tileManager.HasTile(positionAbove)) {
+                AddFreeTilePosition(pos);
+            }
+        }
     }
 
     /// <summary>
     /// Инициализация Менеджера объектов.
     /// </summary>
     private void InitObjectManager() {
-        objectManager = new ObjectManager(this);
+        objectManager = new ObjectManager();
 
         // Все объекты на поле
         Placeable[] placeables = FindObjectsOfType<Placeable>();
@@ -208,6 +355,29 @@ public class FieldManager : MonoBehaviour {
             }
 
             ObjectAppearance(placeable);
+            RemoveFreeTilePosition(placeable.currentCell);
+        }
+    }
+
+    /// <summary>
+    /// Инициализация менеджера тумана.
+    /// </summary>
+    private void InitSmogManager() {
+        Tilemap tilemap = GameObject.FindGameObjectWithTag(_smogTilemapTag)?.GetComponent<Tilemap>();
+        smogManager = new SmogManager(tilemap);
+
+        if (smogManager.smogPositions == null) return;
+
+        RemoveSmogedTiles();
+
+    }
+
+    /// <summary>
+    /// Удалить свободные позиции, находящиеся под туманом.
+    /// </summary>
+    private void RemoveSmogedTiles() {
+        foreach (var position in smogManager.smogPositions) {
+            RemoveFreeTilePosition(GetPositionBellow(position));
         }
     }
 
@@ -215,10 +385,14 @@ public class FieldManager : MonoBehaviour {
     }
 
     private void Start() {
+        _freeTilesPositions = new HashSet<Vector3Int>();
+
         InitTileManager();
         InitObjectManager();
+        InitSmogManager();
     }
 
+    #region - OnEnable / OnDisable -
     private void OnEnable() {
         GameEvents.current.OnModeSwitch += HideHighlighter;
 
@@ -238,4 +412,5 @@ public class FieldManager : MonoBehaviour {
         GameEvents.current.OnTileSelect -= OnTileSelect;
         GameEvents.current.OnFieldClick -= OnTileClick;
     }
+    #endregion
 }

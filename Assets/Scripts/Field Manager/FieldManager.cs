@@ -336,7 +336,13 @@ public class FieldManager : MonoBehaviour {
     /// <summary>
     /// Инициализация Менеджера объектов.
     /// </summary>
-    private void InitObjectManager() {
+    private void StartInitObjectManager() {
+        StartCoroutine(InitObjectManager());
+    }
+
+    private IEnumerator InitObjectManager() {
+        yield return null;
+
         objectManager = new ObjectManager();
 
         // Все объекты на поле
@@ -345,6 +351,7 @@ public class FieldManager : MonoBehaviour {
         foreach (Placeable placeable in placeables) {
             // Для отладки
             // Подсветить неправильно размещённые объекты
+
             if (!tileManager.HasTile(placeable.currentCell) || !objectManager.IsFree(placeable.currentCell)) {
                 var renderer = placeable.GetComponent<SpriteRenderer>();
                 renderer.color = Color.red;
@@ -373,12 +380,9 @@ public class FieldManager : MonoBehaviour {
     /// <summary>
     /// Инициализация менеджера тумана.
     /// </summary>
-    private void InitSmogManager() {
+    public void InitSmogManager() {
         Tilemap tilemap = GameObject.FindGameObjectWithTag(_smogTilemapTag)?.GetComponent<Tilemap>();
         smogManager = new SmogManager(tilemap);
-
-        RemoveSmogedTiles();
-
     }
 
     /// <summary>
@@ -397,8 +401,10 @@ public class FieldManager : MonoBehaviour {
         _freeTilesPositions = new HashSet<Vector3Int>();
 
         InitTileManager();
-        InitObjectManager();
-        InitSmogManager();
+
+        StartInitObjectManager();
+
+        RemoveSmogedTiles();
     }
 
     #region - OnEnable / OnDisable -

@@ -16,14 +16,6 @@ public class SmogManager {
     private Dictionary<Tile, List<Vector3Int>> _smogedAreas;
 
     /// <summary>
-    /// Все позиции тумана.
-    /// Да это по сути повторное хранение позиций тайлов, но с ними по другому нельзя.
-    /// Проверка является ли тайл затуманненым повторяется слишком часто,
-    /// для того что бы проверять по словарю выше.
-    /// </summary>
-    public HashSet<Vector3Int> smogPositions { get; private set; }
-
-    /// <summary>
     /// Скорость исчезновения тумана.
     /// </summary>
     [SerializeField] private float _fadeSpeed = 1f;
@@ -32,7 +24,6 @@ public class SmogManager {
         if (!smogTilemap) return;
 
         _smogedAreas = new Dictionary<Tile, List<Vector3Int>>();
-        smogPositions = new HashSet<Vector3Int>();
         _smogMap = smogTilemap;
         GetSmogTiles();
     }
@@ -49,8 +40,6 @@ public class SmogManager {
             // Очистить флаги тайла
             // Если не очистить, то цвет тайла не будет меняться.
             _smogMap.SetTileFlags(pos, TileFlags.None);
-
-            smogPositions.Add(pos);
 
             if (_smogedAreas.ContainsKey(tile)) {
                 _smogedAreas[tile].Add(pos);
@@ -86,10 +75,6 @@ public class SmogManager {
             yield return null;
         }
 
-        // Удалить позиции
-        foreach (var pos in _smogedAreas[tile]) {
-            smogPositions.Remove(pos);
-        }
         // Удалить облась
         _smogedAreas.Remove(tile);
 
@@ -108,7 +93,21 @@ public class SmogManager {
         }
 
         cellPosition.z += 1;
-        return smogPositions.Contains(cellPosition);
+        return _smogMap.HasTile(cellPosition);
+    }
+
+    public List<Vector3Int> GetAllSmogPositions() {
+        List<Vector3Int> positions = new List<Vector3Int>();
+
+        if (!_smogMap) {
+            return positions;
+        }
+
+        foreach(var area in _smogedAreas.Values) {
+            positions.AddRange(area);
+        }
+
+        return positions;
     }
 
     /// <summary>
@@ -117,9 +116,12 @@ public class SmogManager {
     /// <param name="tile">Определитель области</param>
     /// <returns></returns>
     public List<Vector3Int> GetSmogedArea(Tile tile) {
+        List<Vector3Int> positions = new List<Vector3Int>();
+
         if (_smogedAreas.ContainsKey(tile)) {
-            return _smogedAreas[tile];
+            positions.AddRange(_smogedAreas[tile]);
         }
-        return null;
+
+        return positions;
     }
 }

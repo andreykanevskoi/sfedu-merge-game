@@ -237,14 +237,8 @@ public class FieldManager : MonoBehaviour {
     /// </summary>
     /// <param name="tile">Определитель области</param>
     public void RemoveSmogedArea(Tile tile) {
-        // Получаем область
-        var area = smogManager.GetSmogedArea(tile);
-        if (area == null) {
-            return;
-        }
-
         // Обновляем свободные позиции
-        foreach(var position in area) {
+        foreach(var position in smogManager.GetSmogedArea(tile)) {
             Vector3Int positionBelow = GetPositionBellow(position);
 
             if (tileManager.HasTile(positionBelow) && objectManager.IsFree(positionBelow)) {
@@ -383,8 +377,6 @@ public class FieldManager : MonoBehaviour {
         Tilemap tilemap = GameObject.FindGameObjectWithTag(_smogTilemapTag)?.GetComponent<Tilemap>();
         smogManager = new SmogManager(tilemap);
 
-        if (smogManager.smogPositions == null) return;
-
         RemoveSmogedTiles();
 
     }
@@ -393,7 +385,7 @@ public class FieldManager : MonoBehaviour {
     /// Удалить свободные позиции, находящиеся под туманом.
     /// </summary>
     private void RemoveSmogedTiles() {
-        foreach (var position in smogManager.smogPositions) {
+        foreach (var position in smogManager.GetAllSmogPositions()) {
             RemoveFreeTilePosition(GetPositionBellow(position));
         }
     }

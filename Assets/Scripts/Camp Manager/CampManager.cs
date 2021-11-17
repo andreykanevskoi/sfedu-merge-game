@@ -11,11 +11,6 @@ public class SmogedArea {
 
 public class CampManager : MonoBehaviour {
     /// <summary>
-    /// Тайлмап тумана.
-    /// </summary>
-    [SerializeField] private Tilemap _smogMap;
-
-    /// <summary>
     /// Массив туманных областей.
     /// </summary>
     [SerializeField] private SmogedArea[] _areas;
@@ -30,39 +25,7 @@ public class CampManager : MonoBehaviour {
     /// </summary>
     private List<SmogedArea> _completed;
 
-    /// <summary>
-    /// Словарь позиций тайлов тумана по типу областей.
-    /// Тип тайла определяет область.
-    /// </summary>
-    private Dictionary<Tile, List<Vector3Int>> _smogTiles;
-
-    /// <summary>
-    /// Скорость исчезновения тумана.
-    /// </summary>
-    [SerializeField] private float _fadeSpeed = 10f;
-
-    /// <summary>
-    /// Заполнить словарь позиций тумана.
-    /// </summary>
-    private void GetSmogTiles() {
-        // Цикл по всем тайлам тайлмапа
-        foreach (Vector3Int pos in _smogMap.cellBounds.allPositionsWithin) {
-            Tile tile = _smogMap.GetTile<Tile>(pos);
-            if (!tile) continue;
-
-            // Очистить флаги тайла
-            // Если не очистить, то цвет тайла не будет меняться.
-            _smogMap.SetTileFlags(pos, TileFlags.None);
-
-            if (_smogTiles.ContainsKey(tile)) {
-                _smogTiles[tile].Add(pos);
-            }
-            else {
-                _smogTiles.Add(tile, new List<Vector3Int>());
-                _smogTiles[tile].Add(pos);
-            }
-        }
-    }
+    [SerializeField] private FieldManager _fieldManager;
 
     /// <summary>
     /// Обработка события появления нового объекта.
@@ -79,35 +42,9 @@ public class CampManager : MonoBehaviour {
             _requirements.Remove(baseName);
 
             // Начать исчезновение тумана
-            StartCoroutine(Fade(tile));
+            Debug.Log("Before start");
+            _fieldManager.RemoveSmogedArea(tile);
         }
-    }
-
-    /// <summary>
-    /// Постепенное исчезновение области тумана.
-    /// </summary>
-    /// <param name="tile">Тип тайла тумана</param>
-    /// <returns></returns>
-    private IEnumerator Fade(Tile tile) {
-        if (!_smogTiles.ContainsKey(tile)) {
-            yield break;
-        }
-        // Цвет тайлов
-        Color color = new Color(tile.color.r, tile.color.g, tile.color.b, tile.color.a);
-
-        while (color.a > 0) {
-            // Новый цвет тайлов
-            color.a -= Time.deltaTime * _fadeSpeed;
-            // Для каждого тайла области
-            foreach (var pos in _smogTiles[tile]) {
-                // Установить новый цвет
-                _smogMap.SetColor(pos, color);
-            }
-            yield return null;
-        }
-
-        // Удалить все тайлы области
-        _smogMap.SwapTile(tile, null);
     }
 
     private void Awake() {
@@ -119,10 +56,6 @@ public class CampManager : MonoBehaviour {
             _requirements.Add(area.requiredObject.BaseName, area);
         }
         _areas = null;
-
-        // Заполнить словарь областей
-        _smogTiles = new Dictionary<Tile, List<Vector3Int>>();
-        GetSmogTiles();
     }
 
     #region - OnEnable / OnDisable -

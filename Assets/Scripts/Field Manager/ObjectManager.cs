@@ -12,15 +12,6 @@ public class ObjectManager
     private Dictionary<Vector3Int, Placeable> _placedObjects = new Dictionary<Vector3Int, Placeable>();
 
     /// <summary>
-    /// Менеджер поля.
-    /// </summary>
-    private FieldManager _fieldManager;
-
-    public ObjectManager(FieldManager fieldManager) {
-        _fieldManager = fieldManager;
-    }
-
-    /// <summary>
     /// Добавить объект без вызова события появления объекта.
     /// Используется во время инициализации уровня.
     /// </summary>
@@ -83,7 +74,6 @@ public class ObjectManager
     private void SetObjectToCell(Vector3Int cellPosition, Placeable placeable) {
         placeable.currentCell = cellPosition;
         _placedObjects[cellPosition] = placeable;
-        placeable.Position = _fieldManager.GetCellWorldPosition(cellPosition);
     }
 
     /// <summary>
@@ -104,12 +94,7 @@ public class ObjectManager
     /// </summary>
     /// <param name="cellPosition">Клетка</param>
     public void OnTileDestroy(Vector3Int cellPosition) {
-        Vector3Int positionUnder = cellPosition;
-        positionUnder.z -= 1;
-
-        Placeable placeable = GetObjectAtCell(positionUnder);
-        if (!placeable) return;
-
-        placeable.Show();
+        Placeable placeable = GetObjectAtCell(cellPosition);
+        placeable?.Show();
     }
 }

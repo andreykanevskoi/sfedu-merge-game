@@ -10,7 +10,6 @@ public class NewInputManager : MonoBehaviour {
 
     // Маски слоёв
     private static int _layerMask;
-    private static int _smogLayerMask;
 
     // Состояния менеджера
     private enum States { Dragging, Digging }
@@ -19,17 +18,20 @@ public class NewInputManager : MonoBehaviour {
     private States _state = States.Dragging;
 
     private Placeable _target;
-    private bool _isDragging;
 
     private WaitForFixedUpdate waitForFixedUpdate = new WaitForFixedUpdate();
 
+    private Vector3 GetTouchPosition() {
+        return _controls.Player.PrimaryFingerPosition.ReadValue<Vector2>();
+    }
+
     /// <summary>
-    /// Перевести позицию на экране в позицию в мире
+    /// Перевести позицию нажатия на экран в позицию в мире
     /// </summary>
     /// <param name="position">Позиция на экрана</param>
     /// <returns>Позиция в мире</returns>
-    private Vector2 GetWorldPosition(Vector2 position) {
-        return Camera.main.ScreenToWorldPoint(position);
+    private Vector2 GetWorldPosition() {
+        return Camera.main.ScreenToWorldPoint(GetTouchPosition());
     }
 
     /// <summary>
@@ -41,15 +43,12 @@ public class NewInputManager : MonoBehaviour {
     /// Размещаемый объект, если он есть в текущей позиции
     /// </returns>
     private Placeable GetPlaceable(Vector3 worldPosition) {
-        // Проверка, есть ли туман
-        if (Physics2D.OverlapPoint(worldPosition, _smogLayerMask)) {
-            return null;
-        }
-
         // Проверка, есть ли объект
         Collider2D targetObject = Physics2D.OverlapPoint(worldPosition, _layerMask);
         if (targetObject) {
-            return targetObject.GetComponentInParent<Placeable>();
+            Placeable placeable = targetObject.GetComponentInParent<Placeable>();
+
+            return placeable.IsTargetable() ? placeable : null;
         }
         return null;
     }
@@ -61,14 +60,14 @@ public class NewInputManager : MonoBehaviour {
     /// <param name="eventAction">Вызвавшее событие</param>
     /// <param name="valueAction">Действие для считывания позиции</param>
     /// <returns></returns>
-    private IEnumerator Panning(InputAction eventAction, InputAction valueAction) {
+    private IEnumerator Panning() {
         // Начальная позиция в точке нажатия
-        Vector2 startPosition = GetWorldPosition(valueAction.ReadValue<Vector2>());
+        Vector2 startPosition = GetWorldPosition();
 
         // Пока выполняется событие (кнопка нажата / палец на экране)
-        while (eventAction.ReadValue<float>() != 0) {
+        while (_controls.Player.PrimaryTouchContact.ReadValue<float>() != 0) {
             // Установить точку движения камеры
-            _camera.SetDestination(GetWorldPosition(valueAction.ReadValue<Vector2>()) - startPosition);
+            _camera.SetDestination(GetWorldPosition() - startPosition);
 
             yield return waitForFixedUpdate;
         }
@@ -80,15 +79,20 @@ public class NewInputManager : MonoBehaviour {
     /// <param name="eventAction">Вызвавшее событие</param>
     /// <param name="valueAction">Действие для считывания позиции</param>
     /// <returns></returns>
-    private IEnumerator InteractWithObject(InputAction eventAction, InputAction valueAction) {
+    private IEnumerator InteractWithObject() {
         Vector3 mousePosition;
+        bool _isDragging = false;
 
         // Пока выполняется событие
-        while (eventAction.ReadValue<float>() != 0) {
+        while (_controls.Player.PrimaryTouchContact.ReadValue<float>() != 0) {
             // Началось перетаскивание предмета
+            if (!_isDragging && _controls.Player.Hold.phase == InputActionPhase.Performed) {
+                _isDragging = _target.BeginDrag();
+            }
+
             if (_isDragging) {
                 // Переносить объект в точку нажатия
-                mousePosition = GetWorldPosition(valueAction.ReadValue<Vector2>());
+                mousePosition = GetWorldPosition();
                 _target.Drag(mousePosition);
                 GameEvents.current.TriggerDrag(mousePosition, _target);
             }
@@ -96,7 +100,7 @@ public class NewInputManager : MonoBehaviour {
             yield return waitForFixedUpdate;
         }
 
-        mousePosition = GetWorldPosition(valueAction.ReadValue<Vector2>());
+        mousePosition = GetWorldPosition();
         // Если было перетаскивание
         if (_isDragging) {
             // Бросить предмет
@@ -108,13 +112,13 @@ public class NewInputManager : MonoBehaviour {
             Placeable target = GetPlaceable(mousePosition);
             // Если там тот же предмет
             if (_target && _target.Equals(target)) {
+                Debug.Log("Click");
                 // Выполнить нажатие на предмет
                 _target.Click();
             }
         }
 
         _target = null;
-        _isDragging = false;
     }
 
     /// <summary>
@@ -122,8 +126,8 @@ public class NewInputManager : MonoBehaviour {
     /// </summary>
     /// <param name="eventAction">Вызвавшее событие</param>
     /// <param name="valueAction">Действие для считывания позиции</param>
-    private void OnTouch(InputAction eventAction, InputAction valueAction) {
-        Vector3 mousePosition = GetWorldPosition(valueAction.ReadValue<Vector2>());
+    private void OnTouch() {
+        Vector3 mousePosition = GetWorldPosition();
         if (_state == States.Digging) {
             GameEvents.current.TriggerFieldClick(mousePosition);
             return;
@@ -133,21 +137,11 @@ public class NewInputManager : MonoBehaviour {
         _target = GetPlaceable(mousePosition);
         if (!_target) {
             // Начать перемещение камеры
-            StartCoroutine(Panning(eventAction, valueAction));
+            StartCoroutine(Panning());
             return;
         }
         // Начать взаимодействие с объектом
-        StartCoroutine(InteractWithObject(eventAction, valueAction));
-    }
-
-    /// <summary>
-    /// Обработчик удерживания нажатия
-    /// </summary>
-    /// <param name="context"></param>
-    private void OnHold(InputAction.CallbackContext context) {
-        if (_target && _state == States.Dragging) {
-            _isDragging = _target.BeginDrag();
-        }
+        StartCoroutine(InteractWithObject());
     }
 
     /// <summary>
@@ -192,7 +186,6 @@ public class NewInputManager : MonoBehaviour {
 
     private void Awake() {
         _layerMask = 1 << LayerMask.NameToLayer("Placeable");
-        _smogLayerMask = 1 << LayerMask.NameToLayer("Smog");
     }
 
     #region - Enable / Disable -
@@ -202,18 +195,13 @@ public class NewInputManager : MonoBehaviour {
 
         _controls.Player.Enable();
 
-        _controls.Player.Hold.performed += OnHold;
-
-        _controls.Player.LeftClick.performed += _ => OnTouch(_controls.Player.LeftClick, _controls.Player.MousePosition);
+        _controls.Player.PrimaryTouchContact.performed += _ => OnTouch();
         _controls.Player.MouseScroll.performed += _ => _zoomChange = _.ReadValue<float>();
-
-        _controls.Player.PrimaryTouchContact.performed += _ => OnTouch(_controls.Player.PrimaryTouchContact, _controls.Player.PrimaryFingerPosition);
         _controls.Player.SecondaryTouchContact.performed += _ => StartCoroutine(ZoomDetection());
     }
 
     private void OnDisable() {
         _controls.Player.Disable();
-        _controls.Player.Hold.performed -= OnHold;
     }
 
     #endregion

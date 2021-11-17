@@ -8,7 +8,7 @@ public class TileManager {
     private Tilemap _tileMap;
     // Маска слоя тайлов
     private static int _tilesLayerMask = 1 << LayerMask.NameToLayer("Tiles");
-    private static int _smogLayerMask = 1 << LayerMask.NameToLayer("Smog");
+    // private static int _smogLayerMask = 1 << LayerMask.NameToLayer("Smog");
 
     public TileManager(Tilemap tilemap) {
         _tileMap = tilemap;
@@ -62,11 +62,11 @@ public class TileManager {
     // На данный момент лучшее решение
     // (осуждаю использование out 👿)
     private bool SearchTile(Vector3 worldPosition, ref Vector3Int cellPosition) {
-        //var smog = Physics2D.OverlapPoint(worldPosition, _smogLayerMask).gameObject;
-        //Debug.Log(smog.layer);
-        if (Physics2D.OverlapPoint(worldPosition, _smogLayerMask)) {
-            return false;
-        }
+        ////var smog = Physics2D.OverlapPoint(worldPosition, _smogLayerMask).gameObject;
+        ////Debug.Log(smog.layer);
+        //if (Physics2D.OverlapPoint(worldPosition, _smogLayerMask)) {
+        //    return false;
+        //}
 
         // Все 2D коллайдеры в точке
         var colliders = Physics2D.OverlapPointAll(worldPosition, _tilesLayerMask, 0f, Mathf.Infinity);

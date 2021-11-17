@@ -5,16 +5,21 @@ using UnityEngine;
 
 public class Chest : Placeable
 {
+    [SerializeField] private int _openingTimeInMinutes = 0;
     [SerializeField] private Sprite _openChest;
     [SerializeField] private GameObject _timerView;
-    [SerializeField] private List<Mergeable> _itemsInChest;
+    [SerializeField] private List<Placeable> _itemsInChest;
     private Timer _timer;
     private bool _isOpen = false;
     
     void OnEnable()
     {
         ChestOpeningEventSystem.SighUpForEvent(OpenChest);
-         InitChest(new Timer(new TimeSpan(0, 0, 10), "TestOpen", "TestChest"));
+        if (_openingTimeInMinutes != 0)
+        {
+            InitChest(new Timer(new TimeSpan(0, _openingTimeInMinutes, 0), "TestOpen", "TestChest"));
+        }
+         
     }
 
     private void OnDisable()
@@ -38,7 +43,7 @@ public class Chest : Placeable
         //GiveItem();
     }
 
-    public void AddItem(Mergeable[] items)
+    public void AddItem(Placeable[] items)
     {
         foreach (var i in items)
         {
@@ -46,7 +51,7 @@ public class Chest : Placeable
         }
     }
 
-    public void DeleteItem(Mergeable[] items)
+    public void DeleteItem(Placeable[] items)
     {
         if (_itemsInChest.Count == 0) return;
         foreach (var i in items)
@@ -75,7 +80,7 @@ public class Chest : Placeable
 
     private void GiveItemInGame()
     {
-        Mergeable newMergeable = Instantiate(_itemsInChest[_itemsInChest.Count - 1], transform.parent);
+        Placeable newMergeable = Instantiate(_itemsInChest[_itemsInChest.Count - 1], transform.parent);
         _itemsInChest.RemoveAt(_itemsInChest.Count - 1);
     }
     

@@ -103,6 +103,13 @@ public class FieldManager : MonoBehaviour {
         nearestPosition = _freeTilesPositions
                             .OrderBy(position => (startPosition - position).sqrMagnitude)
                             .First();
+        
+        // Что за хрень
+        if (!tileManager.HasTile(nearestPosition))
+        {
+            Debug.Log("WTF");
+        }
+        
         return true;
     }
 
@@ -327,7 +334,7 @@ public class FieldManager : MonoBehaviour {
             Vector3Int positionAbove = pos;
             positionAbove.z += 1;
 
-            if (!tileManager.HasTile(positionAbove)) {
+            if (!tileManager.HasTile(positionAbove) && tilemap.HasTile(pos)) {
                 AddFreeTilePosition(pos);
             }
         }

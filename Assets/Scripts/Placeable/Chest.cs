@@ -17,7 +17,7 @@ public class Chest : Placeable
         ChestOpeningEventSystem.SighUpForEvent(OpenChest);
         if (_openingTimeInMinutes != 0)
         {
-            InitChest(new Timer(new TimeSpan(0, _openingTimeInMinutes, 0), "TestOpen", "TestChest"));
+            InitChest(new Timer(new TimeSpan(0, 0, 3), "TestOpen", "TestChest"));
         }
          
     }
@@ -66,11 +66,11 @@ public class Chest : Placeable
         switch(_itemsInChest.Count)
         {
             case 0:
-                Destroy(gameObject);
+                DestroyChest();
                 break;
             case 1:
                 GiveItemInGame();
-                Destroy(gameObject);
+                DestroyChest();
                 break;
             default:
                 GiveItemInGame();
@@ -80,13 +80,29 @@ public class Chest : Placeable
 
     private void GiveItemInGame()
     {
-        Placeable newMergeable = Instantiate(_itemsInChest[_itemsInChest.Count - 1], transform.parent);
-        _itemsInChest.RemoveAt(_itemsInChest.Count - 1);
+        Vector3Int cellPositon = new Vector3Int();
+        if (fieldManager.GetNearestPosition(currentCell, ref cellPositon))
+        {
+            Placeable newPlaceable = Instantiate(_itemsInChest[_itemsInChest.Count - 1], transform.parent);
+
+            newPlaceable.Position = fieldManager.GetCellWorldPosition(cellPositon);
+            newPlaceable.fieldManager = fieldManager;
+            newPlaceable.currentCell = cellPositon;
+            
+            _itemsInChest.RemoveAt(_itemsInChest.Count - 1);
+            fieldManager.AddPlaceableToField(newPlaceable);
+        }
     }
     
 
     public override void Click()
     {
         GiveItem();
+    }
+
+    private void DestroyChest()
+    {
+        fieldManager.RemovePlaceableToField(this);
+        Destroy(gameObject);
     }
 }

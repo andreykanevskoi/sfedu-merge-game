@@ -19,7 +19,7 @@ public static class SoundManager
 
     private static AudioClip GetAudioClip(Sound sound)
     {
-        foreach (SoundResourcesScript.SoundAudioClip soundAudioClip in SoundResourcesScript.instance.soundAudioClipArray)
+        foreach (SoundResources.SoundAudioClip soundAudioClip in SoundResources.instance.soundAudioClipArray)
         {
             if (soundAudioClip.sound == sound)
             {

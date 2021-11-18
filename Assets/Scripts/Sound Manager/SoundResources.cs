@@ -13,7 +13,7 @@ public class SoundResources : MonoBehaviour
         }
     }
 
-    /*public SoundAudioClip[] soundAudioClipArray;
+    public SoundAudioClip[] soundAudioClipArray;
 
     // Класс для обработки звуковых файлов и самих звуков
     [System.Serializable]
@@ -21,6 +21,5 @@ public class SoundResources : MonoBehaviour
     {
         public SoundManager.Sound sound;
         public AudioClip audioClip;
-
-    }*/
+    }
 }

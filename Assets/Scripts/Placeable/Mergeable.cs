@@ -26,6 +26,8 @@ public class Mergeable : Placeable {
     public override void Interact(Placeable placeable) {
         if (placeable != this && placeable is Mergeable mergeable) {
             if (IsMergeable(mergeable)) {
+                SoundManager.PlaySound(SoundManager.Sound.merge);
+
                 Mergeable newMergeable = Instantiate(GetNextLevelObject(), transform.parent);
 
                 newMergeable.currentCell = currentCell;

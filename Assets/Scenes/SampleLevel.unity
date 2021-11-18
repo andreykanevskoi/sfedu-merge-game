@@ -98,7 +98,7 @@ LightmapSettings:
     m_TrainingDataDestination: TrainingData
     m_LightProbeSampleCountMultiplier: 4
   m_LightingDataAsset: {fileID: 0}
-  m_UseShadowmask: 0
+  m_UseShadowmask: 1
 --- !u!196 &4
 NavMeshSettings:
   serializedVersion: 2
@@ -1878,6 +1878,32 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e0caf6dcece226e4c96c56948d2a34cb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!1 &942473243 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 5576120912846449098, guid: 4b83bdfd1564ed441ae24b3b8feb54b2,
+    type: 3}
+  m_PrefabInstance: {fileID: 5576120912465580470}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &942473247
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 942473243}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ae051bc16faace84cb4cb192cd262a71, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _cameraSpeed: 10
+  _leftLimit: -5
+  _rightLimit: 5
+  _upperLimit: 5
+  _bottomLimit: -5
+  _zoomSpeed: 0.01
+  _maxSize: 5
+  _minSize: 1
 --- !u!4 &943300862 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 6249680344727440935, guid: eb305066c4816c64aa126432af2a0b16,
@@ -2998,6 +3024,25 @@ Transform:
     type: 3}
   m_PrefabInstance: {fileID: 1785859780}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &2141366859 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 4520959472379900826, guid: 68034ceed40bc354cb170a34ba4d755a,
+    type: 3}
+  m_PrefabInstance: {fileID: 1785859780}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &2141366861
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2141366859}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b9da649e3815b064e8d5be32a9cb5b6a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _camera: {fileID: 942473247}
 --- !u!1001 &345946906836714640
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -3183,6 +3228,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5576120912846449097, guid: 4b83bdfd1564ed441ae24b3b8feb54b2,
+        type: 3}
+      propertyPath: orthographic size
+      value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 5576120912846449098, guid: 4b83bdfd1564ed441ae24b3b8feb54b2,
         type: 3}

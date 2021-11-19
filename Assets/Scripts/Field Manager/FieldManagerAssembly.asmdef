@@ -1,0 +1,16 @@
+{
+    "name": "FieldManagerAssembly",
+    "references": [
+        "GUID:f15dc02ece582054fa3ec5948ed366ac",
+        "GUID:1912dd298ced65c49945a8fd0e5f16f1"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

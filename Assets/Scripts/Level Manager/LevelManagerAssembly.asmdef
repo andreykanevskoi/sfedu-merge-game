@@ -1,0 +1,17 @@
+{
+    "name": "LevelManagerAssembly",
+    "references": [
+        "GUID:90f27e683f1c37e4c9d043b79622a2a8",
+        "GUID:f15dc02ece582054fa3ec5948ed366ac",
+        "GUID:106ca538183ff2946a9347d99ff63880"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

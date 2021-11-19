@@ -1,0 +1,16 @@
+{
+    "name": "CampManagerAssembly",
+    "references": [
+        "GUID:f15dc02ece582054fa3ec5948ed366ac",
+        "GUID:e53df00b3c12426478f5f11df07890e7"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

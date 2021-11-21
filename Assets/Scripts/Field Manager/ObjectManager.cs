@@ -22,6 +22,8 @@ public class ObjectManager
             return;
         }
         Debug.LogError("Нельзя добавить объект в уже занятую ячейку");
+        Debug.Log(GetObjectAtCell(placeable.currentCell));
+        Debug.Log(placeable);
     }
 
     ///// <summary>

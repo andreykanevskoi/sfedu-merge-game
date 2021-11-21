@@ -173,13 +173,15 @@ public class Placeable : MonoBehaviour, ISaveable {
     }
 
     public virtual void Save(GameDataWriter writer) {
-        writer.Write(transform.position);
+        // Запись положения объекта на сетке
         writer.Write(currentCell);
     }
 
     public virtual void Load(GameDataReader reader, PlaceableFactory factory) {
-        transform.position = reader.ReadVector3();
+        // Положение объекта на сетке
         currentCell = reader.ReadVector3Int();
+        // Размещение объекта по координатам сетки
+        Position = fieldManager.GetCellWorldPosition(currentCell);
     }
 
     private void Awake() {

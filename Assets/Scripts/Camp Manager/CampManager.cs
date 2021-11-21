@@ -44,11 +44,15 @@ public class CampManager : MonoBehaviour, ISaveable {
     }
 
     private void Awake() {
-        _storage = new Storage();
         _completed = new List<SmogedArea>();
 
         _factory.Init();
+
+        _fieldManager.InitFreePositionStorage();
+        _fieldManager.InitTileManager();
         _fieldManager.InitSmogManager();
+
+        _storage = new Storage();
 
         // Преобразование массива в словарь
         _requirements = new Dictionary<string, SmogedArea>();
@@ -59,18 +63,29 @@ public class CampManager : MonoBehaviour, ISaveable {
 
         if (_storage.CheckFile()) {
             LoadSave();
+            return;
         }
+
+        _fieldManager.LateInitObjectManager();
     }
 
     private void LoadSave() {
+        // Уничтожаем все объекты на игровом поле
         Placeable[] placeables = FindObjectsOfType<Placeable>();
         foreach (var placeable in placeables) {
             Destroy(placeable.gameObject);
         }
 
+        _fieldManager.InitObjectManager();
+
+        _storage = new Storage();
         _storage.Load(this, _factory);
     }
 
+    /// <summary>
+    /// Сохранение лагеря в файл.
+    /// </summary>
+    /// <param name="writer"></param>
     public void Save(GameDataWriter writer) {
         writer.Write(_completed.Count);
         foreach (var compeled in _completed) {
@@ -85,32 +100,45 @@ public class CampManager : MonoBehaviour, ISaveable {
         }
     }
 
+    /// <summary>
+    /// Загрузка лагеря из файла сохранения.
+    /// </summary>
+    /// <param name="reader"></param>
+    /// <param name="factory"></param>
     public void Load(GameDataReader reader, PlaceableFactory factory) {
         Debug.Log("Load");
         
-        int count = reader.ReadInt();
+        int count = reader.ReadInt(); // Количество выполненых условий
         for (int i = 0; i < count; i++) {
-            string baseName = reader.ReadString();
+            string baseName = reader.ReadString(); // Опеределитель условия
             if (_requirements.ContainsKey(baseName)) {
-                _fieldManager.smogManager.DeleteInstantly(_requirements[baseName].smogTile);
-                _requirements.Remove(baseName);
+                _fieldManager.smogManager.DeleteInstantly(_requirements[baseName].smogTile); // Удаляем связанную область тумана
+                _completed.Add(_requirements[baseName]);   // Отмечаем условие как выполненое
+                _requirements.Remove(baseName);  // Удаляем условие из невыполненых
             }
         }
 
 
+        // Количество сохраннёных объектов
         count = reader.ReadInt();
         Debug.Log(count);
         for (int i = 0; i < count; i++) {
+            // Идентификатор объекта
             int prefabId = reader.ReadInt();
             Debug.Log(prefabId);
+
+            // Создание объекта по его индентификатору
             Placeable placeable = Instantiate(factory.GetPrefab(prefabId), _objectsParent.transform);
+            placeable.fieldManager = _fieldManager;
+            // Загрузка внутреней информации объекта
             placeable.Load(reader, factory);
+            // Добавление объекта на поле
+            _fieldManager.AddPlaceableWithNoEventTriggered(placeable);
         }
     }
 
     private void OnApplicationQuit() {
-        Storage storage = new Storage();
-        storage.Save(this);
+        _storage.Save(this);
     }
 
     #region - OnEnable / OnDisable -

@@ -283,13 +283,22 @@ public class FieldManager : MonoBehaviour {
     }
 
     /// <summary>
-    /// Добавить на поле объект.
+    /// Добавление нового объекта на поле, без срабатывания ивента появления объекта.
+    /// Используется при загрузке лагеря, где при создании объекта не нужно вызывать событие.
+    /// </summary>
+    /// <param name="placeable"></param>
+    public void AddPlaceableWithNoEventTriggered(Placeable placeable) {
+        objectManager.Add(placeable);
+        RemoveFreeTilePosition(placeable.currentCell);
+    }
+
+    /// <summary>
+    /// Добавить на поле объект и вызвать ивент появления объекта.
     /// </summary>
     /// <param name="placeable">Добавляемый объект</param>
     public void AddPlaceableToField(Placeable placeable) {
-        objectManager.Add(placeable);
+        AddPlaceableWithNoEventTriggered(placeable);
         ObjectAppearance(placeable);
-        RemoveFreeTilePosition(placeable.currentCell);
     }
 
     /// <summary>
@@ -300,6 +309,10 @@ public class FieldManager : MonoBehaviour {
         objectManager.RemoveObject(placeable);
         ObjectDisappearance(placeable);
         AddFreeTilePosition(placeable.currentCell);
+    }
+
+    public void InitFreePositionStorage() {
+        _freeTilesPositions = new HashSet<Vector3Int>();
     }
 
     /// <summary>
@@ -334,16 +347,19 @@ public class FieldManager : MonoBehaviour {
     }
 
     /// <summary>
-    /// Инициализация Менеджера объектов.
+    /// Инициализация менеджера объектов.
+    /// Используется при загрузке лагеря.
     /// </summary>
-    private void StartInitObjectManager() {
-        StartCoroutine(InitObjectManager());
+    public void InitObjectManager() {
+        objectManager = new ObjectManager();
     }
 
-    private IEnumerator InitObjectManager() {
-        yield return null;
-
-        objectManager = new ObjectManager();
+    /// <summary>
+    /// Инициализация менеджера объектов и запись всех объектов на поле.
+    /// Используется на уровнях и при первом запуске лагеря (без сохранения).
+    /// </summary>
+    public void LateInitObjectManager() {
+        InitObjectManager();
 
         // Все объекты на поле
         Placeable[] placeables = FindObjectsOfType<Placeable>();
@@ -351,7 +367,6 @@ public class FieldManager : MonoBehaviour {
         foreach (Placeable placeable in placeables) {
             // Для отладки
             // Подсветить неправильно размещённые объекты
-
             if (!tileManager.HasTile(placeable.currentCell) || !objectManager.IsFree(placeable.currentCell)) {
                 var renderer = placeable.GetComponent<SpriteRenderer>();
                 renderer.color = Color.red;
@@ -398,12 +413,6 @@ public class FieldManager : MonoBehaviour {
     }
 
     private void Start() {
-        _freeTilesPositions = new HashSet<Vector3Int>();
-
-        InitTileManager();
-
-        StartInitObjectManager();
-
         RemoveSmogedTiles();
     }
 

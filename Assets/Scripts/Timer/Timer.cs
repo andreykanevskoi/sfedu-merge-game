@@ -38,7 +38,11 @@ public class Timer
         }
     }
 
-    public TimeSpan GetRemainingTimerTime => _timerTime - GetTimerAge;
+    public TimeSpan GetRemainingTimerTime()
+    {
+        CheckTimer();
+        return _timerTime - GetTimerAge;
+    }
     private TimeSpan GetTimerAge => DateTime.UtcNow - _creationDate;
     
     public DateTime GetCreationTime => _creationDate;

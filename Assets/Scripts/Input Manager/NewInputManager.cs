@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
 
 public class NewInputManager : MonoBehaviour {
@@ -121,15 +122,26 @@ public class NewInputManager : MonoBehaviour {
         _target = null;
     }
 
+    private IEnumerator SelectTileToDestroy() {
+        while (_controls.Player.PrimaryTouchContact.ReadValue<float>() != 0) {
+            GameEvents.current.TriggerSelectTile(GetWorldPosition());
+            yield return null;
+        }
+
+        GameEvents.current.TriggerFieldClick(GetWorldPosition());
+    }
+
     /// <summary>
     /// Обработчик нажатия на экран
     /// </summary>
     /// <param name="eventAction">Вызвавшее событие</param>
     /// <param name="valueAction">Действие для считывания позиции</param>
     private void OnTouch() {
+        if (EventSystem.current.IsPointerOverGameObject()) return;
+
         Vector3 mousePosition = GetWorldPosition();
         if (_state == States.Digging) {
-            GameEvents.current.TriggerFieldClick(mousePosition);
+            StartCoroutine(SelectTileToDestroy());
             return;
         }
 
@@ -177,6 +189,15 @@ public class NewInputManager : MonoBehaviour {
 
         // Остановить зум
         _zoomChange = 0;
+    }
+
+    public void SwitchMode() {
+        if (_state == States.Dragging) {
+            _state = States.Digging;
+        }
+        else {
+            _state = States.Dragging;
+        }
     }
 
     private void Update() {

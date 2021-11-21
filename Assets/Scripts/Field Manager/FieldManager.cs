@@ -203,7 +203,7 @@ public class FieldManager : MonoBehaviour {
     private void OnTileSelect(Vector3 position) {
         Vector3Int cellPosition = Vector3Int.zero;
         // Проверяем может ли тайл быть разрушенным
-        if (!GetValidCell(position, ref cellPosition) && !TileCanBeDestroed(cellPosition)) {
+        if (!GetValidCell(position, ref cellPosition) || !TileCanBeDestroed(cellPosition)) {
             HideHighlighter();
             return;
         }
@@ -215,9 +215,10 @@ public class FieldManager : MonoBehaviour {
     /// </summary>
     /// <param name="position">Позиция нажатия в мире</param>
     private void OnTileClick(Vector3 position) {
+        HideHighlighter();
         Vector3Int cellPosition = Vector3Int.zero;
         // Проверяем может ли тайл быть разрушенным
-        if (!GetValidCell(position, ref cellPosition) && !TileCanBeDestroed(cellPosition)) return;
+        if (!GetValidCell(position, ref cellPosition) || !TileCanBeDestroed(cellPosition)) return;
 
         // Позиция разрушенного тайла больше не доступна
         RemoveFreeTilePosition(cellPosition);

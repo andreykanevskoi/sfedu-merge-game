@@ -416,9 +416,6 @@ public class FieldManager : MonoBehaviour {
         }
     }
 
-    private void Awake() {
-    }
-
     private void Start() {
         RemoveSmogedTiles();
     }

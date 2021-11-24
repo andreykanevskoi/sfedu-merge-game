@@ -5,12 +5,13 @@ public class QuitButton : MonoBehaviour
 {
     public void AutoQuit()
     {
-        if (SceneManager.GetActiveScene().handle == 0)
+        if (SceneManager.GetActiveScene().handle == 1)
         {
+            //выход в главное меню
             Application.Quit();
         }
-
-        SceneManager.LoadScene(0);
+        //выход в лагерь
+        SceneManager.LoadScene(1);
     }
 
     public void QuitInIndex(int sceneIndex)

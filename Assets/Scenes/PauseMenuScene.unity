@@ -2193,6 +2193,11 @@ PrefabInstance:
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_StringArgument
       value: CampPause
       objectReference: {fileID: 0}
+    - target: {fileID: 6962220807133598486, guid: 44b0b1107db1b154fae20398aff637de,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 6962220807133598489, guid: 44b0b1107db1b154fae20398aff637de,
         type: 3}
       propertyPath: m_AnchoredPosition.y

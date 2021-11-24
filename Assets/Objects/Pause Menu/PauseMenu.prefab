@@ -160,6 +160,7 @@ GameObject:
   - component: {fileID: 1757519676435171766}
   - component: {fileID: 7968067268342045308}
   - component: {fileID: 4909848875144087682}
+  - component: {fileID: 2815846892225300581}
   m_Layer: 5
   m_Name: MusicButton
   m_TagString: Untagged
@@ -266,7 +267,34 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 7968067268342045308}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 2815846892225300581}
+        m_MethodName: SwitchOn
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+--- !u!114 &2815846892225300581
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6469978382737343930}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 75e8228849e49c64fac2f2362a5e33f2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _spriteEnabled: {fileID: 21300000, guid: a4583f66d9727724080be77fd610c404, type: 3}
+  _spriteDisabled: {fileID: 21300000, guid: ebb4ddffc65ba544f9b8cd2123e9cbe0, type: 3}
+  _image: {fileID: 7647323462582745612}
+  _playerPrefsKey: Music
 --- !u!1 &6698599984580326409
 GameObject:
   m_ObjectHideFlags: 0
@@ -353,6 +381,7 @@ GameObject:
   - component: {fileID: 6988751499737699989}
   - component: {fileID: 5324629202284888161}
   - component: {fileID: 7704193262692828546}
+  - component: {fileID: 2006789950886502563}
   m_Layer: 5
   m_Name: AudioButton
   m_TagString: Untagged
@@ -459,7 +488,34 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 5324629202284888161}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 2006789950886502563}
+        m_MethodName: SwitchOn
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+--- !u!114 &2006789950886502563
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6775314851831063086}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 75e8228849e49c64fac2f2362a5e33f2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _spriteEnabled: {fileID: 21300000, guid: 447b0b3c328556b4897c0820e6014c8f, type: 3}
+  _spriteDisabled: {fileID: 21300000, guid: bf1a5b3ad6e0950478cc656dc32a16db, type: 3}
+  _image: {fileID: 7447353342114410071}
+  _playerPrefsKey: Audio
 --- !u!1 &6962220806871630925
 GameObject:
   m_ObjectHideFlags: 0

@@ -13,7 +13,7 @@ public class TimerPrint : MonoBehaviour
         {
             string output = "";
             output += "Timer" + TimerManager.GetTimer(i).GetName;
-            output += " , Time:" + TimerManager.GetTimer(i).GetRemainingTimerTime;
+            output += " , Time:" + TimerManager.GetTimer(i).GetRemainingTimerTime();
             Debug.Log(output);
         }
     }

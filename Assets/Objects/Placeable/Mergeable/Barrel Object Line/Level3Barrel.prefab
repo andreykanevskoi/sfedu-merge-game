@@ -75,6 +75,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7575690795873771539, guid: 15a09436f12cba44f9a7e54030bb78f3,
         type: 3}
+      propertyPath: prefabId
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 7575690795873771539, guid: 15a09436f12cba44f9a7e54030bb78f3,
+        type: 3}
       propertyPath: _currentLevel
       value: 2
       objectReference: {fileID: 0}

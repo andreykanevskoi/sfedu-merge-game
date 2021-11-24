@@ -18,7 +18,7 @@ public class TimerView : MonoBehaviour
         ChestOpeningEventSystem.UnsubscribeFromEvent(TimerActivation);
     }
 
-    public void SetTimer(Timer t)
+    public void InitTimerView(Timer t)
     {
         _timer = t;
         UpdateTimerView();
@@ -27,7 +27,7 @@ public class TimerView : MonoBehaviour
 
     string GetRemainingTimerTimeToString()
     {
-        return _timer.GetRemainingTimerTime.TotalSeconds.ToString("F0");
+        return _timer.GetRemainingTimerTime().TotalSeconds.ToString("F0");
     }
 
     void UpdateTimerView()

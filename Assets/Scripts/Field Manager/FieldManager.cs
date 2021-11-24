@@ -103,6 +103,13 @@ public class FieldManager : MonoBehaviour {
         nearestPosition = _freeTilesPositions
                             .OrderBy(position => (startPosition - position).sqrMagnitude)
                             .First();
+        
+        // Что за хрень
+        if (!tileManager.HasTile(nearestPosition))
+        {
+            Debug.Log("WTF");
+        }
+        
         return true;
     }
 
@@ -237,14 +244,8 @@ public class FieldManager : MonoBehaviour {
     /// </summary>
     /// <param name="tile">Определитель области</param>
     public void RemoveSmogedArea(Tile tile) {
-        // Получаем область
-        var area = smogManager.GetSmogedArea(tile);
-        if (area == null) {
-            return;
-        }
-
         // Обновляем свободные позиции
-        foreach(var position in area) {
+        foreach(var position in smogManager.GetSmogedArea(tile)) {
             Vector3Int positionBelow = GetPositionBellow(position);
 
             if (tileManager.HasTile(positionBelow) && objectManager.IsFree(positionBelow)) {
@@ -289,13 +290,22 @@ public class FieldManager : MonoBehaviour {
     }
 
     /// <summary>
-    /// Добавить на поле объект.
+    /// Добавление нового объекта на поле, без срабатывания ивента появления объекта.
+    /// Используется при загрузке лагеря, где при создании объекта не нужно вызывать событие.
+    /// </summary>
+    /// <param name="placeable"></param>
+    public void AddPlaceableWithNoEventTriggered(Placeable placeable) {
+        objectManager.Add(placeable);
+        RemoveFreeTilePosition(placeable.currentCell);
+    }
+
+    /// <summary>
+    /// Добавить на поле объект и вызвать ивент появления объекта.
     /// </summary>
     /// <param name="placeable">Добавляемый объект</param>
     public void AddPlaceableToField(Placeable placeable) {
-        objectManager.Add(placeable);
+        AddPlaceableWithNoEventTriggered(placeable);
         ObjectAppearance(placeable);
-        RemoveFreeTilePosition(placeable.currentCell);
     }
 
     /// <summary>
@@ -306,6 +316,10 @@ public class FieldManager : MonoBehaviour {
         objectManager.RemoveObject(placeable);
         ObjectDisappearance(placeable);
         AddFreeTilePosition(placeable.currentCell);
+    }
+
+    public void InitFreePositionStorage() {
+        _freeTilesPositions = new HashSet<Vector3Int>();
     }
 
     /// <summary>
@@ -333,17 +347,26 @@ public class FieldManager : MonoBehaviour {
             Vector3Int positionAbove = pos;
             positionAbove.z += 1;
 
-            if (!tileManager.HasTile(positionAbove)) {
+            if (!tileManager.HasTile(positionAbove) && tilemap.HasTile(pos)) {
                 AddFreeTilePosition(pos);
             }
         }
     }
 
     /// <summary>
-    /// Инициализация Менеджера объектов.
+    /// Инициализация менеджера объектов.
+    /// Используется при загрузке лагеря.
     /// </summary>
-    private void InitObjectManager() {
+    public void InitObjectManager() {
         objectManager = new ObjectManager();
+    }
+
+    /// <summary>
+    /// Инициализация менеджера объектов и запись всех объектов на поле.
+    /// Используется на уровнях и при первом запуске лагеря (без сохранения).
+    /// </summary>
+    public void LateInitObjectManager() {
+        InitObjectManager();
 
         // Все объекты на поле
         Placeable[] placeables = FindObjectsOfType<Placeable>();
@@ -379,34 +402,22 @@ public class FieldManager : MonoBehaviour {
     /// <summary>
     /// Инициализация менеджера тумана.
     /// </summary>
-    private void InitSmogManager() {
+    public void InitSmogManager() {
         Tilemap tilemap = GameObject.FindGameObjectWithTag(_smogTilemapTag)?.GetComponent<Tilemap>();
         smogManager = new SmogManager(tilemap);
-
-        if (smogManager.smogPositions == null) return;
-
-        RemoveSmogedTiles();
-
     }
 
     /// <summary>
     /// Удалить свободные позиции, находящиеся под туманом.
     /// </summary>
     private void RemoveSmogedTiles() {
-        foreach (var position in smogManager.smogPositions) {
+        foreach (var position in smogManager.GetAllSmogPositions()) {
             RemoveFreeTilePosition(GetPositionBellow(position));
         }
     }
 
-    private void Awake() {
-    }
-
     private void Start() {
-        _freeTilesPositions = new HashSet<Vector3Int>();
-
-        InitTileManager();
-        InitObjectManager();
-        InitSmogManager();
+        RemoveSmogedTiles();
     }
 
     #region - OnEnable / OnDisable -

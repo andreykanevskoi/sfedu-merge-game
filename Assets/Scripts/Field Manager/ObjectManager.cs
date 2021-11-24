@@ -11,6 +11,30 @@ public class ObjectManager
     /// </summary>
     private Dictionary<Vector3Int, Placeable> _placedObjects = new Dictionary<Vector3Int, Placeable>();
 
+    public Dictionary<Vector3Int, Placeable> GetDictionary()
+    {
+        return _placedObjects;
+    }
+
+    public void SetDictionary2(Dictionary<Vector3Int, Placeable> _plcObj)
+    {
+        foreach (Vector3Int key in _plcObj.Keys)
+        {
+            _placedObjects.Add(key, _plcObj[key]);
+        }
+    }
+
+    public void SetDictionary(Dictionary<Vector3Int, Placeable> _plcObj)
+    {
+        foreach (KeyValuePair<Vector3Int, Placeable> key in _plcObj)
+        {
+            //_placedObjects.Add(key.Key, key.Value);
+            Placeable placeable = key.Value;
+
+            _placedObjects[placeable.currentCell] = placeable;
+        }
+    }
+
     /// <summary>
     /// Добавить объект без вызова события появления объекта.
     /// Используется во время инициализации уровня.

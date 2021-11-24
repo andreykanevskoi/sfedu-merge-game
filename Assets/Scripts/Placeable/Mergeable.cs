@@ -33,6 +33,7 @@ public class Mergeable : Placeable {
                 newMergeable.currentCell = currentCell;
                 newMergeable.fieldManager = fieldManager;
                 newMergeable.transform.position = Position;
+                newMergeable.fallingAudioClip = fallingAudioClip;
 
                 fieldManager.RemovePlaceableToField(this);
                 fieldManager.RemovePlaceableToField(placeable);
@@ -44,8 +45,11 @@ public class Mergeable : Placeable {
 
                 return;
             }
+            else
+            {
+                SoundManager.PlaySound(SoundManager.Sound.nonMerge);
+            }
         }
-
         placeable.ReturnPosition();
     }
 

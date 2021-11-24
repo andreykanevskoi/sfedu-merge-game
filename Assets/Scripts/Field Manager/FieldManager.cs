@@ -153,6 +153,9 @@ public class FieldManager : MonoBehaviour {
             // Устанавливаем объект на новую позицию
             objectManager.MoveObjectToCell(cellPosition, placeable);
             placeable.Position = GetCellWorldPosition(cellPosition);
+
+            // Проигрываем звук падения на тайл
+            SoundManager.PlaySound(placeable.fallingAudioClip);
             return;
         }
 
@@ -219,6 +222,8 @@ public class FieldManager : MonoBehaviour {
         FieldTile fieldTile = tileManager.DestroyTile(cellPosition);
         // Проигрываем анимацию
         SetDestructedTile(fieldTile, cellPosition);
+        // Проигрываем звук
+        //SoundManager.PlaySound(fieldTile.digAudioClip);
 
         // Проверяем, есть ли объект под разрушенным тайлом
         Vector3Int positionBelow = GetPositionBellow(cellPosition);

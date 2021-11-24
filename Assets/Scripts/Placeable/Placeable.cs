@@ -11,6 +11,12 @@ public class Placeable : MonoBehaviour {
     /// </summary>
     public string BaseName;
 
+    /// <summary>
+    /// Аудиоклип падения объекта на тайл.
+    /// Объекты с одинаковым именем будут воспроизводить один и тот же звук.
+    /// </summary>
+    public AudioClip fallingAudioClip;
+
     /// <summary> 
     /// Текущая позиция на сетке
     /// </summary>
@@ -45,7 +51,7 @@ public class Placeable : MonoBehaviour {
     private bool _isDraggable = true;
 
     /// <summary>
-    /// Компонен отрисовки объекта.
+    /// Компонент отрисовки объекта.
     /// </summary>
     private SpriteRenderer _renderer;
     /// <summary>

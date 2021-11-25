@@ -222,14 +222,6 @@ public class @InputControls : IInputActionCollection, IDisposable
                     ""interactions"": """"
                 },
                 {
-                    ""name"": ""ClickPopup"",
-                    ""type"": ""Button"",
-                    ""id"": ""371c7658-2782-4440-a6f8-656cf0b7189b"",
-                    ""expectedControlType"": ""Button"",
-                    ""processors"": """",
-                    ""interactions"": ""Press(behavior=1)""
-                },
-                {
                     ""name"": ""Point"",
                     ""type"": ""PassThrough"",
                     ""id"": ""84111aab-c3e5-41b7-9d39-0745d45b16ee"",
@@ -680,48 +672,91 @@ public class @InputControls : IInputActionCollection, IDisposable
                     ""action"": ""TrackedDeviceOrientation"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                }
+            ]
+        },
+        {
+            ""name"": ""Minigame"",
+            ""id"": ""067b98b2-56ff-40e6-91c1-0a75b6ef82c2"",
+            ""actions"": [
+                {
+                    ""name"": ""PrimaryFingerPosition"",
+                    ""type"": ""Value"",
+                    ""id"": ""b771be18-2c13-4fe9-9d18-d3a15caf4ee2"",
+                    ""expectedControlType"": ""Vector2"",
+                    ""processors"": """",
+                    ""interactions"": """"
+                },
+                {
+                    ""name"": ""PrimaryTouchContact"",
+                    ""type"": ""Button"",
+                    ""id"": ""4bf31ec9-12e1-4d82-9fbf-26ed29d07152"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": ""Press""
+                },
+                {
+                    ""name"": ""RMB"",
+                    ""type"": ""Button"",
+                    ""id"": ""9ebf58b2-4c90-4a28-a729-f90e7d9da770"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": ""Press""
+                }
+            ],
+            ""bindings"": [
+                {
+                    ""name"": """",
+                    ""id"": ""2ddf552d-123d-4342-8383-942ed1da9727"",
+                    ""path"": ""<Touchscreen>/touch0/press"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Touchscreen"",
+                    ""action"": ""PrimaryTouchContact"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 },
                 {
                     ""name"": """",
-                    ""id"": ""b8aee3e2-6574-44a7-92a0-9ed5ecfc47c3"",
+                    ""id"": ""51d03fe8-3ec5-4858-bc03-e96d485551f3"",
                     ""path"": ""<Mouse>/leftButton"",
                     ""interactions"": """",
                     ""processors"": """",
-                    ""groups"": ""Keyboard&Mouse;Mouse And Keyboard"",
-                    ""action"": ""ClickPopup"",
+                    ""groups"": ""Mouse And Keyboard"",
+                    ""action"": ""PrimaryTouchContact"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 },
                 {
                     ""name"": """",
-                    ""id"": ""81c108c4-3aaf-4822-bea5-013e5d3f1da8"",
-                    ""path"": ""<Pen>/tip"",
+                    ""id"": ""027dd2b4-fe07-40f3-9979-5778aa47d6ef"",
+                    ""path"": ""<Mouse>/position"",
                     ""interactions"": """",
                     ""processors"": """",
-                    ""groups"": "";Keyboard&Mouse"",
-                    ""action"": ""ClickPopup"",
+                    ""groups"": ""Mouse And Keyboard"",
+                    ""action"": ""PrimaryFingerPosition"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 },
                 {
                     ""name"": """",
-                    ""id"": ""fe5be6ce-c7cf-4623-b3cb-5627797a8fe5"",
-                    ""path"": ""<Touchscreen>/touch*/press"",
+                    ""id"": ""8e72bd7c-f089-4345-acdf-520a8946e8cc"",
+                    ""path"": ""<Touchscreen>/touch0/position"",
                     ""interactions"": """",
                     ""processors"": """",
-                    ""groups"": ""Touch;Touchscreen"",
-                    ""action"": ""ClickPopup"",
+                    ""groups"": ""Touchscreen"",
+                    ""action"": ""PrimaryFingerPosition"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 },
                 {
                     ""name"": """",
-                    ""id"": ""b6f8a570-a875-45b6-9d41-e577bf9d0801"",
-                    ""path"": ""<XRController>/trigger"",
+                    ""id"": ""f303f855-8e3d-4e94-8cc1-1969b682a8dc"",
+                    ""path"": ""<Mouse>/rightButton"",
                     ""interactions"": """",
                     ""processors"": """",
-                    ""groups"": ""XR"",
-                    ""action"": ""ClickPopup"",
+                    ""groups"": ""Mouse And Keyboard"",
+                    ""action"": ""RMB"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 }
@@ -774,11 +809,15 @@ public class @InputControls : IInputActionCollection, IDisposable
         m_UI_MiddleClick = m_UI.FindAction("MiddleClick", throwIfNotFound: true);
         m_UI_ScrollWheel = m_UI.FindAction("ScrollWheel", throwIfNotFound: true);
         m_UI_Click = m_UI.FindAction("Click", throwIfNotFound: true);
-        m_UI_ClickPopup = m_UI.FindAction("ClickPopup", throwIfNotFound: true);
         m_UI_Point = m_UI.FindAction("Point", throwIfNotFound: true);
         m_UI_Cancel = m_UI.FindAction("Cancel", throwIfNotFound: true);
         m_UI_Submit = m_UI.FindAction("Submit", throwIfNotFound: true);
         m_UI_Navigate = m_UI.FindAction("Navigate", throwIfNotFound: true);
+        // Minigame
+        m_Minigame = asset.FindActionMap("Minigame", throwIfNotFound: true);
+        m_Minigame_PrimaryFingerPosition = m_Minigame.FindAction("PrimaryFingerPosition", throwIfNotFound: true);
+        m_Minigame_PrimaryTouchContact = m_Minigame.FindAction("PrimaryTouchContact", throwIfNotFound: true);
+        m_Minigame_RMB = m_Minigame.FindAction("RMB", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -907,7 +946,6 @@ public class @InputControls : IInputActionCollection, IDisposable
     private readonly InputAction m_UI_MiddleClick;
     private readonly InputAction m_UI_ScrollWheel;
     private readonly InputAction m_UI_Click;
-    private readonly InputAction m_UI_ClickPopup;
     private readonly InputAction m_UI_Point;
     private readonly InputAction m_UI_Cancel;
     private readonly InputAction m_UI_Submit;
@@ -922,7 +960,6 @@ public class @InputControls : IInputActionCollection, IDisposable
         public InputAction @MiddleClick => m_Wrapper.m_UI_MiddleClick;
         public InputAction @ScrollWheel => m_Wrapper.m_UI_ScrollWheel;
         public InputAction @Click => m_Wrapper.m_UI_Click;
-        public InputAction @ClickPopup => m_Wrapper.m_UI_ClickPopup;
         public InputAction @Point => m_Wrapper.m_UI_Point;
         public InputAction @Cancel => m_Wrapper.m_UI_Cancel;
         public InputAction @Submit => m_Wrapper.m_UI_Submit;
@@ -954,9 +991,6 @@ public class @InputControls : IInputActionCollection, IDisposable
                 @Click.started -= m_Wrapper.m_UIActionsCallbackInterface.OnClick;
                 @Click.performed -= m_Wrapper.m_UIActionsCallbackInterface.OnClick;
                 @Click.canceled -= m_Wrapper.m_UIActionsCallbackInterface.OnClick;
-                @ClickPopup.started -= m_Wrapper.m_UIActionsCallbackInterface.OnClickPopup;
-                @ClickPopup.performed -= m_Wrapper.m_UIActionsCallbackInterface.OnClickPopup;
-                @ClickPopup.canceled -= m_Wrapper.m_UIActionsCallbackInterface.OnClickPopup;
                 @Point.started -= m_Wrapper.m_UIActionsCallbackInterface.OnPoint;
                 @Point.performed -= m_Wrapper.m_UIActionsCallbackInterface.OnPoint;
                 @Point.canceled -= m_Wrapper.m_UIActionsCallbackInterface.OnPoint;
@@ -991,9 +1025,6 @@ public class @InputControls : IInputActionCollection, IDisposable
                 @Click.started += instance.OnClick;
                 @Click.performed += instance.OnClick;
                 @Click.canceled += instance.OnClick;
-                @ClickPopup.started += instance.OnClickPopup;
-                @ClickPopup.performed += instance.OnClickPopup;
-                @ClickPopup.canceled += instance.OnClickPopup;
                 @Point.started += instance.OnPoint;
                 @Point.performed += instance.OnPoint;
                 @Point.canceled += instance.OnPoint;
@@ -1010,6 +1041,55 @@ public class @InputControls : IInputActionCollection, IDisposable
         }
     }
     public UIActions @UI => new UIActions(this);
+
+    // Minigame
+    private readonly InputActionMap m_Minigame;
+    private IMinigameActions m_MinigameActionsCallbackInterface;
+    private readonly InputAction m_Minigame_PrimaryFingerPosition;
+    private readonly InputAction m_Minigame_PrimaryTouchContact;
+    private readonly InputAction m_Minigame_RMB;
+    public struct MinigameActions
+    {
+        private @InputControls m_Wrapper;
+        public MinigameActions(@InputControls wrapper) { m_Wrapper = wrapper; }
+        public InputAction @PrimaryFingerPosition => m_Wrapper.m_Minigame_PrimaryFingerPosition;
+        public InputAction @PrimaryTouchContact => m_Wrapper.m_Minigame_PrimaryTouchContact;
+        public InputAction @RMB => m_Wrapper.m_Minigame_RMB;
+        public InputActionMap Get() { return m_Wrapper.m_Minigame; }
+        public void Enable() { Get().Enable(); }
+        public void Disable() { Get().Disable(); }
+        public bool enabled => Get().enabled;
+        public static implicit operator InputActionMap(MinigameActions set) { return set.Get(); }
+        public void SetCallbacks(IMinigameActions instance)
+        {
+            if (m_Wrapper.m_MinigameActionsCallbackInterface != null)
+            {
+                @PrimaryFingerPosition.started -= m_Wrapper.m_MinigameActionsCallbackInterface.OnPrimaryFingerPosition;
+                @PrimaryFingerPosition.performed -= m_Wrapper.m_MinigameActionsCallbackInterface.OnPrimaryFingerPosition;
+                @PrimaryFingerPosition.canceled -= m_Wrapper.m_MinigameActionsCallbackInterface.OnPrimaryFingerPosition;
+                @PrimaryTouchContact.started -= m_Wrapper.m_MinigameActionsCallbackInterface.OnPrimaryTouchContact;
+                @PrimaryTouchContact.performed -= m_Wrapper.m_MinigameActionsCallbackInterface.OnPrimaryTouchContact;
+                @PrimaryTouchContact.canceled -= m_Wrapper.m_MinigameActionsCallbackInterface.OnPrimaryTouchContact;
+                @RMB.started -= m_Wrapper.m_MinigameActionsCallbackInterface.OnRMB;
+                @RMB.performed -= m_Wrapper.m_MinigameActionsCallbackInterface.OnRMB;
+                @RMB.canceled -= m_Wrapper.m_MinigameActionsCallbackInterface.OnRMB;
+            }
+            m_Wrapper.m_MinigameActionsCallbackInterface = instance;
+            if (instance != null)
+            {
+                @PrimaryFingerPosition.started += instance.OnPrimaryFingerPosition;
+                @PrimaryFingerPosition.performed += instance.OnPrimaryFingerPosition;
+                @PrimaryFingerPosition.canceled += instance.OnPrimaryFingerPosition;
+                @PrimaryTouchContact.started += instance.OnPrimaryTouchContact;
+                @PrimaryTouchContact.performed += instance.OnPrimaryTouchContact;
+                @PrimaryTouchContact.canceled += instance.OnPrimaryTouchContact;
+                @RMB.started += instance.OnRMB;
+                @RMB.performed += instance.OnRMB;
+                @RMB.canceled += instance.OnRMB;
+            }
+        }
+    }
+    public MinigameActions @Minigame => new MinigameActions(this);
     private int m_MouseAndKeyboardSchemeIndex = -1;
     public InputControlScheme MouseAndKeyboardScheme
     {
@@ -1045,10 +1125,15 @@ public class @InputControls : IInputActionCollection, IDisposable
         void OnMiddleClick(InputAction.CallbackContext context);
         void OnScrollWheel(InputAction.CallbackContext context);
         void OnClick(InputAction.CallbackContext context);
-        void OnClickPopup(InputAction.CallbackContext context);
         void OnPoint(InputAction.CallbackContext context);
         void OnCancel(InputAction.CallbackContext context);
         void OnSubmit(InputAction.CallbackContext context);
         void OnNavigate(InputAction.CallbackContext context);
+    }
+    public interface IMinigameActions
+    {
+        void OnPrimaryFingerPosition(InputAction.CallbackContext context);
+        void OnPrimaryTouchContact(InputAction.CallbackContext context);
+        void OnRMB(InputAction.CallbackContext context);
     }
 }

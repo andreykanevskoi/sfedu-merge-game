@@ -1,7 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.EventSystems;
+using UnityEngine.InputSystem;
 
 public class PaintCanvas : MonoBehaviour{
     [SerializeField] private int _textureSize = 128;
@@ -18,6 +18,8 @@ public class PaintCanvas : MonoBehaviour{
     private int _oldX, _oldY;
 
     private RectTransform _rectTransform;
+    private WaitForFixedUpdate _waitForFixedUpdate = new WaitForFixedUpdate();
+    private Vector2 _mousePosition;
 
     private void Awake() {
         _rectTransform = GetComponent<RectTransform>();
@@ -54,71 +56,75 @@ public class PaintCanvas : MonoBehaviour{
         return RectTransformUtility.RectangleContainsScreenPoint(_rectTransform, position);
     }
 
-    private void Update() {
-        //_brushSize += (int)Input.mouseScrollDelta.y;
-        if (Input.GetMouseButton(0))// очистка
-        {
-            Vector2 position = Input.mousePosition;
+    public void OnTouch(InputAction.CallbackContext context) {
+        StartCoroutine(StartDrawing(context.action));
+    }
 
-            if (InsideImage(position)) {
+    public void SetMousePosition(InputAction.CallbackContext context) {
+        _mousePosition = context.ReadValue<Vector2>();
+    }
+
+    private IEnumerator StartDrawing(InputAction action) {
+        while (action.ReadValue<float>() != 0) {
+            if (InsideImage(_mousePosition)) {
                 Vector2 localPoint = new Vector2();
-                if (RectTransformUtility.ScreenPointToLocalPointInRectangle(_rectTransform, position, null, out localPoint)) {
-                    Debug.Log("Inside!");
-                    Debug.Log(localPoint);
+                if (RectTransformUtility.ScreenPointToLocalPointInRectangle(_rectTransform, _mousePosition, null, out localPoint)) {
+                    Draw(localPoint);
+                }
+            }
+            yield return _waitForFixedUpdate;
+        }
 
-                    Vector2 uv = new Vector2(
-                        (localPoint.x + _rectTransform.rect.width * 0.5f) / _rectTransform.rect.width,
-                        (localPoint.y + _rectTransform.rect.height * 0.5f) / _rectTransform.rect.height
-                    );
+        Debug.Log(CalculatePercent());
+    }
 
-                    Debug.Log(uv);
+    private void Draw(Vector2 localPoint) {
+        Vector2 uv = new Vector2(
+            (localPoint.x + _rectTransform.rect.width * 0.5f) / _rectTransform.rect.width,
+            (localPoint.y + _rectTransform.rect.height * 0.5f) / _rectTransform.rect.height
+        );
 
-                    int newX = (int)(uv.x * _textureSize);
-                    int newY = (int)(uv.y * _textureSize);
+        int newX = (int)(uv.x * _textureSize);
+        int newY = (int)(uv.y * _textureSize);
 
-                    _texture.SetPixel(newX, newY, new Color(0, 0, 0, 0));
+        _texture.SetPixel(newX, newY, new Color(0, 0, 0, 0));
 
-                    if (_oldX != newX || _oldY != newY) {
-                        DrawCircle(newX, newY);
-                        _oldX = newX;
-                        _oldY = newY;
-                    }
-                    _texture.Apply();
+        if (_oldX != newX || _oldY != newY) {
+            DrawCircle(newX, newY);
+            _oldX = newX;
+            _oldY = newY;
+        }
+        _texture.Apply();
+    }
+
+    private float CalculatePercent() {
+        _counter = _texture.width * _texture.height;
+        float fullImg = _counter;
+        float dirtyImg;
+
+        for (int x = 0; x < _texture.width; x++) {
+            for (int y = 0; y < _texture.height; y++) {
+                Color color = _texture.GetPixel(x, y);
+                if (color.a == 0) {
+                    _counter--;
                 }
             }
         }
+        dirtyImg = _counter;
+        return (dirtyImg / _fullDirtyImg) * 100;
+    }
 
+    public void OnRMB(InputAction.CallbackContext context) {
+        Reset();
+    }
 
-        if (Input.GetKeyUp(KeyCode.Mouse0))// подсчет % грязи по отпусканию ЛКМ
-        {
-            _counter = _texture.width * _texture.height;
-            float fullImg = _counter;
-            float dirtyImg;
-
-            for (int x = 0; x < _texture.width; x++) {
-                for (int y = 0; y < _texture.height; y++) {
-                    Color color = _texture.GetPixel(x, y);
-                    if (color.a == 0) {
-                        _counter--;
-                    }
-                }
-            }
-            dirtyImg = _counter;
-            float pers = (dirtyImg / _fullDirtyImg) * 100;
-            Debug.Log(pers);
-        }
-
-        if (Input.GetMouseButton(1))// обновить изображение
-        {
-            Debug.Log("Image updated");
-            Graphics.CopyTexture(_tmpT, _texture);
-        }
+    private void Reset() {
+        Graphics.CopyTexture(_tmpT, _texture);
     }
 
     // восстанавливает текстуру при завершении
     void OnApplicationQuit() {
-        Debug.Log("Application ending");
-        Graphics.CopyTexture(_tmpT, _texture);
+        Reset();
     }
 
     void DrawCircle(int rayX, int rayY)// круглая кисть

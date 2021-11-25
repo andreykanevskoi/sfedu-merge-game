@@ -209,14 +209,6 @@
                     "interactions": ""
                 },
                 {
-                    "name": "ClickPopup",
-                    "type": "Button",
-                    "id": "371c7658-2782-4440-a6f8-656cf0b7189b",
-                    "expectedControlType": "Button",
-                    "processors": "",
-                    "interactions": "Press(behavior=1)"
-                },
-                {
                     "name": "Point",
                     "type": "PassThrough",
                     "id": "84111aab-c3e5-41b7-9d39-0745d45b16ee",
@@ -667,48 +659,91 @@
                     "action": "TrackedDeviceOrientation",
                     "isComposite": false,
                     "isPartOfComposite": false
+                }
+            ]
+        },
+        {
+            "name": "Minigame",
+            "id": "067b98b2-56ff-40e6-91c1-0a75b6ef82c2",
+            "actions": [
+                {
+                    "name": "PrimaryFingerPosition",
+                    "type": "Value",
+                    "id": "b771be18-2c13-4fe9-9d18-d3a15caf4ee2",
+                    "expectedControlType": "Vector2",
+                    "processors": "",
+                    "interactions": ""
+                },
+                {
+                    "name": "PrimaryTouchContact",
+                    "type": "Button",
+                    "id": "4bf31ec9-12e1-4d82-9fbf-26ed29d07152",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "Press"
+                },
+                {
+                    "name": "RMB",
+                    "type": "Button",
+                    "id": "9ebf58b2-4c90-4a28-a729-f90e7d9da770",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "Press"
+                }
+            ],
+            "bindings": [
+                {
+                    "name": "",
+                    "id": "2ddf552d-123d-4342-8383-942ed1da9727",
+                    "path": "<Touchscreen>/touch0/press",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Touchscreen",
+                    "action": "PrimaryTouchContact",
+                    "isComposite": false,
+                    "isPartOfComposite": false
                 },
                 {
                     "name": "",
-                    "id": "b8aee3e2-6574-44a7-92a0-9ed5ecfc47c3",
+                    "id": "51d03fe8-3ec5-4858-bc03-e96d485551f3",
                     "path": "<Mouse>/leftButton",
                     "interactions": "",
                     "processors": "",
-                    "groups": "Keyboard&Mouse;Mouse And Keyboard",
-                    "action": "ClickPopup",
+                    "groups": "Mouse And Keyboard",
+                    "action": "PrimaryTouchContact",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },
                 {
                     "name": "",
-                    "id": "81c108c4-3aaf-4822-bea5-013e5d3f1da8",
-                    "path": "<Pen>/tip",
+                    "id": "027dd2b4-fe07-40f3-9979-5778aa47d6ef",
+                    "path": "<Mouse>/position",
                     "interactions": "",
                     "processors": "",
-                    "groups": ";Keyboard&Mouse",
-                    "action": "ClickPopup",
+                    "groups": "Mouse And Keyboard",
+                    "action": "PrimaryFingerPosition",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },
                 {
                     "name": "",
-                    "id": "fe5be6ce-c7cf-4623-b3cb-5627797a8fe5",
-                    "path": "<Touchscreen>/touch*/press",
+                    "id": "8e72bd7c-f089-4345-acdf-520a8946e8cc",
+                    "path": "<Touchscreen>/touch0/position",
                     "interactions": "",
                     "processors": "",
-                    "groups": "Touch;Touchscreen",
-                    "action": "ClickPopup",
+                    "groups": "Touchscreen",
+                    "action": "PrimaryFingerPosition",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },
                 {
                     "name": "",
-                    "id": "b6f8a570-a875-45b6-9d41-e577bf9d0801",
-                    "path": "<XRController>/trigger",
+                    "id": "f303f855-8e3d-4e94-8cc1-1969b682a8dc",
+                    "path": "<Mouse>/rightButton",
                     "interactions": "",
                     "processors": "",
-                    "groups": "XR",
-                    "action": "ClickPopup",
+                    "groups": "Mouse And Keyboard",
+                    "action": "RMB",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

@@ -1,5 +1,7 @@
-﻿using System.Collections.Generic;
+﻿using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class LevelManager : MonoBehaviour
 {
@@ -32,7 +34,24 @@ public class LevelManager : MonoBehaviour
             }
         }
 
-        Debug.Log("Level complete");
+        OnLevelCompleted();
+    }
+
+    public void OnLevelCompleted() {
+        PlayerPrefs.SetString("complete", SceneManager.GetActiveScene().name);
+        PlayerPrefs.Save();
+
+        GameEvents.current.TriggerPlayerInputDisable();
+        var window = UIManager.current.CreateLevelCompleteWindow();
+        window.Init(() => StartCoroutine(StartRedirection()));
+    }
+
+    private IEnumerator StartRedirection() {
+        BlackScreen blackScreen = UIManager.current.CreateBlackScreen();
+        blackScreen.SetA(0f);
+
+        yield return StartCoroutine(blackScreen.BlackScreenFade(1f));
+        SceneManager.LoadScene(0, LoadSceneMode.Single);
     }
 
     private void Awake() {
@@ -53,6 +72,13 @@ public class LevelManager : MonoBehaviour
 
     private void Start() {
         _fieldManager.LateInitObjectManager();
+        StartCoroutine(StartLevelAnimation());
+    }
+
+    private IEnumerator StartLevelAnimation() {
+        BlackScreen blackScreen = UIManager.current.CreateBlackScreen();
+        yield return StartCoroutine(blackScreen.BlackScreenFade(0f));
+        Destroy(blackScreen.gameObject);
     }
 
     private void OnEnable() {

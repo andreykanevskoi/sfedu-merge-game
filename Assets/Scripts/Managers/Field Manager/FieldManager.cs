@@ -231,11 +231,12 @@ public class FieldManager : MonoBehaviour {
         // Проверяем, есть ли объект под разрушенным тайлом
         Vector3Int positionBelow = GetPositionBellow(cellPosition);
         if (tileManager.HasTile(positionBelow)) {
-            objectManager.OnTileDestroy(positionBelow);
+            Placeable placeable = objectManager.OnTileDestroy(positionBelow);
 
-            if (objectManager.IsFree(positionBelow)) {
+            if (placeable) {
                 // Добавляем новую свободную позицию
                 AddFreeTilePosition(positionBelow);
+                ObjectAppearance(placeable);
             }
         }
     }

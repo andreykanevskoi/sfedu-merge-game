@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine.Tilemaps;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 [System.Serializable]
 public class SmogedArea {
@@ -18,6 +19,8 @@ public class CampManager : MonoBehaviour, ISaveable {
     private List<SmogedArea> _completed;
 
     private Storage _storage;
+
+    private string _completedSceneName = "";
 
     // [SerializeField] private Storage _storage;
     [SerializeField] private PlaceableFactory _factory;
@@ -63,10 +66,50 @@ public class CampManager : MonoBehaviour, ISaveable {
 
         if (_storage.CheckFile()) {
             LoadSave();
+        }
+        else {
+            _fieldManager.LateInitObjectManager();
+        }
+    }
+
+    private void Start() {
+        StartCoroutine(StartLevelAnimation());
+    }
+     
+    private IEnumerator StartLevelAnimation() {
+        BlackScreen blackScreen = UIManager.current.CreateBlackScreen();
+        yield return StartCoroutine(blackScreen.BlackScreenFade(0f));
+        Destroy(blackScreen.gameObject);
+        if (_completedSceneName != "") {
+            GameEvents.current.TriggerLevelComplete(_completedSceneName);
+        }
+    }
+
+    private void AskRedirection(string sceneName) {
+        GameEvents.current.TriggerPlayerInputDisable();
+        Popup popup = UIManager.current.CreatePopupWindows();
+        popup.Init("Вы уверены, что хотите перейти на уровень?",
+                   () => StartCoroutine(StartRedirection(sceneName)),
+                   () => GameEvents.current.TriggerPlayerInputEnable()
+        );
+    }
+
+    private IEnumerator StartRedirection(string sceneName) {
+        BlackScreen blackScreen = UIManager.current.CreateBlackScreen();
+        blackScreen.SetA(0f);
+        yield return StartCoroutine(blackScreen.BlackScreenFade(1f));
+        Debug.Log("LoadScene");
+        _storage.Save(this);
+        LoadScene(sceneName);
+    }
+
+    private void LoadScene(string sceneName) {
+        if (sceneName != "") {
+
+            SceneManager.LoadScene(sceneName, LoadSceneMode.Single);
             return;
         }
-
-        _fieldManager.LateInitObjectManager();
+        Debug.LogError("No scene name");
     }
 
     private void LoadSave() {
@@ -78,7 +121,6 @@ public class CampManager : MonoBehaviour, ISaveable {
 
         _fieldManager.InitObjectManager();
 
-        _storage = new Storage();
         _storage.Load(this, _factory);
     }
 
@@ -118,7 +160,6 @@ public class CampManager : MonoBehaviour, ISaveable {
             }
         }
 
-
         // Количество сохраннёных объектов
         count = reader.ReadInt();
         Debug.Log(count);
@@ -135,9 +176,19 @@ public class CampManager : MonoBehaviour, ISaveable {
             // Добавление объекта на поле
             _fieldManager.AddPlaceableWithNoEventTriggered(placeable);
         }
+
+        if (PlayerPrefs.HasKey("complete")) {
+            _completedSceneName = PlayerPrefs.GetString("complete");
+        }
+    }
+
+    private void OnApplicationPause(bool pause) {
+        Debug.Log("OnApplicationPause");
+        _storage.Save(this);
     }
 
     private void OnApplicationQuit() {
+        Debug.Log("OnApplicationQuit");
         _storage.Save(this);
     }
 
@@ -145,10 +196,12 @@ public class CampManager : MonoBehaviour, ISaveable {
 
     private void OnEnable() {
         GameEvents.current.OnObjectAppearance += ObjectAppearance;
+        GameEvents.current.OnLevelRedirectionIntent += AskRedirection;
     }
 
     private void OnDisable() {
         GameEvents.current.OnObjectAppearance -= ObjectAppearance;
+        GameEvents.current.OnLevelRedirectionIntent -= AskRedirection;
     }
 
     #endregion

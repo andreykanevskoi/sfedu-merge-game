@@ -122,9 +122,15 @@ public class NewInputManager : MonoBehaviour {
         _target = null;
     }
 
+    /// <summary>
+    /// </summary>
+    /// <returns></returns>
     private IEnumerator SelectTileToDestroy() {
         while (_controls.Player.PrimaryTouchContact.ReadValue<float>() != 0) {
-            GameEvents.current.TriggerSelectTile(GetWorldPosition());
+            if (_controls.Player.Hold.phase == InputActionPhase.Performed) {
+                StartCoroutine(Panning());
+                yield break;
+            }
             yield return null;
         }
 
@@ -198,6 +204,8 @@ public class NewInputManager : MonoBehaviour {
         else {
             _state = States.Dragging;
         }
+
+        GameEvents.current.TriggerModeSwitch();
     }
 
     private void Update() {
@@ -214,8 +222,10 @@ public class NewInputManager : MonoBehaviour {
     private void OnEnable() {
         _controls = new InputControls();
 
-        _controls.Player.Enable();
+        GameEvents.current.OnPlayerInputEnable += () => _controls.Player.Enable();
+        GameEvents.current.OnPlayerInputDisable += () => _controls.Player.Disable();
 
+        _controls.Player.Enable();
         _controls.Player.PrimaryTouchContact.performed += _ => OnTouch();
         _controls.Player.MouseScroll.performed += _ => _zoomChange = _.ReadValue<float>();
         _controls.Player.SecondaryTouchContact.performed += _ => StartCoroutine(ZoomDetection());

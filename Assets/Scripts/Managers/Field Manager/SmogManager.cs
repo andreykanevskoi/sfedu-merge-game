@@ -88,9 +88,9 @@ public class SmogManager {
 
         // Удалить облась
         _smogedAreas.Remove(tile);
-
         // Удалить все тайлы области
         _smogMap.SwapTile(tile, null);
+        GameEvents.current.TriggerSmogAreaDisappearance();
     }
 
     /// <summary>

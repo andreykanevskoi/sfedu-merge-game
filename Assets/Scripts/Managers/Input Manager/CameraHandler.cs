@@ -5,6 +5,11 @@ using UnityEngine;
 public class CameraHandler : MonoBehaviour {
     private Camera _camera;
     private Vector2 _destination;
+    private Vector2 _startPosition;
+
+    private Coroutine moveCoroutine;
+
+    private WaitForFixedUpdate waitForFixedUpdate = new WaitForFixedUpdate();
 
     [HideInInspector]
     public float Zoom {
@@ -49,19 +54,54 @@ public class CameraHandler : MonoBehaviour {
         _destination = destination;
     }
 
+    public IEnumerator FocusOnPoint(Vector2 point) {
+        Debug.Log(point);
+        StopCoroutine(moveCoroutine);
+
+        while (Vector2.Distance(transform.position, point) >= 0.01f) {
+            float x = Mathf.Lerp(transform.position.x, point.x, _cameraSpeed * Time.deltaTime);
+            float y = Mathf.Lerp(transform.position.y, point.y, _cameraSpeed * Time.deltaTime);
+
+            transform.position = new Vector3(x, y, transform.position.z);
+
+            yield return waitForFixedUpdate;
+        }
+
+        _destination = transform.position;
+        moveCoroutine = StartCoroutine(Move());
+    }
+
     private void Awake() {
         _camera = GetComponent<Camera>();
         _destination = transform.position;
+        _startPosition = transform.position;
     }
 
-    private void FixedUpdate() {
-        if (Vector2.Distance(transform.position, _destination) >= 0.01f) {
-            float x = Mathf.Lerp(transform.position.x, _destination.x, _cameraSpeed * Time.deltaTime);
-            float y = Mathf.Lerp(transform.position.y, _destination.y, _cameraSpeed * Time.deltaTime);
-            
-            transform.position = new Vector3(x, y, transform.position.z);
+    private void Start() {
+        moveCoroutine = StartCoroutine(Move());
+    }
+
+    private IEnumerator Move() {
+        while (true) {
+            if (Vector2.Distance(transform.position, _destination) >= 0.01f) {
+                float x = Mathf.Lerp(transform.position.x, _destination.x, _cameraSpeed * Time.deltaTime);
+                float y = Mathf.Lerp(transform.position.y, _destination.y, _cameraSpeed * Time.deltaTime);
+
+                transform.position = new Vector3(x, y, transform.position.z);
+            }
+
+            yield return waitForFixedUpdate;
         }
     }
+
+    //private void FixedUpdate() {
+    //    if (Vector2.Distance(transform.position, _destination) >= 0.01f) {
+    //        float x = Mathf.Lerp(transform.position.x, _destination.x, _cameraSpeed * Time.deltaTime);
+    //        float y = Mathf.Lerp(transform.position.y, _destination.y, _cameraSpeed * Time.deltaTime);
+            
+    //        transform.position = new Vector3(x, y, transform.position.z);
+    //    }
+    //}
 
     private void OnDrawGizmos() {
         Gizmos.color = Color.red;

@@ -1,29 +1,108 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.SceneManagement;
 
 public class LevelRedirector : Placeable {
+    [SerializeField] private GameObject _lable;
 
-    [SerializeField] string _sceneName;
-    [SerializeField] Placeable[] _levelReward;
+    [SerializeField] private string _sceneName;
+    [SerializeField] private Placeable[] _levelReward;
 
-    [SerializeField] Chest _chestPrefab;
+    [SerializeField] private Chest _chestPrefab;
 
-    public void HideLable() { }
-    public void ShowLable() { }
+    private void HideLable() {
+        _lable.gameObject.SetActive(false);
+    }
+    private void ShowLable() {
+        _lable.gameObject.SetActive(true);
+    }
+
+    private void OnSmogAreaDisappearance() {
+        if (!fieldManager.smogManager.IsSmoged(currentCell)) {
+            ShowLable();
+        }
+    }
 
     public override void Click() {
-        Debug.Log("Click");
-        if (_sceneName != "") {
-
-            SceneManager.LoadScene(_sceneName, LoadSceneMode.Single);
-            return;
-        }
-        Debug.LogError("No scene name");
+        GameEvents.current.TriggerLevelRedirectionIntent(_sceneName);
     }
 
     public override bool BeginDrag() {
         return false;
+    }
+
+    private void OnLevelComplete(string sceneName) {
+        if (_sceneName == sceneName) {
+            GameEvents.current.TriggerPlayerInputDisable();
+            StartCoroutine(CreateReward());
+        }
+    }
+
+    private IEnumerator CreateReward() {
+        CameraHandler camera =  Camera.main.GetComponent<CameraHandler>();
+        Debug.Log(transform.position);
+        yield return StartCoroutine(camera.FocusOnPoint(transform.position));
+
+        Chest chest = Instantiate(_chestPrefab, transform.parent);
+        chest.AddItem(_levelReward);
+
+        chest.currentCell = currentCell;
+        chest.fieldManager = fieldManager;
+        chest.Position = fieldManager.GetCellWorldPosition(currentCell);
+
+        fieldManager.RemovePlaceableToField(this);
+        fieldManager.AddPlaceableToField(chest);
+
+        GameEvents.current.TriggerPlayerInputEnable();
+        PlayerPrefs.DeleteAll();
+
+        Destroy(gameObject);
+    }
+
+    public override void Save(GameDataWriter writer) {
+        base.Save(writer);
+
+        if (_levelReward != null) {
+            writer.Write(_levelReward.Length);
+            foreach (var prefab in _levelReward) {
+                writer.Write(prefabId);
+            }
+        }
+        else {
+            writer.Write(0);
+        }
+        writer.Write(_chestPrefab.prefabId);
+        writer.Write(_sceneName);
+    }
+
+    public override void Load(GameDataReader reader, PlaceableFactory factory) {
+        base.Load(reader, factory);
+
+        int count = reader.ReadInt();
+        if (count > 0) {
+            _levelReward = new Placeable[count];
+            for (int i = 0; i < count; i++) {
+                int prefabId = reader.ReadInt();
+                _levelReward[i] = factory.GetPrefab(prefabId);
+            }
+        }
+        _chestPrefab = (Chest) factory.GetPrefab(reader.ReadInt());
+        _sceneName = reader.ReadString();
+    }
+
+    private void Start() {
+        if(fieldManager.smogManager.IsSmoged(currentCell)) {
+            HideLable();
+        }
+    }
+
+    private void OnEnable() {
+        GameEvents.current.OnSmogAreaDisappearance += OnSmogAreaDisappearance;
+        GameEvents.current.OnLevelComplete += OnLevelComplete;
+    }
+
+    private void OnDisable() {
+        GameEvents.current.OnSmogAreaDisappearance -= OnSmogAreaDisappearance;
+        GameEvents.current.OnLevelComplete -= OnLevelComplete;
     }
 }

@@ -45,13 +45,28 @@ public class GameEvents : MonoBehaviour {
         OnObjectDisappearance?.Invoke(placeable);
     }
 
-    public event Action<Placeable> OnObjectSpawn;
-    public void TriggerObjectSpawn(Placeable placeable) {
-        OnObjectSpawn?.Invoke(placeable);
+    public event Action OnSmogAreaDisappearance;
+    public void TriggerSmogAreaDisappearance() {
+        OnSmogAreaDisappearance?.Invoke();
     }
 
-    public event Action<Placeable> OnObjectDestroy;
-    public void TriggerObjectDestroy(Placeable placeable) {
-        OnObjectDestroy?.Invoke(placeable);
+    public event Action OnPlayerInputDisable;
+    public void TriggerPlayerInputDisable() {
+        OnPlayerInputDisable?.Invoke();
+    }
+
+    public event Action OnPlayerInputEnable;
+    public void TriggerPlayerInputEnable() {
+        OnPlayerInputEnable?.Invoke();
+    }
+
+    public event Action<string> OnLevelRedirectionIntent;
+    public void TriggerLevelRedirectionIntent(string sceneName) {
+        OnLevelRedirectionIntent?.Invoke(sceneName);
+    }
+
+    public event Action<string> OnLevelComplete;
+    public void TriggerLevelComplete(string sceneName) {
+        OnLevelComplete?.Invoke(sceneName);
     }
 }

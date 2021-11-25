@@ -80,6 +80,7 @@ public class Chest : Placeable
 
     private void GiveItemInGame()
     {
+        Debug.Log("GiveItemInGame");
         Vector3Int cellPositon = new Vector3Int();
         if (fieldManager.GetNearestPosition(currentCell, ref cellPositon))
         {
@@ -91,6 +92,8 @@ public class Chest : Placeable
             
             _itemsInChest.RemoveAt(_itemsInChest.Count - 1);
             fieldManager.AddPlaceableToField(newPlaceable);
+
+            Debug.Log("PlaceItem");
         }
     }
     

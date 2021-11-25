@@ -16,6 +16,7 @@ public class DestructedTile : MonoBehaviour
 
     private void Awake() {
         _spriteRenderer = GetComponent<SpriteRenderer>();
+        _spriteRenderer.material.SetFloat("_Fade", _fade);
     }
 
     private void Update() {

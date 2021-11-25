@@ -95,8 +95,9 @@ public class ObjectManager
     /// Проверяет, есть ли под разрушенным тайлом объект и показывает его.
     /// </summary>
     /// <param name="cellPosition">Клетка</param>
-    public void OnTileDestroy(Vector3Int cellPosition) {
+    public Placeable OnTileDestroy(Vector3Int cellPosition) {
         Placeable placeable = GetObjectAtCell(cellPosition);
         placeable?.Show();
+        return placeable;
     }
 }

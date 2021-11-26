@@ -13,6 +13,8 @@ public class LevelManager : MonoBehaviour
 
     [SerializeField] private FieldManager _fieldManager;
 
+    [SerializeField] private LevelTransitionAnimator _sceneLoader;
+
     public void ObjectAppearance(Placeable placeable) {
         if (_requirements.ContainsKey(placeable.BaseName)) {
             _requirements[placeable.BaseName].Mark();
@@ -76,9 +78,12 @@ public class LevelManager : MonoBehaviour
     }
 
     private IEnumerator StartLevelAnimation() {
-        BlackScreen blackScreen = UIManager.current.CreateBlackScreen();
-        yield return StartCoroutine(blackScreen.BlackScreenFade(0f));
-        Destroy(blackScreen.gameObject);
+        // Ожидаем первого кадра
+        yield return null;
+        if (_sceneLoader) {
+            // Ждём завершения анимации начала уровня
+            yield return _sceneLoader.StartSceneStartAnimation();
+        }
     }
 
     private void OnEnable() {

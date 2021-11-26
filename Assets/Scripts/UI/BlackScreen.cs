@@ -18,6 +18,10 @@ public class BlackScreen : MonoBehaviour {
         _image.color = color;
     }
 
+    public void SetRaycastTarget(bool raycastTarget) {
+        _image.raycastTarget = raycastTarget;
+    }
+
     public IEnumerator BlackScreenFade(float fade) {
         yield return null;
         Debug.Log("Start fading");

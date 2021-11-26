@@ -27,6 +27,8 @@ public class CampManager : MonoBehaviour, ISaveable {
     [SerializeField] private FieldManager _fieldManager;
     [SerializeField] private GameObject _objectsParent;
 
+    [SerializeField] private LevelTransitionAnimator _sceneLoader;
+
     /// <summary>
     /// Обработка события появления нового объекта.
     /// </summary>
@@ -73,13 +75,20 @@ public class CampManager : MonoBehaviour, ISaveable {
     }
 
     private void Start() {
-        StartCoroutine(StartLevelAnimation());
+        // Проиграть начальную анимацию сцены
+        StartCoroutine(StartLevel());
     }
      
-    private IEnumerator StartLevelAnimation() {
-        BlackScreen blackScreen = UIManager.current.CreateBlackScreen();
-        yield return StartCoroutine(blackScreen.BlackScreenFade(0f));
-        Destroy(blackScreen.gameObject);
+    private IEnumerator StartLevel() {
+        // Ожидаем первого кадра
+        yield return null;
+
+        if (_sceneLoader) {
+            // Ждём завершения анимации начала уровня
+            yield return _sceneLoader.StartSceneStartAnimation();
+        }
+
+        // Если есть пройденный уровень, вызываем ивент
         if (_completedSceneName != "") {
             GameEvents.current.TriggerLevelComplete(_completedSceneName);
         }
@@ -183,12 +192,12 @@ public class CampManager : MonoBehaviour, ISaveable {
     }
 
     private void OnApplicationPause(bool pause) {
-        Debug.Log("OnApplicationPause");
-        _storage.Save(this);
+        if (pause) {
+            _storage.Save(this);
+        }
     }
 
     private void OnApplicationQuit() {
-        Debug.Log("OnApplicationQuit");
         _storage.Save(this);
     }
 

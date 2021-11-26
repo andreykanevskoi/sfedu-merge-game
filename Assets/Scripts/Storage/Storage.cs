@@ -7,7 +7,7 @@ public class Storage {
     private string _savePath;
 
     public Storage() {
-        _savePath = Path.Combine(Application.persistentDataPath, "saveFile");
+        _savePath = Application.persistentDataPath + "/saveFile";
         Debug.Log(_savePath);
     }
 

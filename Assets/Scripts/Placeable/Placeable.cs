@@ -13,6 +13,12 @@ public class Placeable : MonoBehaviour, ISaveable {
     public string BaseName;
 
     public int prefabId = 0;
+    
+    /// <summary>
+    /// Аудиоклип падения объекта на тайл.
+    /// Объекты с одинаковым именем будут воспроизводить один и тот же звук.
+    /// </summary>
+    public AudioClip fallingAudioClip;
 
     /// <summary> 
     /// Текущая позиция на сетке
@@ -48,7 +54,7 @@ public class Placeable : MonoBehaviour, ISaveable {
     private bool _isDraggable = true;
 
     /// <summary>
-    /// Компонен отрисовки объекта.
+    /// Компонент отрисовки объекта.
     /// </summary>
     private SpriteRenderer _renderer;
     /// <summary>

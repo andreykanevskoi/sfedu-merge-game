@@ -26,11 +26,14 @@ public class Mergeable : Placeable {
     public override void Interact(Placeable placeable) {
         if (placeable != this && placeable is Mergeable mergeable) {
             if (IsMergeable(mergeable)) {
+                SoundManager.PlaySound(SoundManager.Sound.merge);
+
                 Mergeable newMergeable = Instantiate(GetNextLevelObject(), transform.parent);
 
                 newMergeable.currentCell = currentCell;
                 newMergeable.fieldManager = fieldManager;
                 newMergeable.transform.position = Position;
+                newMergeable.fallingAudioClip = fallingAudioClip;
 
                 fieldManager.RemovePlaceableToField(this);
                 fieldManager.RemovePlaceableToField(placeable);
@@ -42,8 +45,11 @@ public class Mergeable : Placeable {
 
                 return;
             }
+            else
+            {
+                SoundManager.PlaySound(SoundManager.Sound.nonMerge);
+            }
         }
-
         placeable.ReturnPosition();
     }
 

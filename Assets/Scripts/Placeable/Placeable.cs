@@ -2,7 +2,8 @@
 using UnityEngine;
 
 [System.Serializable]
-public class Placeable : MonoBehaviour {
+[DisallowMultipleComponent]
+public class Placeable : MonoBehaviour, ISaveable {
     /// <summary>
     /// Название основания объекта.
     /// Служит индефикатором типа объекта в игре.
@@ -10,6 +11,8 @@ public class Placeable : MonoBehaviour {
     /// Объекты с одинаковым именем будут обрабатываться одинаково.
     /// </summary>
     public string BaseName;
+
+    public int prefabId = 0;
 
     /// <summary> 
     /// Текущая позиция на сетке
@@ -167,6 +170,18 @@ public class Placeable : MonoBehaviour {
     public void Drop(Vector3 currentMousePosition) {
         // Вернуть порядок 
         _renderer.sortingOrder = _defaultSortingOrder;
+    }
+
+    public virtual void Save(GameDataWriter writer) {
+        // Запись положения объекта на сетке
+        writer.Write(currentCell);
+    }
+
+    public virtual void Load(GameDataReader reader, PlaceableFactory factory) {
+        // Положение объекта на сетке
+        currentCell = reader.ReadVector3Int();
+        // Размещение объекта по координатам сетки
+        Position = fieldManager.GetCellWorldPosition(currentCell);
     }
 
     private void Awake() {

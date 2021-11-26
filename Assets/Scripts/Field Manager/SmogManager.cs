@@ -51,6 +51,17 @@ public class SmogManager {
         }
     }
 
+    public void DeleteInstantly(Tile tile) {
+        if (!_smogedAreas.ContainsKey(tile)) {
+            return;
+        }
+
+        // Удалить облась
+        _smogedAreas.Remove(tile);
+        // Удалить все тайлы области
+        _smogMap.SwapTile(tile, null);
+    }
+
     /// <summary>
     /// Постепенное исчезновение области тумана.
     /// </summary>

@@ -9,6 +9,8 @@ public class LevelManager : MonoBehaviour
     [SerializeField] private GameObject _requirementsUIPanel;
     [SerializeField] private RequirementElement _requirementElementPrefab;
 
+    [SerializeField] private FieldManager _fieldManager;
+
     public void ObjectAppearance(Placeable placeable) {
         if (_requirements.ContainsKey(placeable.BaseName)) {
             _requirements[placeable.BaseName].Mark();
@@ -42,9 +44,18 @@ public class LevelManager : MonoBehaviour
 
             _requirements.Add(req.placeable.BaseName, req);
         }
-
         _victoryRequirements = null;
 
+        _fieldManager.InitFreePositionStorage();
+        _fieldManager.InitTileManager();
+        _fieldManager.InitSmogManager();
+    }
+
+    private void Start() {
+        _fieldManager.LateInitObjectManager();
+    }
+
+    private void OnEnable() {
         GameEvents.current.OnObjectAppearance += ObjectAppearance;
         GameEvents.current.OnObjectDisappearance += ObjectDisappearance;
     }

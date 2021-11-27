@@ -9,7 +9,7 @@ public class RequirementElement : MonoBehaviour {
     [SerializeField] private TextMeshProUGUI _currentAmount;
     [SerializeField] private TextMeshProUGUI _requiredAmount;
 
-    [SerializeField] private Animator _animator;
+    private bool _started = false;
 
     public void Init(Sprite sprite, int currentAmount, int requiredAmount) {
         _image.sprite = sprite;
@@ -18,12 +18,14 @@ public class RequirementElement : MonoBehaviour {
     }
 
     public void StartAnimation() {
-        //_animator.gameObject.SetActive(true);
-        _animator.SetTrigger("AppearanceTrigger");
+        GetComponent<Animator>().SetTrigger("AppearanceTrigger");
+        _started = true;
     }
 
     public void UpdateElement(int amount) {
         _currentAmount.SetText(amount.ToString());
-        _animator.SetTrigger("ChangeAmountTrigger");
+        if (_started) {
+            GetComponent<Animator>().SetTrigger("ChangeAmountTrigger");
+        }
     }
 }

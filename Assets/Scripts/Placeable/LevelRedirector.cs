@@ -50,7 +50,7 @@ public class LevelRedirector : Placeable {
         chest.fieldManager = fieldManager;
         chest.Position = fieldManager.GetCellWorldPosition(currentCell);
 
-        fieldManager.RemovePlaceableToField(this);
+        fieldManager.RemovePlaceableFromField(this);
         fieldManager.AddPlaceableToField(chest);
 
         GameEvents.current.TriggerPlayerInputEnable();

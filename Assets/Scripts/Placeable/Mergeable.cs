@@ -32,8 +32,10 @@ public class Mergeable : Placeable {
                 newMergeable.fieldManager = fieldManager;
                 newMergeable.transform.position = Position;
 
-                fieldManager.RemovePlaceableToField(this);
-                fieldManager.RemovePlaceableToField(placeable);
+                GameEvents.current.TriggerPlaceableMerge(newMergeable);
+
+                fieldManager.RemovePlaceableFromField(this);
+                fieldManager.RemovePlaceableFromField(placeable);
 
                 fieldManager.AddPlaceableToField(newMergeable);
 

@@ -20,6 +20,16 @@ public class GameEvents : MonoBehaviour {
         OnFieldClick?.Invoke(position);
     }
 
+    public event Action<Placeable> OnPlaceableMerge;
+    public void TriggerPlaceableMerge(Placeable placeable) {
+        OnPlaceableMerge.Invoke(placeable);
+    }
+
+    public event Action<FieldTile> OnTileDestroy;
+    public void TriggerTileDestroy(FieldTile tile) {
+        OnTileDestroy?.Invoke(tile);
+    }
+
     public event Action<Vector3> OnTileSelect;
     public void TriggerSelectTile(Vector3 position) {
         OnTileSelect?.Invoke(position);

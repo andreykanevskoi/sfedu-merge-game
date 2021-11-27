@@ -104,10 +104,10 @@ public class CampManager : MonoBehaviour, ISaveable {
     }
 
     private IEnumerator StartRedirection(string sceneName) {
-        BlackScreen blackScreen = UIManager.current.CreateBlackScreen();
-        blackScreen.SetA(0f);
-        yield return StartCoroutine(blackScreen.BlackScreenFade(1f));
-        Debug.Log("LoadScene");
+        if (_sceneLoader) {
+            // Ждём завершения анимации конца уровня
+            yield return _sceneLoader.StartSceneEndAnimation();
+        }
         _storage.Save(this);
         LoadScene(sceneName);
     }

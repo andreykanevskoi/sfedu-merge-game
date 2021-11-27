@@ -105,7 +105,7 @@ public class Chest : Placeable
 
     private void DestroyChest()
     {
-        fieldManager.RemovePlaceableToField(this);
+        fieldManager.RemovePlaceableFromField(this);
         Destroy(gameObject);
     }
 }

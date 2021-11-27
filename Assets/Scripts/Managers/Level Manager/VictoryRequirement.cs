@@ -17,12 +17,9 @@ public class VictoryRequirement {
         _levelManager = levelManager;
         _requirementElement = requirementElement;
         _requirementElement.Init(placeable.GetComponent<SpriteRenderer>().sprite, 0, amount);
-
-        //_requirementElement.gameObject.SetActive(false);
     }
 
     public void Start() {
-        //_requirementElement.gameObject.SetActive(true);
         _requirementElement.StartAnimation();
     }
 

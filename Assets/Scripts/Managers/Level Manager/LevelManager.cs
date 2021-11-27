@@ -17,6 +17,9 @@ public class LevelManager : MonoBehaviour
 
     private int _taskCompleted = 0;
 
+    private MergeStatisticCollector _mergeStatistic;
+    private TileStatisticCollector _tileStatistic;
+
     public void ObjectAppearance(Placeable placeable) {
         if (_requirements.ContainsKey(placeable.BaseName)) {
             _requirements[placeable.BaseName].Mark();
@@ -43,6 +46,9 @@ public class LevelManager : MonoBehaviour
         _fieldManager.InitFreePositionStorage();
         _fieldManager.InitTileManager();
         _fieldManager.InitSmogManager();
+
+        _mergeStatistic = new MergeStatisticCollector();
+        _tileStatistic = new TileStatisticCollector();
     }
 
     private void Start() {
@@ -80,7 +86,7 @@ public class LevelManager : MonoBehaviour
 
         GameEvents.current.TriggerPlayerInputDisable();
         var window = UIManager.current.CreateLevelCompleteWindow();
-        window.Init(() => StartCoroutine(StartRedirection()));
+        window.Init(_mergeStatistic, _tileStatistic, () => StartCoroutine(StartRedirection()));
     }
 
     private IEnumerator StartRedirection() {

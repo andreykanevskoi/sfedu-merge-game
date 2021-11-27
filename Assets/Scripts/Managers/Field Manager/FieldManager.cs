@@ -228,6 +228,8 @@ public class FieldManager : MonoBehaviour {
         // Проигрываем анимацию
         SetDestructedTile(fieldTile, cellPosition);
 
+        GameEvents.current.TriggerTileDestroy(fieldTile);
+
         // Проверяем, есть ли объект под разрушенным тайлом
         Vector3Int positionBelow = GetPositionBellow(cellPosition);
         if (tileManager.HasTile(positionBelow)) {
@@ -314,7 +316,7 @@ public class FieldManager : MonoBehaviour {
     /// Удалить с поля объект.
     /// </summary>
     /// <param name="placeable">Удаляемый объект</param>
-    public void RemovePlaceableToField(Placeable placeable) {
+    public void RemovePlaceableFromField(Placeable placeable) {
         objectManager.RemoveObject(placeable);
         ObjectDisappearance(placeable);
         AddFreeTilePosition(placeable.currentCell);

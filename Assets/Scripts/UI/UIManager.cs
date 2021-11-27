@@ -14,12 +14,6 @@ public class UIManager : MonoBehaviour {
         return go.GetComponent<Popup>();
     }
 
-    public BlackScreen CreateBlackScreen() {
-        GameObject go = Instantiate(Resources.Load("UI/BlackScreen") as GameObject);
-        SetToCanvas(go);
-        return go.GetComponent<BlackScreen>();
-    }
-
     public LevelCompleteWindow CreateLevelCompleteWindow() {
         GameObject go = Instantiate(Resources.Load("UI/LevelCompleteWindows") as GameObject);
         SetToCanvas(go);

@@ -6,15 +6,12 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
+    path: Assets/Scenes/MainMenu.unity
+    guid: cff47842eba0fd54f91ec54bc7dd1888
+  - enabled: 1
     path: Assets/Scenes/Camp.unity
     guid: 53940b1f344ee324a9d3c51d0b723ebd
   - enabled: 1
     path: Assets/Scenes/SampleLevel.unity
     guid: 2cda990e2423bbf4892e6590ba056729
-  - enabled: 1
-    path: Assets/Scenes/CampPause.unity
-    guid: d1ea9fc4329837143912bcbd6cd26923
-  - enabled: 1
-    path: Assets/Scenes/PauseMenuScene.unity
-    guid: 93dab5bca5c44d34c992de84ac5253a6
   m_configObjects: {}

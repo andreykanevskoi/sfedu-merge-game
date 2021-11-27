@@ -32,7 +32,7 @@ public class LevelRedirector : Placeable {
     }
 
     private void OnLevelComplete(string sceneName) {
-        if (_sceneName == sceneName) {
+        if (_sceneName == sceneName && !fieldManager.smogManager.IsSmoged(currentCell)) {
             GameEvents.current.TriggerPlayerInputDisable();
             StartCoroutine(CreateReward());
         }

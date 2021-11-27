@@ -6,12 +6,24 @@ using UnityEngine.UI;
 
 public class RequirementElement : MonoBehaviour {
     [SerializeField] private Image _image;
-    public Image Image { get => _image; }
+    [SerializeField] private TextMeshProUGUI _currentAmount;
+    [SerializeField] private TextMeshProUGUI _requiredAmount;
 
-    [SerializeField] private TextMeshProUGUI _amount;
-    private static string _textPattern = "{0} / {1}";
+    [SerializeField] private Animator _animator;
 
-    public void UpdateElement(int current, int amount) {
-        _amount.SetText(_textPattern, current, amount);
+    public void Init(Sprite sprite, int currentAmount, int requiredAmount) {
+        _image.sprite = sprite;
+        _currentAmount.SetText(currentAmount.ToString());
+        _requiredAmount.SetText(requiredAmount.ToString());
+    }
+
+    public void StartAnimation() {
+        //_animator.gameObject.SetActive(true);
+        _animator.SetTrigger("AppearanceTrigger");
+    }
+
+    public void UpdateElement(int amount) {
+        _currentAmount.SetText(amount.ToString());
+        _animator.SetTrigger("ChangeAmountTrigger");
     }
 }

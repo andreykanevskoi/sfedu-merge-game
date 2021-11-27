@@ -15,45 +15,18 @@ public class LevelManager : MonoBehaviour
 
     [SerializeField] private LevelTransitionAnimator _sceneLoader;
 
+    private int _taskCompleted = 0;
+
     public void ObjectAppearance(Placeable placeable) {
         if (_requirements.ContainsKey(placeable.BaseName)) {
             _requirements[placeable.BaseName].Mark();
-            Check();
         }
     }
 
     public void ObjectDisappearance(Placeable placeable) {
         if (_requirements.ContainsKey(placeable.BaseName)) {
             _requirements[placeable.BaseName].Dismark();
-            Check();
         }
-    }
-
-    private void Check() {
-        foreach (var requirement in _requirements.Values) { 
-            if (!requirement.Check()) {
-                return;
-            }
-        }
-
-        OnLevelCompleted();
-    }
-
-    public void OnLevelCompleted() {
-        PlayerPrefs.SetString("complete", SceneManager.GetActiveScene().name);
-        PlayerPrefs.Save();
-
-        GameEvents.current.TriggerPlayerInputDisable();
-        var window = UIManager.current.CreateLevelCompleteWindow();
-        window.Init(() => StartCoroutine(StartRedirection()));
-    }
-
-    private IEnumerator StartRedirection() {
-        BlackScreen blackScreen = UIManager.current.CreateBlackScreen();
-        blackScreen.SetA(0f);
-
-        yield return StartCoroutine(blackScreen.BlackScreenFade(1f));
-        SceneManager.LoadScene(0, LoadSceneMode.Single);
     }
 
     private void Awake() {
@@ -61,7 +34,7 @@ public class LevelManager : MonoBehaviour
 
         foreach (var req in _victoryRequirements) {
             var uiElem = Instantiate(_requirementElementPrefab, _requirementsUIPanel.transform);
-            req.Init(uiElem);
+            req.Init(this, uiElem);
 
             _requirements.Add(req.placeable.BaseName, req);
         }
@@ -84,6 +57,38 @@ public class LevelManager : MonoBehaviour
             // Ждём завершения анимации начала уровня
             yield return _sceneLoader.StartSceneStartAnimation();
         }
+        foreach(var req in _requirements.Values) {
+            req.Start();
+            yield return new WaitForSeconds(0.2f);
+        }
+    }
+
+    public void OnTaskComplete() {
+        _taskCompleted++;
+        if (_taskCompleted == _requirements.Count) {
+            OnLevelCompleted();
+        }
+    }
+
+    public void OnTaskFallBack() {
+        _taskCompleted--;
+    }
+
+    private void OnLevelCompleted() {
+        PlayerPrefs.SetString("complete", SceneManager.GetActiveScene().name);
+        PlayerPrefs.Save();
+
+        GameEvents.current.TriggerPlayerInputDisable();
+        var window = UIManager.current.CreateLevelCompleteWindow();
+        window.Init(() => StartCoroutine(StartRedirection()));
+    }
+
+    private IEnumerator StartRedirection() {
+        if (_sceneLoader) {
+            // Ждём завершения анимации начала уровня
+            yield return _sceneLoader.StartSceneEndAnimation();
+        }
+        SceneManager.LoadScene(0, LoadSceneMode.Single);
     }
 
     private void OnEnable() {

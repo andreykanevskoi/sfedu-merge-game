@@ -1,4 +1,5 @@
 ﻿using System.Collections;
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -13,6 +14,8 @@ public class PaintCanvas : MonoBehaviour{
     [Range(15, 100)]
     [SerializeField] private int _brushSize = 30;
 
+    [SerializeField, Range(0f, 100f)] private float _requaredPercent = 1f;
+
     private float _counter;
     private float _fullDirtyImg;
     private int _oldX, _oldY;
@@ -21,8 +24,37 @@ public class PaintCanvas : MonoBehaviour{
     private WaitForFixedUpdate _waitForFixedUpdate = new WaitForFixedUpdate();
     private Vector2 _mousePosition;
 
+    public Action OnMinigameEnd;
+
+    private bool _isStarted = false;
+
     private void Awake() {
         _rectTransform = GetComponent<RectTransform>();
+
+        if (_texture == null) {
+            _texture = new Texture2D(_textureSize, _textureSize, TextureFormat.ARGB32, false);
+        }
+        if (_texture.width != _textureSize) {
+            _texture.Resize(_textureSize, _textureSize);
+        }
+        _texture.wrapMode = _textureWrapMode;
+        _texture.filterMode = _filterMode;
+        _texture.Apply();
+
+        _tmpT = new Texture2D(_texture.width, _texture.height, TextureFormat.ARGB32, false);
+        Graphics.CopyTexture(_texture, _tmpT);
+
+        _counter = _texture.width * _texture.height;// подсчет изначального размера грязной текстуры
+        float fullImg = _counter;
+        for (int x = 0; x < _texture.width; x++) {
+            for (int y = 0; y < _texture.height; y++) {
+                Color color = _texture.GetPixel(x, y);
+                if (color.a == 0) {
+                    _counter--;
+                }
+            }
+        }
+        _fullDirtyImg = _counter;
     }
 
     void OnValidate() {
@@ -52,6 +84,10 @@ public class PaintCanvas : MonoBehaviour{
         _fullDirtyImg = _counter;
     }
 
+    public void Begin() {
+        _isStarted = true;
+    }
+
     private bool InsideImage(Vector2 position) {
         return RectTransformUtility.RectangleContainsScreenPoint(_rectTransform, position);
     }
@@ -61,6 +97,7 @@ public class PaintCanvas : MonoBehaviour{
     }
 
     public void SetMousePosition(InputAction.CallbackContext context) {
+        if (!_isStarted) return;
         _mousePosition = context.ReadValue<Vector2>();
     }
 
@@ -75,7 +112,7 @@ public class PaintCanvas : MonoBehaviour{
             yield return _waitForFixedUpdate;
         }
 
-        Debug.Log(CalculatePercent());
+        CalculatePercent();
     }
 
     private void Draw(Vector2 localPoint) {
@@ -97,7 +134,7 @@ public class PaintCanvas : MonoBehaviour{
         _texture.Apply();
     }
 
-    private float CalculatePercent() {
+    private void CalculatePercent() {
         _counter = _texture.width * _texture.height;
         float fullImg = _counter;
         float dirtyImg;
@@ -111,14 +148,24 @@ public class PaintCanvas : MonoBehaviour{
             }
         }
         dirtyImg = _counter;
-        return (dirtyImg / _fullDirtyImg) * 100;
+        float precent = (dirtyImg / _fullDirtyImg) * 100f;
+
+        Debug.Log(precent);
+
+        if (precent <= _requaredPercent) {
+            Complete();
+        }
+    }
+
+    private void Complete() {
+        OnMinigameEnd?.Invoke();
     }
 
     public void OnRMB(InputAction.CallbackContext context) {
         Reset();
     }
 
-    private void Reset() {
+    public void Reset() {
         Graphics.CopyTexture(_tmpT, _texture);
     }
 

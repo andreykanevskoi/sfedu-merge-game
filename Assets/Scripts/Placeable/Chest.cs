@@ -5,40 +5,61 @@ using UnityEngine;
 
 public class Chest : Placeable
 {
+    [SerializeField] private int _openingTimeInHours = 0;
     [SerializeField] private int _openingTimeInMinutes = 0;
+    [SerializeField] private int _openingTimeInSeconds = 0;
     [SerializeField] private Sprite _openChest;
-    [SerializeField] private GameObject _timerView;
+    [SerializeField] private TimerView _timerView;
     [SerializeField] private List<Placeable> _itemsInChest;
-    private Timer _timer;
+    private Timer _timer = null;
     private bool _isOpen = false;
-    
+
     void OnEnable()
     {
-        ChestOpeningEventSystem.SighUpForEvent(OpenChest);
-        if (_openingTimeInMinutes != 0)
+        if(_isOpen) return;
+        if (_timer == null)
         {
-            InitChest(new Timer(new TimeSpan(0, 0, 3), "TestOpen", "TestChest"));
+            AddTimer(_openingTimeInSeconds, _openingTimeInMinutes, _openingTimeInHours);
         }
          
     }
 
-    private void OnDisable()
+    public void AddTimer(int seconds, int minutes = 0, int hours = 0)
     {
-        ChestOpeningEventSystem.UnsubscribeFromEvent(OpenChest);
+        Debug.Log(seconds);
+        DateTime dt = DateTime.MinValue;
+        dt = dt.AddSeconds(seconds);
+        dt = dt.AddMinutes(minutes);
+        dt = dt.AddHours(hours);
+        TimeSpan ts = dt - DateTime.MinValue;
+        Debug.Log(ts.TotalMilliseconds);
+        if (ts != TimeSpan.Zero)
+        {
+            InitChest(TimerManager.CreateTimer(ts));
+        }
     }
 
-    public void InitChest(Timer timer)
+    private void InitChest(Timer timer)
     {
         _timer = timer;
-        TimerView tv = Instantiate(_timerView, transform).GetComponent<TimerView>();
-        tv.InitTimerView(_timer);
+        _timerView = Instantiate(_timerView, transform).GetComponent<TimerView>();
+        _timerView.InitTimerView(_timer);
     }
 
-    void OpenChest(Timer timer)
+    public void ActivateChest()
     {
-        if (_timer != timer) return;
+        if (_timer != null)
+        {
+            InitChest(_timer);
+        }
+    }
+
+    public void OpenChest()
+    {
+        if (!_timer.TimerPassed()) return;
         Debug.Log("Открыть сундук");
         _isOpen = true;
+        Destroy(_timerView.gameObject);
         GetComponent<SpriteRenderer>().sprite = _openChest;
         //GiveItem();
     }
@@ -63,18 +84,10 @@ public class Chest : Placeable
     private void GiveItem()
     {
         if(!_isOpen) return;
-        switch(_itemsInChest.Count)
+        GiveItemInGame();
+        if (_itemsInChest.Count == 0)
         {
-            case 0:
-                DestroyChest();
-                break;
-            case 1:
-                GiveItemInGame();
-                DestroyChest();
-                break;
-            default:
-                GiveItemInGame();
-                break;
+            DestroyChest();
         }
     }
 
@@ -107,5 +120,6 @@ public class Chest : Placeable
     {
         fieldManager.RemovePlaceableFromField(this);
         Destroy(gameObject);
+        TimerManager.DeleteTimer(_timer);
     }
 }

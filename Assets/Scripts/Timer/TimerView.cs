@@ -10,19 +10,14 @@ public class TimerView : MonoBehaviour
     void OnEnable()
     {
         _timerTime = GetComponent<TextMesh>();
-        ChestOpeningEventSystem.SighUpForEvent(TimerActivation);
     }
     
-    private void OnDisable()
-    {
-        ChestOpeningEventSystem.UnsubscribeFromEvent(TimerActivation);
-    }
 
     public void InitTimerView(Timer t)
     {
         _timer = t;
         UpdateTimerView();
-        InvokeRepeating(nameof(UpdateTimerView), 0f, 0.1f);
+        InvokeRepeating(nameof(UpdateTimerView), 0f, 0.5f);
     }
 
     string GetRemainingTimerTimeToString()
@@ -32,14 +27,10 @@ public class TimerView : MonoBehaviour
 
     void UpdateTimerView()
     {
-        _timerTime.text = GetRemainingTimerTimeToString();
-    }
-
-    void TimerActivation(Timer timer)
-    {
-        if (_timer == timer)
+        if (_timer.TimerPassed())
         {
-            Destroy(this.gameObject);
+            transform.parent.GetComponent<Chest>().OpenChest();
         }
+        _timerTime.text = GetRemainingTimerTimeToString();
     }
 }

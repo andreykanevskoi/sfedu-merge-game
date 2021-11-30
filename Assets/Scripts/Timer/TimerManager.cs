@@ -11,22 +11,23 @@ public static class TimerManager
     {
         TimerManager.InitTimerManager();    
     }
-    public static void CreateTimer(DateTime creationDate, TimeSpan timerTime, string action, string name = "")
+    public static Timer CreateTimer(DateTime creationDate, TimeSpan timerTime)
     {
-        var newTimer = new Timer(creationDate, timerTime, action, name);
+        var newTimer = new Timer(creationDate, timerTime);
         _allTimers.Add(newTimer);
         SaveLoadTimer.Save();
+        return newTimer;
     }
-    public static void CreateTimer(TimeSpan timerTime, string action, string name = "")
+    public static Timer CreateTimer(TimeSpan timerTime)
     {
-        var newTimer = new Timer(timerTime, action, name);
+        var newTimer = new Timer(timerTime);
         _allTimers.Add(newTimer);
         SaveLoadTimer.Save();
+        return newTimer;
     }
     
     public static void DeleteTimer(Timer timer)
     {
-        Debug.Log(timer.GetAction);
         _allTimers.Remove(timer);
         
         SaveLoadTimer.Save();
@@ -39,7 +40,7 @@ public static class TimerManager
     {
         for(int i = _allTimers.Count - 1; i >= 0; i--)
         {
-            _allTimers[i].CheckTimer();
+            _allTimers[i].TimerPassed();
         }
     }
 
@@ -49,7 +50,7 @@ public static class TimerManager
         Debug.Log(SaveLoadTimer.So.AllTimers.Count);
         foreach (var t in SaveLoadTimer.So.AllTimers)
         {
-            CreateTimer(t.CreationDate,t.TimerTime, t.Action, t.Name);
+            CreateTimer(t.CreationDate,t.TimerTime);
         }
     }
 }

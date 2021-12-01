@@ -9,7 +9,7 @@ public static class TimerManager
 
     static TimerManager()
     {
-        TimerManager.InitTimerManager();    
+        //TimerManager.InitTimerManager(); 
     }
     public static Timer CreateTimer(DateTime creationDate, TimeSpan timerTime)
     {

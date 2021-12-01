@@ -52,7 +52,9 @@ public class LevelRedirector : Placeable {
 
         fieldManager.RemovePlaceableFromField(this);
         fieldManager.AddPlaceableToField(chest);
-
+        
+        chest.AddTimer(10);
+        
         GameEvents.current.TriggerPlayerInputEnable();
         PlayerPrefs.DeleteAll();
 

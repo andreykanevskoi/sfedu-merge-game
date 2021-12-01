@@ -36,19 +36,19 @@ public class LevelCompleteWindow : MonoBehaviour {
         }
 
         if (totalElements > 0) {
-            float megrePanelwidth = _mergeStatisticPanel.GetComponent<RectTransform>().rect.width;
+            float mergePanelwidth = _mergeStatisticPanel.GetComponent<RectTransform>().rect.width;
             float totalWidth = totalElements * imageWidth;
-            if (totalWidth > megrePanelwidth) {
-                float spacing = totalWidth / megrePanelwidth;
+            if (totalWidth > mergePanelwidth) {
+                float spacing = (totalWidth - mergePanelwidth) / (totalElements - 2);
                 _mergeStatisticPanel.GetComponent<HorizontalLayoutGroup>().spacing = -spacing;
             }
 
-            float sleepTime = 1 / totalElements;
+            float sleepTime = 2 / totalElements;
             foreach (var element in _mergeStatistic.mergeCounter.Keys) {
                 int count = _mergeStatistic.mergeCounter[element];
                 for (int i = 0; i < count; i++) {
                     Image image = Instantiate(_statisticElementPrefab, _mergeStatisticPanel.transform).GetComponent<Image>();
-                    image.sprite = element.GetComponent<SpriteRenderer>().sprite;
+                    image.sprite = element;
                     yield return new WaitForSeconds(sleepTime);
                 }
             }
@@ -65,10 +65,9 @@ public class LevelCompleteWindow : MonoBehaviour {
             if (totalWidth > tilePanelwidth) {
                 float spacing = (totalWidth - tilePanelwidth) / (totalElements - 2);
                 _digStatisticPanel.GetComponent<HorizontalLayoutGroup>().spacing = -spacing;
-                Debug.Log(spacing);
             }
 
-            float sleepTime = 1 / totalElements;
+            float sleepTime = 2 / totalElements;
             foreach (var element in _tileStatistic.tileeCounter.Keys) {
                 int count = _tileStatistic.tileeCounter[element];
                 for (int i = 0; i < count; i++) {

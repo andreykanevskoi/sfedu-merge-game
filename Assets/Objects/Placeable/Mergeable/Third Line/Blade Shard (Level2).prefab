@@ -106,6 +106,16 @@ PrefabInstance:
         type: 2}
     - target: {fileID: 7820197770974067256, guid: 53e0d0f9aeb5a5445bb4bf953b2a9879,
         type: 3}
+      propertyPath: BaseName
+      value: ThirdLine2
+      objectReference: {fileID: 0}
+    - target: {fileID: 7820197770974067256, guid: 53e0d0f9aeb5a5445bb4bf953b2a9879,
+        type: 3}
+      propertyPath: prefabId
+      value: 12
+      objectReference: {fileID: 0}
+    - target: {fileID: 7820197770974067256, guid: 53e0d0f9aeb5a5445bb4bf953b2a9879,
+        type: 3}
       propertyPath: _currentLevel
       value: 1
       objectReference: {fileID: 0}

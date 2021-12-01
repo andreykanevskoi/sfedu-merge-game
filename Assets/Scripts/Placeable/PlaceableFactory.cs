@@ -15,10 +15,11 @@ public class PlaceableFactory : ScriptableObject {
         foreach (var prefab in prefabs) {
             if (!_prefabsDictionary.ContainsKey(prefab.prefabId)) {
                 _prefabsDictionary.Add(prefab.prefabId, prefab);
-                Debug.Log(prefab.prefabId);
             }
             else {
                 Debug.LogError("Duplicated prefab id");
+                Debug.Log(prefab);
+                Debug.Log(_prefabsDictionary[prefab.prefabId]);
             }
         }
 

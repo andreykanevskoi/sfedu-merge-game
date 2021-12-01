@@ -91,6 +91,16 @@ PrefabInstance:
         type: 2}
     - target: {fileID: 7820197770974067256, guid: 53e0d0f9aeb5a5445bb4bf953b2a9879,
         type: 3}
+      propertyPath: BaseName
+      value: FirstLine1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7820197770974067256, guid: 53e0d0f9aeb5a5445bb4bf953b2a9879,
+        type: 3}
+      propertyPath: prefabId
+      value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 7820197770974067256, guid: 53e0d0f9aeb5a5445bb4bf953b2a9879,
+        type: 3}
       propertyPath: currentCell.x
       value: 0
       objectReference: {fileID: 0}

@@ -18,6 +18,7 @@ public class LevelTransitionAnimator : MonoBehaviour {
     }
 
     public Coroutine StartSceneEndAnimation() {
+        Debug.Log("StartSceneEndAnimation");
         return StartCoroutine(EndAnimation());
     }
 
@@ -32,10 +33,12 @@ public class LevelTransitionAnimator : MonoBehaviour {
     }
 
     private IEnumerator EndAnimation() {
+        Debug.Log("EndAnimation");
         if (blackScreen) {
             blackScreen.gameObject.SetActive(true);
         }
         yield return StartCoroutine(BlackScreenFade(1f, 1f));
+        Debug.Log("EndAnimation Stop");
     }
 
     private IEnumerator LocationNameAnimation() {
@@ -65,10 +68,14 @@ public class LevelTransitionAnimator : MonoBehaviour {
             }
         }
         else {
-            while (blackScreen.alpha <= fadeLimit) {
+            Debug.Log("BlackScreenGrowe");
+            while (blackScreen.alpha < fadeLimit) {
                 blackScreen.alpha = blackScreen.alpha + (fadeSpeed * Time.deltaTime);
+                Debug.Log(blackScreen.alpha <= fadeLimit);
                 yield return null;
             }
         }
+
+        Debug.Log("End BlackScreenFade");
     }
 }

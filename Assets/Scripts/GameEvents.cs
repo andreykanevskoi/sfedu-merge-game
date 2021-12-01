@@ -22,7 +22,7 @@ public class GameEvents : MonoBehaviour {
 
     public event Action<Placeable> OnPlaceableMerge;
     public void TriggerPlaceableMerge(Placeable placeable) {
-        OnPlaceableMerge.Invoke(placeable);
+        OnPlaceableMerge?.Invoke(placeable);
     }
 
     public event Action<FieldTile> OnTileDestroy;

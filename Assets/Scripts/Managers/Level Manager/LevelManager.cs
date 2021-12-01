@@ -10,6 +10,7 @@ public class LevelManager : MonoBehaviour
 
     [SerializeField] private GameObject _requirementsUIPanel;
     [SerializeField] private RequirementElement _requirementElementPrefab;
+    [SerializeField] private MinigameObject _minigameObject;
 
     [SerializeField] private FieldManager _fieldManager;
 
@@ -85,7 +86,31 @@ public class LevelManager : MonoBehaviour
         PlayerPrefs.Save();
 
         GameEvents.current.TriggerPlayerInputDisable();
-        var window = UIManager.current.CreateLevelCompleteWindow();
+
+        _requirementsUIPanel.gameObject.SetActive(false);
+
+        UIManager.current.CreateElement("EndLevelMessage");
+
+        if (_minigameObject) {
+            StartMiniGame();
+            return;
+        }
+
+        ShowEndWindow();
+    }
+
+    private void StartMiniGame() {
+        MinigameWindow window = UIManager.current.CreateElement("MinigameWindow").GetComponent<MinigameWindow>();
+        window.Init(_minigameObject,
+            () => {
+                Destroy(window.gameObject);
+                ShowEndWindow();
+            }
+        );
+    }
+
+    private void ShowEndWindow() {
+        var window = UIManager.current.CreateElement("LevelCompleteWindows").GetComponent<LevelCompleteWindow>(); ;
         window.Init(_mergeStatistic, _tileStatistic, () => StartCoroutine(StartRedirection()));
     }
 
@@ -94,7 +119,8 @@ public class LevelManager : MonoBehaviour
             // Ждём завершения анимации начала уровня
             yield return _sceneLoader.StartSceneEndAnimation();
         }
-        SceneManager.LoadScene(0, LoadSceneMode.Single);
+        Debug.Log("LoadScene");
+        SceneManager.LoadScene(1, LoadSceneMode.Single);
     }
 
     private void OnEnable() {

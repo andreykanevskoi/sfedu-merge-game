@@ -4,20 +4,15 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class UIManager : MonoBehaviour {
+    private static string _resourcesPath = "UI/";
     public static UIManager current;
 
     [SerializeField] private Canvas _canvas;
 
-    public Popup CreatePopupWindows() {
-        GameObject go = Instantiate(Resources.Load("UI/Popup") as GameObject);
+    public GameObject CreateElement(string name) {
+        GameObject go = Instantiate(Resources.Load(_resourcesPath + name) as GameObject);
         SetToCanvas(go);
-        return go.GetComponent<Popup>();
-    }
-
-    public LevelCompleteWindow CreateLevelCompleteWindow() {
-        GameObject go = Instantiate(Resources.Load("UI/LevelCompleteWindows") as GameObject);
-        SetToCanvas(go);
-        return go.GetComponent<LevelCompleteWindow>();
+        return go;
     }
 
     public void SetToCanvas(GameObject go) {

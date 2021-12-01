@@ -96,7 +96,7 @@ public class CampManager : MonoBehaviour, ISaveable {
 
     private void AskRedirection(string sceneName) {
         GameEvents.current.TriggerPlayerInputDisable();
-        Popup popup = UIManager.current.CreatePopupWindows();
+        Popup popup = UIManager.current.CreateElement("Popup").GetComponent<Popup>();
         popup.Init("Вы уверены, что хотите перейти на уровень?",
                    () => StartCoroutine(StartRedirection(sceneName)),
                    () => GameEvents.current.TriggerPlayerInputEnable()

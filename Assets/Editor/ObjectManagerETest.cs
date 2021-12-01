@@ -49,7 +49,8 @@ namespace Tests
             object1.BaseName = "Example3";
             object1.currentCell = new Vector3Int(0, 0, 1);
 
-            objectManager.Add(object1);
+            objectManager.SetDictionary2(object1.currentCell, object1);
+
             Assert.AreEqual(objectManager.GetDictionary().ContainsKey(object1.currentCell), true);
         }
 

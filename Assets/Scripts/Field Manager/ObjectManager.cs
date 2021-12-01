@@ -16,13 +16,20 @@ public class ObjectManager
         return _placedObjects;
     }
 
-    public void SetDictionary2(Dictionary<Vector3Int, Placeable> _plcObj)
+    public void SetDictionary2(Vector3Int cellPosition, Placeable placeable)
+    {
+        placeable.currentCell = cellPosition;
+        _placedObjects[cellPosition] = placeable;
+    }
+
+    /*
+    public void SetDictionary(Dictionary<Vector3Int, Placeable> _plcObj)
     {
         foreach (Vector3Int key in _plcObj.Keys)
         {
             _placedObjects.Add(key, _plcObj[key]);
         }
-    }
+    }*/
 
     public void SetDictionary(Dictionary<Vector3Int, Placeable> _plcObj)
     {

@@ -8,7 +8,7 @@ using UnityEngine.TestTools;
 
 namespace Tests
 {
-    public class PlaceableTest
+    public class PlaceableETest
     {
         [Test]
         public void Hide()

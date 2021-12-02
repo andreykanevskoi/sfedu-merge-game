@@ -44,7 +44,6 @@ public class LevelRedirector : Placeable {
         yield return StartCoroutine(camera.FocusOnPoint(transform.position));
 
         Chest chest = Instantiate(_chestPrefab, transform.parent);
-        chest.AddItems(_levelReward);
 
         chest.currentCell = currentCell;
         chest.fieldManager = fieldManager;
@@ -53,7 +52,8 @@ public class LevelRedirector : Placeable {
         fieldManager.RemovePlaceableFromField(this);
         fieldManager.AddPlaceableToField(chest);
         
-        chest.AddTimer(1000);
+        //инициализация сундука
+        chest.InitChest(_levelReward, 100);
         
         GameEvents.current.TriggerPlayerInputEnable();
         PlayerPrefs.DeleteAll();

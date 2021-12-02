@@ -12,7 +12,7 @@ public class GameDataWriter {
         _writer.Write(value);
     }
 
-    public void Wite(float value) {
+    public void Write(float value) {
         _writer.Write(value);
     }
 

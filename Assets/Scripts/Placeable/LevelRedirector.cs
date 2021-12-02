@@ -44,7 +44,7 @@ public class LevelRedirector : Placeable {
         yield return StartCoroutine(camera.FocusOnPoint(transform.position));
 
         Chest chest = Instantiate(_chestPrefab, transform.parent);
-        chest.AddItem(_levelReward);
+        chest.AddItems(_levelReward);
 
         chest.currentCell = currentCell;
         chest.fieldManager = fieldManager;
@@ -53,7 +53,7 @@ public class LevelRedirector : Placeable {
         fieldManager.RemovePlaceableFromField(this);
         fieldManager.AddPlaceableToField(chest);
         
-        chest.AddTimer(10);
+        chest.AddTimer(1000);
         
         GameEvents.current.TriggerPlayerInputEnable();
         PlayerPrefs.DeleteAll();
@@ -67,7 +67,7 @@ public class LevelRedirector : Placeable {
         if (_levelReward != null) {
             writer.Write(_levelReward.Length);
             foreach (var prefab in _levelReward) {
-                writer.Write(prefabId);
+                writer.Write(prefab.prefabId);
             }
         }
         else {
@@ -84,8 +84,8 @@ public class LevelRedirector : Placeable {
         if (count > 0) {
             _levelReward = new Placeable[count];
             for (int i = 0; i < count; i++) {
-                int prefabId = reader.ReadInt();
-                _levelReward[i] = factory.GetPrefab(prefabId);
+                int Id = reader.ReadInt();
+                _levelReward[i] = factory.GetPrefab(Id);
             }
         }
         _chestPrefab = (Chest) factory.GetPrefab(reader.ReadInt());

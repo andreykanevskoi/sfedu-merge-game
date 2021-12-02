@@ -21,7 +21,11 @@ public class Chest : Placeable
         {
             AddTimer(_openingTimeInSeconds, _openingTimeInMinutes, _openingTimeInHours);
         }
-         
+        else
+        {
+            ActivateChest();
+        }
+        
     }
 
     public void AddTimer(int seconds, int minutes = 0, int hours = 0)
@@ -46,7 +50,7 @@ public class Chest : Placeable
         _timerView.InitTimerView(_timer);
     }
 
-    public void ActivateChest()
+    private void ActivateChest()
     {
         if (_timer != null)
         {
@@ -64,10 +68,11 @@ public class Chest : Placeable
         //GiveItem();
     }
 
-    public void AddItem(Placeable[] items)
+    public void AddItems(Placeable[] items)
     {
         foreach (var i in items)
         {
+            Debug.Log(items);
             _itemsInChest.Add(i);
         }
     }
@@ -121,5 +126,51 @@ public class Chest : Placeable
         fieldManager.RemovePlaceableFromField(this);
         Destroy(gameObject);
         TimerManager.DeleteTimer(_timer);
+    }
+
+    public override void Save(GameDataWriter writer)
+    {
+        base.Save(writer);
+        if (_itemsInChest != null) {
+            writer.Write(_itemsInChest.Count);
+            foreach (var prefab in _itemsInChest) {
+                writer.Write(prefab.prefabId);
+            }
+        }
+        else {
+            writer.Write(0);
+        }
+
+        if (_timer != null)
+        {
+            writer.Write(1);
+            writer.Write(_timer.GetCreationTime.ToString());
+            writer.Write(_timer.GetTimerTime.ToString());
+        }
+        else
+        {
+            writer.Write(0);
+        }
+        
+    }
+
+    public override void Load(GameDataReader reader, PlaceableFactory factory)
+    {
+        base.Load(reader, factory);
+        int count = reader.ReadInt();
+        if (count > 0) {
+            _itemsInChest = new List<Placeable>();
+            for (int i = 0; i < count; i++) {
+                int id = reader.ReadInt();
+                _itemsInChest.Add(factory.GetPrefab(id));
+            }
+        }
+
+        int timerExists = reader.ReadInt();
+        if (timerExists == 1)
+        {
+            _timer = new Timer(DateTime.Parse(reader.ReadString()), TimeSpan.Parse(reader.ReadString()));
+        }
+        InitChest(_timer);
     }
 }

@@ -72,6 +72,7 @@ public class Chest : Placeable
 
     private void GiveItem()
     {
+        if(_timer == null) return;
         if(!_timer.TimerPassed()) return;
         GiveItemInGame();
         if (_itemsInChest.Count == 0)
@@ -155,5 +156,17 @@ public class Chest : Placeable
             _timer = new Timer(DateTime.Parse(reader.ReadString()), TimeSpan.Parse(reader.ReadString()));
         }
         ActivateChest();
+    }
+
+    public override bool BeginDrag()
+    {
+        _timerView.gameObject.SetActive(false);
+        return base.BeginDrag();
+    }
+
+    public override void Drop(Vector3 currentMousePosition)
+    {
+        _timerView.gameObject.SetActive(true);
+        base.Drop(currentMousePosition);
     }
 }

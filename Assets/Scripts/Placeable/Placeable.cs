@@ -173,7 +173,7 @@ public class Placeable : MonoBehaviour, ISaveable {
     /// Прекратить перемещение
     /// </summary>
     /// <param name="currentMousePosition"></param>
-    public void Drop(Vector3 currentMousePosition) {
+    public virtual void Drop(Vector3 currentMousePosition) {
         // Вернуть порядок 
         _renderer.sortingOrder = _defaultSortingOrder;
     }

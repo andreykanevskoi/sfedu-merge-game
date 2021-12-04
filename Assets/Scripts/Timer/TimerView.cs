@@ -1,45 +1,38 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
 public class TimerView : MonoBehaviour
 {
     private TextMesh _timerTime;
     private Timer _timer;
-    void OnEnable()
+    private void OnEnable()
     {
-        _timerTime = GetComponent<TextMesh>();
-        ChestOpeningEventSystem.SighUpForEvent(TimerActivation);
+        if (_timerTime == null)
+        {
+            _timerTime = GetComponent<TextMesh>();
+        }
     }
     
-    private void OnDisable()
-    {
-        ChestOpeningEventSystem.UnsubscribeFromEvent(TimerActivation);
-    }
-
     public void InitTimerView(Timer t)
     {
         _timer = t;
+        _timerTime = GetComponent<TextMesh>();
         UpdateTimerView();
-        InvokeRepeating(nameof(UpdateTimerView), 0f, 0.1f);
+        InvokeRepeating(nameof(UpdateTimerView), 0f, 0.5f);
     }
 
-    string GetRemainingTimerTimeToString()
+    private string GetRemainingTimerTimeToString()
     {
         return _timer.GetRemainingTimerTime().TotalSeconds.ToString("F0");
     }
 
-    void UpdateTimerView()
+    private void UpdateTimerView()
     {
-        _timerTime.text = GetRemainingTimerTimeToString();
-    }
-
-    void TimerActivation(Timer timer)
-    {
-        if (_timer == timer)
+        if (_timer.TimerPassed())
         {
-            Destroy(this.gameObject);
+            Debug.Log("Активация сундука через TimerView");
+            transform.parent.GetComponent<Chest>().OpenChest();
+            return;
         }
+        _timerTime.text = GetRemainingTimerTimeToString();
     }
 }

@@ -5,48 +5,58 @@ using UnityEngine;
 
 public class Chest : Placeable
 {
-    [SerializeField] private int _openingTimeInMinutes = 0;
+    [SerializeField] private int _opTimeH = 0;
+    [SerializeField] private int _opTimeM = 0;
+    [SerializeField] private int _opTimeS = 0;
     [SerializeField] private Sprite _openChest;
-    [SerializeField] private GameObject _timerView;
+    [SerializeField] private TimerView _timerView;
     [SerializeField] private List<Placeable> _itemsInChest;
-    private Timer _timer;
-    private bool _isOpen = false;
-    
+    private Timer _timer = null;
+
     void OnEnable()
     {
-        ChestOpeningEventSystem.SighUpForEvent(OpenChest);
-        if (_openingTimeInMinutes != 0)
+        if (_opTimeS != 0 || _opTimeM != 0 || _opTimeH != 0)
         {
-            InitChest(new Timer(new TimeSpan(0, 0, 3), "TestOpen", "TestChest"));
+            AddTimer(_opTimeS, _opTimeM, _opTimeH);
+            ActivateChest();
         }
-         
     }
 
-    private void OnDisable()
+    public void AddTimer(int seconds, int minutes = 0, int hours = 0)
     {
-        ChestOpeningEventSystem.UnsubscribeFromEvent(OpenChest);
+        _timer = new Timer(seconds, minutes, hours);
+    }
+    
+    public void InitChest(Placeable[] items, int seconds, int minutes = 0, int hours = 0)
+    {
+        AddItems(items);
+        AddTimer(seconds,minutes,hours);
+        ActivateChest();
     }
 
-    public void InitChest(Timer timer)
+    private void ActivateChest()
     {
-        _timer = timer;
-        TimerView tv = Instantiate(_timerView, transform).GetComponent<TimerView>();
-        tv.InitTimerView(_timer);
+        if (_timer != null)
+        {
+            _timerView = Instantiate(_timerView, transform).GetComponent<TimerView>();
+            _timerView.InitTimerView(_timer);
+        }
     }
 
-    void OpenChest(Timer timer)
+    public void OpenChest()
     {
-        if (_timer != timer) return;
+        if (!_timer.TimerPassed()) return;
         Debug.Log("Открыть сундук");
-        _isOpen = true;
+        Destroy(_timerView.gameObject);
         GetComponent<SpriteRenderer>().sprite = _openChest;
         //GiveItem();
     }
 
-    public void AddItem(Placeable[] items)
+    public void AddItems(Placeable[] items)
     {
         foreach (var i in items)
         {
+            Debug.Log(items);
             _itemsInChest.Add(i);
         }
     }
@@ -62,19 +72,11 @@ public class Chest : Placeable
 
     private void GiveItem()
     {
-        if(!_isOpen) return;
-        switch(_itemsInChest.Count)
+        if(!_timer.TimerPassed()) return;
+        GiveItemInGame();
+        if (_itemsInChest.Count == 0)
         {
-            case 0:
-                DestroyChest();
-                break;
-            case 1:
-                GiveItemInGame();
-                DestroyChest();
-                break;
-            default:
-                GiveItemInGame();
-                break;
+            DestroyChest();
         }
     }
 
@@ -93,7 +95,7 @@ public class Chest : Placeable
             _itemsInChest.RemoveAt(_itemsInChest.Count - 1);
             fieldManager.AddPlaceableToField(newPlaceable);
 
-            Debug.Log("PlaceItem");
+            Debug.Log("PlaceItem " + newPlaceable.BaseName);
         }
     }
     
@@ -107,5 +109,51 @@ public class Chest : Placeable
     {
         fieldManager.RemovePlaceableFromField(this);
         Destroy(gameObject);
+    }
+
+    public override void Save(GameDataWriter writer)
+    {
+        base.Save(writer);
+        if (_itemsInChest != null) {
+            writer.Write(_itemsInChest.Count);
+            foreach (var prefab in _itemsInChest) {
+                writer.Write(prefab.prefabId);
+            }
+        }
+        else {
+            writer.Write(0);
+        }
+
+        if (_timer != null)
+        {
+            writer.Write(1);
+            writer.Write(_timer.GetCreationTime.ToString());
+            writer.Write(_timer.GetTimerTime.ToString());
+        }
+        else
+        {
+            writer.Write(0);
+        }
+        
+    }
+
+    public override void Load(GameDataReader reader, PlaceableFactory factory)
+    {
+        base.Load(reader, factory);
+        int count = reader.ReadInt();
+        if (count > 0) {
+            _itemsInChest = new List<Placeable>();
+            for (int i = 0; i < count; i++) {
+                int id = reader.ReadInt();
+                _itemsInChest.Add(factory.GetPrefab(id));
+            }
+        }
+
+        int timerExists = reader.ReadInt();
+        if (timerExists == 1)
+        {
+            _timer = new Timer(DateTime.Parse(reader.ReadString()), TimeSpan.Parse(reader.ReadString()));
+        }
+        ActivateChest();
     }
 }

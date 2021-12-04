@@ -5,48 +5,46 @@ public class Timer
 {
     private readonly DateTime _creationDate;
     private TimeSpan _timerTime;
-    private readonly string _action;
-    private readonly string _name;
 
-    public Timer(DateTime creationDate, TimeSpan timerTime, string action, string name = "")
+    public Timer(DateTime creationDate, TimeSpan timerTime)
     {
         _creationDate = creationDate;
         _timerTime = timerTime;
-        _action = action;
-        _name = name;
     }
     
-    public Timer(TimeSpan timerTime, string action, string name = "")
+    public Timer(TimeSpan timerTime)
     {
         _creationDate = DateTime.UtcNow;
         _timerTime = timerTime;
-        _action = action;
-        _name = name;
-    }
-    
-    private void TriggeringAction()
-    {
-        ChestOpeningEventSystem.TriggeringEvent(this);
-        TimerManager.DeleteTimer(this);
     }
 
-    public void CheckTimer()
+    public Timer(int seconds, int minutes = 0, int hours = 0)
+    {
+        DateTime dt = DateTime.MinValue;
+        dt = dt.AddSeconds(seconds);
+        dt = dt.AddMinutes(minutes);
+        dt = dt.AddHours(hours);
+        _creationDate = DateTime.UtcNow;
+        _timerTime = dt - DateTime.MinValue;
+    }
+
+    public bool TimerPassed()
     {
         if ((DateTime.UtcNow - _creationDate) >= _timerTime)
         {
-            TriggeringAction();
+            return true;
         }
+
+        return false;
     }
 
     public TimeSpan GetRemainingTimerTime()
     {
-        CheckTimer();
+        TimerPassed();
         return _timerTime - GetTimerAge;
     }
     private TimeSpan GetTimerAge => DateTime.UtcNow - _creationDate;
     
     public DateTime GetCreationTime => _creationDate;
     public TimeSpan GetTimerTime => _timerTime;
-    public string GetAction => _action;
-    public string GetName => _name;
 }

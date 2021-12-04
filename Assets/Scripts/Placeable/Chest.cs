@@ -160,13 +160,13 @@ public class Chest : Placeable
 
     public override bool BeginDrag()
     {
-        _timerView.gameObject.SetActive(false);
+        _timerView.Hide();
         return base.BeginDrag();
     }
 
     public override void Drop(Vector3 currentMousePosition)
     {
-        _timerView.gameObject.SetActive(true);
+        _timerView.Show();
         base.Drop(currentMousePosition);
     }
 }

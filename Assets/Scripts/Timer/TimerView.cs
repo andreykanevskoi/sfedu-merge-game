@@ -6,20 +6,24 @@ public class TimerView : MonoBehaviour
 {
     private TextMesh _timerTime;
     private Timer _timer;
-    private Transform _textBackground;
-    private const string Separator = ":";
+    private const char Separator = ':';
     private int _characterNumber;
+    private SpriteRenderer _spriteRendererBackground;
+
+    private float _paddingWight = 0.4f;
+    private float _paddingHeight = 0.2f;
+    private float _expCoefForSeparator = 0.4f;
     
     //массив методов получения дней, часов, минут, секунд
-    delegate string GetTimeGelegate(TimeSpan ts);
-    private GetTimeGelegate[] _getTimeFunction;
+    delegate string GetTimeDelegate(TimeSpan ts);
+    private GetTimeDelegate[] _getTimeFunction;
 
     private void Awake()
     {
         _timerTime = GetComponent<TextMesh>();
-        _textBackground = transform.GetChild(0);
-        _getTimeFunction = new[] {(GetTimeGelegate) GetDaysToStrings, GetHoursToStrings,
+        _getTimeFunction = new[] {(GetTimeDelegate) GetDaysToStrings, GetHoursToStrings,
             GetMinutesToStrings, GetSecondsToStrings};
+        _spriteRendererBackground = GetComponentInChildren<SpriteRenderer>();
     }
 
     public void InitTimerView(Timer t)
@@ -40,7 +44,7 @@ public class TimerView : MonoBehaviour
             //если предыдущие значение есть, добавляем текущее, даже если 0
             if (value != "0" || (prevValues && value == "0"))
             {
-                sb.Append(value + Separator);
+                sb.Append(Format(value, prevValues) + Separator);
                 prevValues = true;
             }
             else
@@ -61,8 +65,12 @@ public class TimerView : MonoBehaviour
             transform.parent.GetComponent<Chest>().OpenChest();
             return;
         }
-        ResizeBackGround(GetRemainingTimerTimeToString().Replace(":", "").Length);
-        _timerTime.text = GetRemainingTimerTimeToString();
+
+        string s = GetRemainingTimerTimeToString();
+        int separatorNumber = s.Split(Separator).Length - 1;
+        int remainingTimerLenght = s.Length - separatorNumber;
+        ResizeBackGround(remainingTimerLenght, separatorNumber);
+        _timerTime.text = s;
     }
 
     private string GetDaysToStrings(TimeSpan ts)
@@ -85,9 +93,13 @@ public class TimerView : MonoBehaviour
         return ts.Seconds.ToString();
     }
 
-    private void ResizeBackGround(int characterNumber)
+    private void ResizeBackGround(int characterNumber, int separatorNumber)
     {
-        _textBackground.transform.localScale = new Vector3(6.5f * characterNumber, 8 , 1);
+        _spriteRendererBackground.size = new Vector2(characterNumber + (separatorNumber * _expCoefForSeparator) 
+                                                                     + _paddingWight, 1 + _paddingHeight);
+        // var transform1 = _textBackground.transform;
+        // transform1.localScale = new Vector3(2.7f * characterNumber, 
+        //     transform1.localScale.y);
     }
 
     public void Hide()
@@ -105,6 +117,13 @@ public class TimerView : MonoBehaviour
     private void StartUpdateView()
     {
         UpdateTimerView();
-        InvokeRepeating(nameof(UpdateTimerView), 0f, 0.5f);
+        InvokeRepeating(nameof(UpdateTimerView), 0f, 1f);
+    }
+
+    private string Format(string s, bool prevV)
+    {
+        if (s.Length == 1 && prevV)
+            return "0" + s;
+        return s;
     }
 }

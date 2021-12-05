@@ -18,9 +18,9 @@ MonoBehaviour:
   currentCell: {x: 0, y: 0, z: 0}
   returnSpeed: 10
   fieldManager: {fileID: 0}
-  _openingTimeInHours: 0
-  _openingTimeInMinutes: 0
-  _openingTimeInSeconds: 0
+  _opTimeH: 0
+  _opTimeM: 0
+  _opTimeS: 0
   _openChest: {fileID: 21300000, guid: 3baa067a2b9dba143b53a66d7bd2cb00, type: 3}
   _timerView: {fileID: 7485425050389101435, guid: d21e571e0833cfd4f99256f0f76dd181,
     type: 3}
@@ -32,6 +32,26 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 172632410219357060, guid: 00120176e4dcc5b429917249f6afcbd6,
+        type: 3}
+      propertyPath: m_Size.x
+      value: 0.28749228
+      objectReference: {fileID: 0}
+    - target: {fileID: 172632410219357060, guid: 00120176e4dcc5b429917249f6afcbd6,
+        type: 3}
+      propertyPath: m_Size.y
+      value: 0.26417583
+      objectReference: {fileID: 0}
+    - target: {fileID: 172632410219357060, guid: 00120176e4dcc5b429917249f6afcbd6,
+        type: 3}
+      propertyPath: m_Offset.x
+      value: 0.0029164255
+      objectReference: {fileID: 0}
+    - target: {fileID: 172632410219357060, guid: 00120176e4dcc5b429917249f6afcbd6,
+        type: 3}
+      propertyPath: m_Offset.y
+      value: 0.05542457
+      objectReference: {fileID: 0}
     - target: {fileID: 172632410219357060, guid: 00120176e4dcc5b429917249f6afcbd6,
         type: 3}
       propertyPath: m_SpriteTilingProperty.pivot.y

@@ -388,6 +388,18 @@ RectTransform:
     type: 3}
   m_PrefabInstance: {fileID: 1872713482}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &387568210 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 2320131632586263174, guid: 4d8aa95fca4b95545ada76d5c73d139c,
+    type: 3}
+  m_PrefabInstance: {fileID: 1872713482}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 387568207}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!4 &446144643 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 7665665994766685239, guid: 6c21c3d6653299a449ea42204a4e3c43,
@@ -676,7 +688,7 @@ PrefabInstance:
         type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[3].m_Target
       value: 
-      objectReference: {fileID: 387568207}
+      objectReference: {fileID: 387568210}
     - target: {fileID: 6962220806988406771, guid: 44b0b1107db1b154fae20398aff637de,
         type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
@@ -685,13 +697,13 @@ PrefabInstance:
     - target: {fileID: 6962220806988406771, guid: 44b0b1107db1b154fae20398aff637de,
         type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[3].m_MethodName
-      value: SetActive
+      value: set_enabled
       objectReference: {fileID: 0}
     - target: {fileID: 6962220807677359538, guid: 44b0b1107db1b154fae20398aff637de,
         type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
-      objectReference: {fileID: 387568207}
+      objectReference: {fileID: 387568210}
     - target: {fileID: 6962220807677359538, guid: 44b0b1107db1b154fae20398aff637de,
         type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[3].m_Target
@@ -700,7 +712,7 @@ PrefabInstance:
     - target: {fileID: 6962220807677359538, guid: 44b0b1107db1b154fae20398aff637de,
         type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
-      value: SetActive
+      value: set_enabled
       objectReference: {fileID: 0}
     - target: {fileID: 6962220807677359538, guid: 44b0b1107db1b154fae20398aff637de,
         type: 3}

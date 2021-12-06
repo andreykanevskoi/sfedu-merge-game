@@ -418,8 +418,8 @@ MonoBehaviour:
   _upperLimit: 8
   _bottomLimit: -3
   _zoomSpeed: 0.01
-  _maxSize: 200
-  _minSize: 3
+  _maxSize: 2000
+  _minSize: 1
 --- !u!4 &473500364 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 3886045966475337851, guid: 56ec0f1777edd2e409408d2cdc22dd59,
@@ -3984,17 +3984,17 @@ PrefabInstance:
     - target: {fileID: 9124029982963506220, guid: c9c67ce9e92292a47a77d732b5b14f70,
         type: 3}
       propertyPath: _opTimeH
-      value: 10
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 9124029982963506220, guid: c9c67ce9e92292a47a77d732b5b14f70,
         type: 3}
       propertyPath: _opTimeM
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 9124029982963506220, guid: c9c67ce9e92292a47a77d732b5b14f70,
         type: 3}
       propertyPath: _opTimeS
-      value: 0
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 9124029982963506220, guid: c9c67ce9e92292a47a77d732b5b14f70,
         type: 3}

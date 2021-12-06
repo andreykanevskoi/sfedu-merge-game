@@ -79,4 +79,10 @@ public class GameEvents : MonoBehaviour {
     public void TriggerLevelComplete(string sceneName) {
         OnLevelComplete?.Invoke(sceneName);
     }
+
+    public event Action<string> OnExitScene;
+    public void TriggerExitScene(string sceneName)
+    {
+        OnExitScene?.Invoke(sceneName);
+    }
 }

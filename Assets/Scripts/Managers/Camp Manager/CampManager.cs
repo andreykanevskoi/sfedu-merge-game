@@ -201,16 +201,23 @@ public class CampManager : MonoBehaviour, ISaveable {
         _storage.Save(this);
     }
 
+    public void SceneExit(string sceneName)
+    {
+        StartCoroutine(StartRedirection(sceneName));
+    }
+
     #region - OnEnable / OnDisable -
 
     private void OnEnable() {
         GameEvents.current.OnObjectAppearance += ObjectAppearance;
         GameEvents.current.OnLevelRedirectionIntent += AskRedirection;
+        GameEvents.current.OnExitScene += SceneExit;
     }
 
     private void OnDisable() {
         GameEvents.current.OnObjectAppearance -= ObjectAppearance;
         GameEvents.current.OnLevelRedirectionIntent -= AskRedirection;
+        GameEvents.current.OnExitScene -= SceneExit;
     }
 
     #endregion

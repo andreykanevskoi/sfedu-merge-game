@@ -122,14 +122,21 @@ public class LevelManager : MonoBehaviour
         Debug.Log("LoadScene");
         SceneManager.LoadScene(1, LoadSceneMode.Single);
     }
+    
+    public void SceneExit(string sceneName)
+    {
+        StartCoroutine(StartRedirection());
+    }
 
     private void OnEnable() {
         GameEvents.current.OnObjectAppearance += ObjectAppearance;
         GameEvents.current.OnObjectDisappearance += ObjectDisappearance;
+        GameEvents.current.OnExitScene += SceneExit;
     }
 
     private void OnDisable() {
         GameEvents.current.OnObjectAppearance -= ObjectAppearance;
         GameEvents.current.OnObjectDisappearance -= ObjectDisappearance;
+        GameEvents.current.OnExitScene -= SceneExit;
     }
 }

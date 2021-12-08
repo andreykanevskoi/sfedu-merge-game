@@ -98,7 +98,7 @@ LightmapSettings:
     m_TrainingDataDestination: TrainingData
     m_LightProbeSampleCountMultiplier: 4
   m_LightingDataAsset: {fileID: 0}
-  m_UseShadowmask: 1
+  m_UseShadowmask: 0
 --- !u!196 &4
 NavMeshSettings:
   serializedVersion: 2
@@ -1023,10 +1023,10 @@ RectTransform:
   m_Father: {fileID: 1016849416}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 330, y: -680}
-  m_SizeDelta: {x: -700, y: -1400}
+  m_AnchorMin: {x: 1, y: 0}
+  m_AnchorMax: {x: 1, y: 0}
+  m_AnchoredPosition: {x: -120, y: 120}
+  m_SizeDelta: {x: 200, y: 200}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &864964032
 MonoBehaviour:
@@ -3815,6 +3815,11 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 1166601612}
     m_Modifications:
+    - target: {fileID: 2890684281553074814, guid: bc00ff8250c08004e9a3df1f20169390,
+        type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: a97c105638bdf8b4a8650670310a4cd3, type: 2}
     - target: {fileID: 3300033836431223064, guid: bc00ff8250c08004e9a3df1f20169390,
         type: 3}
       propertyPath: m_RootOrder

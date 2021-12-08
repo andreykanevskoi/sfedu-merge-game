@@ -244,6 +244,7 @@ GameObject:
   - component: {fileID: 2148925995843051969}
   - component: {fileID: 6118295677616863819}
   - component: {fileID: 2761884786330967926}
+  - component: {fileID: 524818272622353168}
   m_Layer: 5
   m_Name: Panel
   m_TagString: Untagged
@@ -312,6 +313,18 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
+--- !u!225 &524818272622353168
+CanvasGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2974466778140254017}
+  m_Enabled: 1
+  m_Alpha: 1
+  m_Interactable: 1
+  m_BlocksRaycasts: 1
+  m_IgnoreParentGroups: 0
 --- !u!1 &6283840064015846874
 GameObject:
   m_ObjectHideFlags: 0
@@ -558,6 +571,7 @@ GameObject:
   - component: {fileID: 3738857671016631882}
   - component: {fileID: 2895195254267376219}
   - component: {fileID: 1293879939627244285}
+  - component: {fileID: 6104301986321023305}
   m_Layer: 5
   m_Name: LevelCompleteWindows
   m_TagString: Untagged
@@ -639,6 +653,25 @@ MonoBehaviour:
   _toCampButton: {fileID: 3714582379532832605}
   _statisticElementPrefab: {fileID: 6080981248364203087, guid: f811dec27bade7b4bb03f7012f6f6a74,
     type: 3}
+--- !u!95 &6104301986321023305
+Animator:
+  serializedVersion: 3
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7500344972141106485}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: 85cf24411e58e7f4c9ad5c465d3d8230, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorControllerStateOnDisable: 0
 --- !u!1 &7813484015485860892
 GameObject:
   m_ObjectHideFlags: 0

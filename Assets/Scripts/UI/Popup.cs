@@ -19,6 +19,12 @@ public class Popup : MonoBehaviour {
 
     private void OnDeny() {
         _denyAction?.Invoke();
+        StartCoroutine(Disapeare());
+    }
+
+    private IEnumerator Disapeare() {
+        GetComponent<Animator>().SetTrigger("DisappearanceTrigger");
+        yield return new WaitForSeconds(0.15f);
         Destroy(gameObject);
     }
 

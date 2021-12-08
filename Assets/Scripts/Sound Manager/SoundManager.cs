@@ -11,6 +11,7 @@ public static class SoundManager
         nonMerge,
     }
 
+    // Музыкальные звуки
     public enum Music
     {
         motorsport,
@@ -29,7 +30,7 @@ public static class SoundManager
     {
         if (oneShotGameObject == null)
         {
-            oneShotGameObject = new GameObject("One Shot Sound");
+            oneShotGameObject = GameObject.Find("OneShotSound");
             oneShotAudioSource = oneShotGameObject.AddComponent<AudioSource>();
         }        
         oneShotAudioSource.PlayOneShot(GetSound(sound));

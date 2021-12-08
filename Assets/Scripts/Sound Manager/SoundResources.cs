@@ -2,14 +2,13 @@
 
 public class SoundResources : MonoBehaviour
 {
-    private static SoundResources _instance;
+    public static SoundResources instance;
 
-    public static SoundResources instance
+    public void Awake()
     {
-        get
+        if (!instance)
         {
-            if (_instance == null) _instance = (Instantiate(Resources.Load("SoundResources")) as GameObject).GetComponent<SoundResources>();
-            return _instance;
+            instance = this;
         }
     }
 

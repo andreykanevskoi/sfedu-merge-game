@@ -223,7 +223,7 @@ public class FieldManager : MonoBehaviour {
         // Проигрываем анимацию
         SetDestructedTile(fieldTile, cellPosition);
         // Проигрываем звук
-        //SoundManager.PlaySound(fieldTile.digAudioClip);
+        SoundManager.PlaySound(fieldTile.digAudioClip);
 
         // Проверяем, есть ли объект под разрушенным тайлом
         Vector3Int positionBelow = GetPositionBellow(cellPosition);

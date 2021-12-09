@@ -22,42 +22,27 @@ public class PaintCanvas : MonoBehaviour{
 
     private RectTransform _rectTransform;
     private WaitForFixedUpdate _waitForFixedUpdate = new WaitForFixedUpdate();
+    
     private Vector2 _mousePosition;
 
+    public Action OnFirstTouch;
     public Action OnMinigameEnd;
 
     private bool _isStarted = false;
+    private bool _isFinished = false;
+    private bool _isFirstTouch = true;
 
     private void Awake() {
         _rectTransform = GetComponent<RectTransform>();
 
-        if (_texture == null) {
-            _texture = new Texture2D(_textureSize, _textureSize, TextureFormat.ARGB32, false);
-        }
-        if (_texture.width != _textureSize) {
-            _texture.Resize(_textureSize, _textureSize);
-        }
-        _texture.wrapMode = _textureWrapMode;
-        _texture.filterMode = _filterMode;
-        _texture.Apply();
-
-        _tmpT = new Texture2D(_texture.width, _texture.height, TextureFormat.ARGB32, false);
-        Graphics.CopyTexture(_texture, _tmpT);
-
-        _counter = _texture.width * _texture.height;// подсчет изначального размера грязной текстуры
-        float fullImg = _counter;
-        for (int x = 0; x < _texture.width; x++) {
-            for (int y = 0; y < _texture.height; y++) {
-                Color color = _texture.GetPixel(x, y);
-                if (color.a == 0) {
-                    _counter--;
-                }
-            }
-        }
-        _fullDirtyImg = _counter;
+        Prepare();
     }
 
     void OnValidate() {
+        Prepare();
+    }
+
+    private void Prepare() {
         if (_texture == null) {
             _texture = new Texture2D(_textureSize, _textureSize, TextureFormat.ARGB32, false);
         }
@@ -93,6 +78,11 @@ public class PaintCanvas : MonoBehaviour{
     }
 
     public void OnTouch(InputAction.CallbackContext context) {
+        if (!_isStarted || _isFinished) return;
+        if (_isFirstTouch) {
+            _isFirstTouch = false;
+            OnFirstTouch?.Invoke();
+        }
         StartCoroutine(StartDrawing(context.action));
     }
 
@@ -147,6 +137,7 @@ public class PaintCanvas : MonoBehaviour{
                 }
             }
         }
+
         dirtyImg = _counter;
         float precent = (dirtyImg / _fullDirtyImg) * 100f;
 
@@ -158,6 +149,7 @@ public class PaintCanvas : MonoBehaviour{
     }
 
     private void Complete() {
+        _isFinished = true;
         OnMinigameEnd?.Invoke();
     }
 

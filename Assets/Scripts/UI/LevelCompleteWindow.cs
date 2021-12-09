@@ -12,10 +12,14 @@ public class LevelCompleteWindow : MonoBehaviour {
 
     [SerializeField] private GameObject _statisticElementPrefab;
 
-    private MergeStatisticCollector _mergeStatistic;
-    private TileStatisticCollector _tileStatistic;
+    private StatisticCollector _mergeStatistic;
+    private StatisticCollector _tileStatistic;
 
-    public void Init(MergeStatisticCollector mergeStatistic, TileStatisticCollector tileStatistic, Action action) {
+    [SerializeField, Range(1f, 10f)] private float _statisticAnimationTime = 5f;
+
+    delegate Sprite GetSprite<T>(T element);
+
+    public void Init(StatisticCollector mergeStatistic, StatisticCollector tileStatistic, Action action) {
         _mergeStatistic = mergeStatistic;
         _tileStatistic = tileStatistic;
 
@@ -23,6 +27,11 @@ public class LevelCompleteWindow : MonoBehaviour {
             action?.Invoke();
         });
 
+        StartCoroutine(Apeare());
+    }
+
+    private IEnumerator Apeare() {
+        yield return new WaitForSeconds(0.15f);
         StartCoroutine(FillStatistic());
     }
 
@@ -30,52 +39,37 @@ public class LevelCompleteWindow : MonoBehaviour {
         // Ширина элемента
         float imageWidth = _statisticElementPrefab.GetComponent<RectTransform>().rect.width;
 
-        int totalElements = 0;
-        foreach (var count in _mergeStatistic.mergeCounter.Values) {
-            totalElements += count;
-        }
+        yield return StartCoroutine(FillPannel(_mergeStatisticPanel, _mergeStatistic, imageWidth));
+        yield return StartCoroutine(FillPannel(_digStatisticPanel, _tileStatistic, imageWidth));
+    }
 
-        if (totalElements > 0) {
-            float mergePanelwidth = _mergeStatisticPanel.GetComponent<RectTransform>().rect.width;
-            float totalWidth = totalElements * imageWidth;
-            if (totalWidth > mergePanelwidth) {
-                float spacing = (totalWidth - mergePanelwidth) / (totalElements - 2);
-                _mergeStatisticPanel.GetComponent<HorizontalLayoutGroup>().spacing = -spacing;
-            }
+    private IEnumerator FillPannel(GameObject panel, StatisticCollector collector, float elementWidth) {
+        int totalElements = collector.CountElement();
+        
+        if (totalElements < 0) yield break;
 
-            float sleepTime = 2 / totalElements;
-            foreach (var element in _mergeStatistic.mergeCounter.Keys) {
-                int count = _mergeStatistic.mergeCounter[element];
-                for (int i = 0; i < count; i++) {
-                    Image image = Instantiate(_statisticElementPrefab, _mergeStatisticPanel.transform).GetComponent<Image>();
-                    image.sprite = element;
-                    yield return new WaitForSeconds(sleepTime);
-                }
-            }
-        }
+        float panelWidth = panel.GetComponent<RectTransform>().rect.width;
+        float spacing = CalculateSpacing(panelWidth, totalElements * elementWidth, totalElements);
+        panel.GetComponent<HorizontalLayoutGroup>().spacing = -spacing;
 
-        totalElements = 0;
-        foreach (var count in _tileStatistic.tileeCounter.Values) {
-            totalElements += count;
-        }
+        float playTime = _statisticAnimationTime / totalElements;
+        var waitTime = new WaitForSeconds(playTime);
 
-        if (totalElements > 0) {
-            float tilePanelwidth = _mergeStatisticPanel.GetComponent<RectTransform>().rect.width;
-            float totalWidth = totalElements * imageWidth;
-            if (totalWidth > tilePanelwidth) {
-                float spacing = (totalWidth - tilePanelwidth) / (totalElements - 2);
-                _digStatisticPanel.GetComponent<HorizontalLayoutGroup>().spacing = -spacing;
-            }
+        foreach (var pair in collector.statistic) {
+            for (int i = 0; i < pair.Value; i++) {
+                Image image = Instantiate(_statisticElementPrefab, panel.transform).GetComponent<Image>();
+                image.sprite = pair.Key;
 
-            float sleepTime = 2 / totalElements;
-            foreach (var element in _tileStatistic.tileeCounter.Keys) {
-                int count = _tileStatistic.tileeCounter[element];
-                for (int i = 0; i < count; i++) {
-                    Image image = Instantiate(_statisticElementPrefab, _digStatisticPanel.transform).GetComponent<Image>();
-                    image.sprite = element.sprite;
-                    yield return new WaitForSeconds(sleepTime);
-                }
+                yield return waitTime;
             }
         }
+    }
+
+    private float CalculateSpacing(float panelWidth, float width, int totalElements) {
+        if (width > panelWidth) {
+            float spacing = (width - panelWidth) / (totalElements - 2);
+            return spacing;
+        }
+        return 0f;
     }
 }

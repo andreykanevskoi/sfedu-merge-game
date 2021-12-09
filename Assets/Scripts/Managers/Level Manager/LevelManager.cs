@@ -18,8 +18,8 @@ public class LevelManager : MonoBehaviour
 
     private int _taskCompleted = 0;
 
-    private MergeStatisticCollector _mergeStatistic;
-    private TileStatisticCollector _tileStatistic;
+    private StatisticCollector _mergeStatistic;
+    private StatisticCollector _tileStatistic;
 
     public void ObjectAppearance(Placeable placeable) {
         if (_requirements.ContainsKey(placeable.BaseName)) {
@@ -48,8 +48,15 @@ public class LevelManager : MonoBehaviour
         _fieldManager.InitTileManager();
         _fieldManager.InitSmogManager();
 
-        _mergeStatistic = new MergeStatisticCollector();
-        _tileStatistic = new TileStatisticCollector();
+        _mergeStatistic = new StatisticCollector(
+            (x)  => { return ((Placeable) x).GetComponent<SpriteRenderer>().sprite; }
+        );
+        GameEvents.current.OnPlaceableMerge += _mergeStatistic.Update;
+
+        _tileStatistic = new StatisticCollector(
+            (x) => { return ((FieldTile)x).sprite; }
+        );
+        GameEvents.current.OnTileDestroy += _tileStatistic.Update;
     }
 
     private void Start() {

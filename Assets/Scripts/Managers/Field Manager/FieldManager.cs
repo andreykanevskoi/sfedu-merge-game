@@ -231,7 +231,7 @@ public class FieldManager : MonoBehaviour {
         // Проигрываем анимацию
         SetDestructedTile(fieldTile, cellPosition);
         // Проигрываем звук
-        //SoundManager.PlaySound(fieldTile.digAudioClip);
+        SoundManager.PlaySound(fieldTile.digAudioClip);
 
         GameEvents.current.TriggerTileDestroy(fieldTile);
 

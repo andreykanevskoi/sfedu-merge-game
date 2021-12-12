@@ -24,6 +24,15 @@ public static class SoundManager
     private static GameObject musicGameObject;
     private static AudioSource musicAudioSource;
 
+    static SoundManager()
+    {
+        if (oneShotGameObject == null)
+        {
+            oneShotGameObject = GameObject.Find("OneShotSound");
+            oneShotAudioSource = oneShotGameObject.GetComponent<AudioSource>();
+        }
+    }
+
 
     // Функция воспроизведения звука
     public static void PlaySound(Sound sound)

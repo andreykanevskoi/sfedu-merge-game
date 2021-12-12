@@ -36,4 +36,4 @@ MonoBehaviour:
   m_Flags: 1
   m_ColliderType: 1
   destructible: 1
-  digAudioClip: {fileID: 0}
+  digAudioClip: {fileID: 8300000, guid: 7d7bb00e267ea354087e86f9ed034dfd, type: 3}

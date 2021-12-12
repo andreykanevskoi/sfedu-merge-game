@@ -88,6 +88,8 @@ public class CampManager : MonoBehaviour, ISaveable {
             yield return _sceneLoader.StartSceneStartAnimation();
         }
 
+        SoundManager.PlayMusic(SoundManager.Music.BGCamp);
+
         // Если есть пройденный уровень, вызываем ивент
         if (_completedSceneName != "") {
             GameEvents.current.TriggerLevelComplete(_completedSceneName);

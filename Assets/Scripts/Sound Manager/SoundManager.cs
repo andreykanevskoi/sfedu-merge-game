@@ -13,7 +13,8 @@ public static class SoundManager
 
     public enum Music
     {
-        motorsport,
+        BGSampleLevel,
+        BGCamp,
     }
 
     // Объект для звуков
@@ -32,39 +33,30 @@ public static class SoundManager
     {
         _musicOn = PlayerPrefs.GetInt("Music", 1);
         _audioOn = PlayerPrefs.GetInt("Audio", 1);
+
+        oneShotGameObject = GameObject.Find("OneShotSound");
+        oneShotAudioSource = oneShotGameObject.GetComponent<AudioSource>();
+
+        musicGameObject = GameObject.Find("Music");
+        musicAudioSource = musicGameObject.GetComponent<AudioSource>();
     }
 
     // Функция воспроизведения звука
     public static void PlaySound(Sound sound)
     {
-        if(_audioOn == 0) return;
-        if (oneShotGameObject == null)
-        {
-            oneShotGameObject = new GameObject("One Shot Sound");
-            oneShotAudioSource = oneShotGameObject.AddComponent<AudioSource>();
-        }        
+        if(_audioOn == 0) return;   
         oneShotAudioSource.PlayOneShot(GetSound(sound));
     }
 
     public static void PlaySound(AudioClip clip)
     {
         if(_audioOn == 0) return;
-        if (oneShotGameObject == null)
-        {
-            oneShotGameObject = new GameObject("One Shot Sound");
-            oneShotAudioSource = oneShotGameObject.AddComponent<AudioSource>();
-        }
         oneShotAudioSource.PlayOneShot(clip);
     }
 
     public static void PlayMusic(Music music)
     {
         if(_musicOn == 0) return;
-        if (musicGameObject == null)
-        {
-            musicGameObject = new GameObject("Music");
-            musicAudioSource = musicGameObject.AddComponent<AudioSource>();
-        }
         musicAudioSource.PlayOneShot(GetMusic(music));
     }
 
@@ -106,7 +98,16 @@ public static class SoundManager
     /// </summary>
     public static int ChangeMusicSettings()
     {
-        _musicOn = _musicOn == 0 ? 1 : 0;
+        if (_musicOn == 0)
+        {
+            _musicOn = 1;
+            musicAudioSource.mute = false;
+        }
+        else
+        {
+            _musicOn = 0;
+            musicAudioSource.mute = true;
+        }
         return _musicOn;
     }
 

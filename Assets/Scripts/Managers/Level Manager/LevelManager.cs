@@ -71,6 +71,9 @@ public class LevelManager : MonoBehaviour
             // Ждём завершения анимации начала уровня
             yield return _sceneLoader.StartSceneStartAnimation();
         }
+
+        SoundManager.PlayMusic(SoundManager.Music.BGSampleLevel);
+
         foreach(var req in _requirements.Values) {
             req.Start();
             yield return new WaitForSeconds(0.2f);

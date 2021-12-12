@@ -11,7 +11,6 @@ public static class SoundManager
         nonMerge,
     }
 
-    // Музыкальные звуки
     public enum Music
     {
         motorsport,
@@ -24,22 +23,24 @@ public static class SoundManager
     private static GameObject musicGameObject;
     private static AudioSource musicAudioSource;
 
+    //состояние настроек звука
+    private static int _musicOn;
+    private static int _audioOn;
+
+    //загружаем настройки
     static SoundManager()
     {
-        if (oneShotGameObject == null)
-        {
-            oneShotGameObject = GameObject.Find("OneShotSound");
-            oneShotAudioSource = oneShotGameObject.GetComponent<AudioSource>();
-        }
+        _musicOn = PlayerPrefs.GetInt("Music", 1);
+        _audioOn = PlayerPrefs.GetInt("Audio", 1);
     }
-
 
     // Функция воспроизведения звука
     public static void PlaySound(Sound sound)
     {
+        if(_audioOn == 0) return;
         if (oneShotGameObject == null)
         {
-            oneShotGameObject = GameObject.Find("OneShotSound");
+            oneShotGameObject = new GameObject("One Shot Sound");
             oneShotAudioSource = oneShotGameObject.AddComponent<AudioSource>();
         }        
         oneShotAudioSource.PlayOneShot(GetSound(sound));
@@ -47,6 +48,7 @@ public static class SoundManager
 
     public static void PlaySound(AudioClip clip)
     {
+        if(_audioOn == 0) return;
         if (oneShotGameObject == null)
         {
             oneShotGameObject = new GameObject("One Shot Sound");
@@ -57,6 +59,7 @@ public static class SoundManager
 
     public static void PlayMusic(Music music)
     {
+        if(_musicOn == 0) return;
         if (musicGameObject == null)
         {
             musicGameObject = new GameObject("Music");
@@ -88,4 +91,34 @@ public static class SoundManager
         }
         return null;
     }
+
+    /// <summary>
+    /// Смена состояния настройки звука
+    /// </summary>
+    public static int ChangeAudioSettings()
+    {
+        _audioOn = _audioOn == 0 ? 1 : 0;
+        return _audioOn;
+    }
+    
+    /// <summary>
+    /// Смена состояния настройки vepsrb
+    /// </summary>
+    public static int ChangeMusicSettings()
+    {
+        _musicOn = _musicOn == 0 ? 1 : 0;
+        return _musicOn;
+    }
+
+    /// <summary>
+    /// Сохранение настроек звука
+    /// </summary>
+    public static void SaveSoundSettings()
+    {
+        PlayerPrefs.SetInt("Music", _musicOn);
+        PlayerPrefs.SetInt("Audio", _audioOn);
+    }
+    
+    public static int GetAudioOn() => _audioOn;
+    public static int GetMusicOn() => _musicOn;
 }

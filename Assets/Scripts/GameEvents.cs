@@ -20,6 +20,16 @@ public class GameEvents : MonoBehaviour {
         OnFieldClick?.Invoke(position);
     }
 
+    public event Action<Placeable> OnPlaceableMerge;
+    public void TriggerPlaceableMerge(Placeable placeable) {
+        OnPlaceableMerge?.Invoke(placeable);
+    }
+
+    public event Action<FieldTile> OnTileDestroy;
+    public void TriggerTileDestroy(FieldTile tile) {
+        OnTileDestroy?.Invoke(tile);
+    }
+
     public event Action<Vector3> OnTileSelect;
     public void TriggerSelectTile(Vector3 position) {
         OnTileSelect?.Invoke(position);
@@ -45,13 +55,34 @@ public class GameEvents : MonoBehaviour {
         OnObjectDisappearance?.Invoke(placeable);
     }
 
-    public event Action<Placeable> OnObjectSpawn;
-    public void TriggerObjectSpawn(Placeable placeable) {
-        OnObjectSpawn?.Invoke(placeable);
+    public event Action OnSmogAreaDisappearance;
+    public void TriggerSmogAreaDisappearance() {
+        OnSmogAreaDisappearance?.Invoke();
     }
 
-    public event Action<Placeable> OnObjectDestroy;
-    public void TriggerObjectDestroy(Placeable placeable) {
-        OnObjectDestroy?.Invoke(placeable);
+    public event Action OnPlayerInputDisable;
+    public void TriggerPlayerInputDisable() {
+        OnPlayerInputDisable?.Invoke();
+    }
+
+    public event Action OnPlayerInputEnable;
+    public void TriggerPlayerInputEnable() {
+        OnPlayerInputEnable?.Invoke();
+    }
+
+    public event Action<string> OnLevelRedirectionIntent;
+    public void TriggerLevelRedirectionIntent(string sceneName) {
+        OnLevelRedirectionIntent?.Invoke(sceneName);
+    }
+
+    public event Action<string> OnLevelComplete;
+    public void TriggerLevelComplete(string sceneName) {
+        OnLevelComplete?.Invoke(sceneName);
+    }
+
+    public event Action<string> OnExitScene;
+    public void TriggerExitScene(string sceneName)
+    {
+        OnExitScene?.Invoke(sceneName);
     }
 }

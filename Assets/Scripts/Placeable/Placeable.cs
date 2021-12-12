@@ -2,7 +2,8 @@
 using UnityEngine;
 
 [System.Serializable]
-public class Placeable : MonoBehaviour {
+[DisallowMultipleComponent]
+public class Placeable : MonoBehaviour, ISaveable {
     /// <summary>
     /// Название основания объекта.
     /// Служит индефикатором типа объекта в игре.
@@ -11,6 +12,8 @@ public class Placeable : MonoBehaviour {
     /// </summary>
     public string BaseName;
 
+    public int prefabId = 0;
+    
     /// <summary>
     /// Аудиоклип падения объекта на тайл.
     /// Объекты с одинаковым именем будут воспроизводить один и тот же звук.
@@ -170,9 +173,21 @@ public class Placeable : MonoBehaviour {
     /// Прекратить перемещение
     /// </summary>
     /// <param name="currentMousePosition"></param>
-    public void Drop(Vector3 currentMousePosition) {
+    public virtual void Drop(Vector3 currentMousePosition) {
         // Вернуть порядок 
         _renderer.sortingOrder = _defaultSortingOrder;
+    }
+
+    public virtual void Save(GameDataWriter writer) {
+        // Запись положения объекта на сетке
+        writer.Write(currentCell);
+    }
+
+    public virtual void Load(GameDataReader reader, PlaceableFactory factory) {
+        // Положение объекта на сетке
+        currentCell = reader.ReadVector3Int();
+        // Размещение объекта по координатам сетки
+        Position = fieldManager.GetCellWorldPosition(currentCell);
     }
 
     private void Awake() {

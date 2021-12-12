@@ -926,7 +926,7 @@ MonoBehaviour:
   _upperLimit: 10
   _bottomLimit: -5
   _zoomSpeed: 0.01
-  _maxSize: 200
+  _maxSize: 20
   _minSize: 3
 --- !u!224 &354513364 stripped
 RectTransform:
@@ -1891,8 +1891,13 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5576120912846449096, guid: 4b83bdfd1564ed441ae24b3b8feb54b2,
         type: 3}
+      propertyPath: m_RendererIndex
+      value: -1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5576120912846449096, guid: 4b83bdfd1564ed441ae24b3b8feb54b2,
+        type: 3}
       propertyPath: m_RequiresDepthTextureOption
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 5576120912846449097, guid: 4b83bdfd1564ed441ae24b3b8feb54b2,
         type: 3}

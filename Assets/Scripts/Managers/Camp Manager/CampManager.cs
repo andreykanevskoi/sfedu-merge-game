@@ -188,6 +188,7 @@ public class CampManager : MonoBehaviour, ISaveable {
 
         if (PlayerPrefs.HasKey("complete")) {
             _completedSceneName = PlayerPrefs.GetString("complete");
+            PlayerPrefs.DeleteKey("complete");
         }
     }
 

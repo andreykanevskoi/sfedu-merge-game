@@ -56,7 +56,6 @@ public class LevelRedirector : Placeable {
         chest.InitChest(_levelReward, 100);
         
         GameEvents.current.TriggerPlayerInputEnable();
-        PlayerPrefs.DeleteAll();
 
         Destroy(gameObject);
     }

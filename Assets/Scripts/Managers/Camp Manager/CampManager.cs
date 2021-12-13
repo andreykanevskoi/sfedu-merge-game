@@ -83,6 +83,8 @@ public class CampManager : MonoBehaviour, ISaveable {
         // Ожидаем первого кадра
         yield return null;
 
+        SoundManager.PlaySound(SoundManager.Sound.startCamp);
+
         if (_sceneLoader) {
             // Ждём завершения анимации начала уровня
             yield return _sceneLoader.StartSceneStartAnimation();

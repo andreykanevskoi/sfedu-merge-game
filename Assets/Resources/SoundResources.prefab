@@ -48,8 +48,14 @@ MonoBehaviour:
     audioClip: {fileID: 8300000, guid: 31be95f9a0ebd2d4092876963cca6640, type: 3}
   - sound: 1
     audioClip: {fileID: 8300000, guid: fb587d5afaada0f4f8acdd1a5386c8a7, type: 3}
+  - sound: 2
+    audioClip: {fileID: 8300000, guid: 9fd1b8523ca568a4eb25df1f3875aa80, type: 3}
+  - sound: 3
+    audioClip: {fileID: 8300000, guid: c0cf3f27e8f741e4e95fcf8895e7eb4d, type: 3}
+  - sound: 4
+    audioClip: {fileID: 8300000, guid: 56ad5046593ddd342af9a2bef3f6a1d1, type: 3}
   musicAudioClipArray:
   - music: 0
-    audioClip: {fileID: 8300000, guid: 0cebba7dc1acaf348ade2e986b51c684, type: 3}
+    audioClip: {fileID: 8300000, guid: aedc022bb6a675c4e8aeadc21071ec63, type: 3}
   - music: 1
-    audioClip: {fileID: 8300000, guid: 469db26cb7620fb40ab0bd0d63d01018, type: 3}
+    audioClip: {fileID: 8300000, guid: 847996e9660dc4249b2502791cd3d6e5, type: 3}

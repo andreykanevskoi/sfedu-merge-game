@@ -96,11 +96,13 @@ public class PaintCanvas : MonoBehaviour{
             if (InsideImage(_mousePosition)) {
                 Vector2 localPoint = new Vector2();
                 if (RectTransformUtility.ScreenPointToLocalPointInRectangle(_rectTransform, _mousePosition, null, out localPoint)) {
+                    SoundManager.PlayLoopSound(SoundManager.Sound.clean);
                     Draw(localPoint);
                 }
             }
             yield return _waitForFixedUpdate;
         }
+        SoundManager.StopLoopSound();
 
         CalculatePercent();
     }

@@ -92,6 +92,8 @@ public class LevelManager : MonoBehaviour
     }
 
     private void OnLevelCompleted() {
+        SoundManager.PlaySound(SoundManager.Sound.questComplete);
+
         PlayerPrefs.SetString("complete", SceneManager.GetActiveScene().name);
         PlayerPrefs.Save();
 

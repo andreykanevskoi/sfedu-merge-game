@@ -2,13 +2,16 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public static class SoundManager
+public class SoundManager : MonoBehaviour
 {
     // Звуки
     public enum Sound
     {
         merge,
         nonMerge,
+        questComplete,
+        startCamp,
+        clean,
     }
 
     public enum Music
@@ -20,6 +23,9 @@ public static class SoundManager
     // Объект для звуков
     private static GameObject oneShotGameObject;
     private static AudioSource oneShotAudioSource;
+    // Объект для зацикленного звука (очистка)
+    private static GameObject loopSoundGameObject;
+    private static AudioSource loopSoundAudioSource;
     // Объект для музыки
     private static GameObject musicGameObject;
     private static AudioSource musicAudioSource;
@@ -28,17 +34,25 @@ public static class SoundManager
     private static int _musicOn;
     private static int _audioOn;
 
+    public static SoundManager instance;
+
     //загружаем настройки
-    static SoundManager()
+    void Awake()
     {
+        if (!instance)
+        {
+            instance = this;
+            oneShotGameObject = GameObject.Find("OneShotSound");
+            loopSoundGameObject = GameObject.Find("LoopSound");
+            musicGameObject = GameObject.Find("Music");
+
+            oneShotAudioSource = oneShotGameObject.GetComponent<AudioSource>();
+            loopSoundAudioSource = loopSoundGameObject.GetComponent<AudioSource>();
+            musicAudioSource = musicGameObject.GetComponent<AudioSource>();
+        }
+
         _musicOn = PlayerPrefs.GetInt("Music", 1);
         _audioOn = PlayerPrefs.GetInt("Audio", 1);
-
-        oneShotGameObject = GameObject.Find("OneShotSound");
-        oneShotAudioSource = oneShotGameObject.GetComponent<AudioSource>();
-
-        musicGameObject = GameObject.Find("Music");
-        musicAudioSource = musicGameObject.GetComponent<AudioSource>();
     }
 
     // Функция воспроизведения звука
@@ -54,10 +68,34 @@ public static class SoundManager
         oneShotAudioSource.PlayOneShot(clip);
     }
 
+    public static void PlayLoopSound(Sound sound)
+    {
+        if (_audioOn == 0) return;
+        if (oneShotAudioSource.clip == null || oneShotAudioSource.clip != GetSound(sound))
+        {
+            oneShotAudioSource.clip = GetSound(sound);
+        }
+        if (!oneShotAudioSource.isPlaying)
+        {
+            oneShotAudioSource.Play();
+        }
+    }
+
+    public static void StopLoopSound()
+    {
+        oneShotAudioSource.Stop();
+    }
+
     public static void PlayMusic(Music music)
     {
         if(_musicOn == 0) return;
-        musicAudioSource.PlayOneShot(GetMusic(music));
+        if (musicAudioSource.isPlaying)
+        {
+            musicAudioSource.Stop();
+        }
+
+        musicAudioSource.clip = GetMusic(music);
+        musicAudioSource.Play();
     }
 
     private static AudioClip GetSound(Sound sound)
@@ -89,7 +127,18 @@ public static class SoundManager
     /// </summary>
     public static int ChangeAudioSettings()
     {
-        _audioOn = _audioOn == 0 ? 1 : 0;
+        if (_audioOn == 0)
+        {
+            _audioOn = 1;
+            oneShotAudioSource.mute = false;
+            loopSoundAudioSource.mute = false;
+        }
+        else
+        {
+            _audioOn = 0;
+            oneShotAudioSource.mute = true;
+            loopSoundAudioSource.mute = true;
+        }
         return _audioOn;
     }
     

@@ -34,10 +34,6 @@ public class SoundManager : MonoBehaviour
     private static GameObject musicGameObject;
     private static AudioSource musicAudioSource;
 
-    //состояние настроек звука
-    private static int _musicOn;
-    private static int _audioOn;
-
     public static SoundManager instance;
 
     //загружаем настройки

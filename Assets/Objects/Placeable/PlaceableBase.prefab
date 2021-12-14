@@ -96,8 +96,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   BaseName: PlaceableName
+  prefabId: 0
+  fallingAudioClip: {fileID: 8300000, guid: 3c0337153e52f8c46a384f21ec1b97fe, type: 3}
   currentCell: {x: 0, y: 0, z: 0}
   returnSpeed: 10
+  fieldManager: {fileID: 0}
 --- !u!61 &172632410219357060
 BoxCollider2D:
   m_ObjectHideFlags: 0

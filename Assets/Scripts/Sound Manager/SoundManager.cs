@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public static class SoundManager
+public class SoundManager : MonoBehaviour
 {
     //состояние настроек звука
     private static int _musicOn;
@@ -13,63 +13,93 @@ public static class SoundManager
     {
         merge,
         nonMerge,
+        questComplete,
+        startCamp,
+        clean,
     }
 
-    // Музыкальные звуки
     public enum Music
     {
-        motorsport,
+        BGSampleLevel,
+        BGCamp,
     }
 
     // Объект для звуков
     private static GameObject oneShotGameObject;
     private static AudioSource oneShotAudioSource;
+    // Объект для зацикленного звука (очистка)
+    private static GameObject loopSoundGameObject;
+    private static AudioSource loopSoundAudioSource;
     // Объект для музыки
     private static GameObject musicGameObject;
     private static AudioSource musicAudioSource;
 
-    static SoundManager()
+    //состояние настроек звука
+    private static int _musicOn;
+    private static int _audioOn;
+
+    public static SoundManager instance;
+
+    //загружаем настройки
+    void Awake()
     {
+        if (!instance)
+        {
+            instance = this;
+            oneShotGameObject = GameObject.Find("OneShotSound");
+            loopSoundGameObject = GameObject.Find("LoopSound");
+            musicGameObject = GameObject.Find("Music");
+
+            oneShotAudioSource = oneShotGameObject.GetComponent<AudioSource>();
+            loopSoundAudioSource = loopSoundGameObject.GetComponent<AudioSource>();
+            musicAudioSource = musicGameObject.GetComponent<AudioSource>();
+        }
+
         _musicOn = PlayerPrefs.GetInt("Music", 1);
         _audioOn = PlayerPrefs.GetInt("Audio", 1);
-
-        if (oneShotGameObject == null)
-        {
-            oneShotGameObject = GameObject.Find("OneShotSound");
-            oneShotAudioSource = oneShotGameObject.GetComponent<AudioSource>();
-        }
     }
-
 
     // Функция воспроизведения звука
     public static void PlaySound(Sound sound)
     {
-        if (oneShotGameObject == null)
-        {
-            oneShotGameObject = GameObject.Find("OneShotSound");
-            oneShotAudioSource = oneShotGameObject.AddComponent<AudioSource>();
-        }        
+        if(_audioOn == 0) return;   
         oneShotAudioSource.PlayOneShot(GetSound(sound));
     }
 
     public static void PlaySound(AudioClip clip)
     {
-        if (oneShotGameObject == null)
-        {
-            oneShotGameObject = new GameObject("One Shot Sound");
-            oneShotAudioSource = oneShotGameObject.AddComponent<AudioSource>();
-        }
+        if(_audioOn == 0) return;
         oneShotAudioSource.PlayOneShot(clip);
+    }
+
+    public static void PlayLoopSound(Sound sound)
+    {
+        if (_audioOn == 0) return;
+        if (oneShotAudioSource.clip == null || oneShotAudioSource.clip != GetSound(sound))
+        {
+            oneShotAudioSource.clip = GetSound(sound);
+        }
+        if (!oneShotAudioSource.isPlaying)
+        {
+            oneShotAudioSource.Play();
+        }
+    }
+
+    public static void StopLoopSound()
+    {
+        oneShotAudioSource.Stop();
     }
 
     public static void PlayMusic(Music music)
     {
-        if (musicGameObject == null)
+        if(_musicOn == 0) return;
+        if (musicAudioSource.isPlaying)
         {
-            musicGameObject = new GameObject("Music");
-            musicAudioSource = musicGameObject.AddComponent<AudioSource>();
+            musicAudioSource.Stop();
         }
-        musicAudioSource.PlayOneShot(GetMusic(music));
+
+        musicAudioSource.clip = GetMusic(music);
+        musicAudioSource.Play();
     }
 
     private static AudioClip GetSound(Sound sound)
@@ -99,16 +129,38 @@ public static class SoundManager
     /// <summary>
     /// Смена состояния настройки звука
     /// </summary>
-    public static int ChangeAudioSettings() {
-        _audioOn = _audioOn == 0 ? 1 : 0;
+    public static int ChangeAudioSettings()
+    {
+        if (_audioOn == 0)
+        {
+            _audioOn = 1;
+            oneShotAudioSource.mute = false;
+            loopSoundAudioSource.mute = false;
+        }
+        else
+        {
+            _audioOn = 0;
+            oneShotAudioSource.mute = true;
+            loopSoundAudioSource.mute = true;
+        }
         return _audioOn;
     }
 
     /// <summary>
     /// Смена состояния настройки vepsrb
     /// </summary>
-    public static int ChangeMusicSettings() {
-        _musicOn = _musicOn == 0 ? 1 : 0;
+    public static int ChangeMusicSettings()
+    {
+        if (_musicOn == 0)
+        {
+            _musicOn = 1;
+            musicAudioSource.mute = false;
+        }
+        else
+        {
+            _musicOn = 0;
+            musicAudioSource.mute = true;
+        }
         return _musicOn;
     }
 

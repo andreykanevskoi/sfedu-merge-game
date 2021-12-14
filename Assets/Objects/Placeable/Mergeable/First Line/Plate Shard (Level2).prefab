@@ -119,6 +119,11 @@ PrefabInstance:
       propertyPath: currentCell.y
       value: -2
       objectReference: {fileID: 0}
+    - target: {fileID: 7820197770974067256, guid: 53e0d0f9aeb5a5445bb4bf953b2a9879,
+        type: 3}
+      propertyPath: fallingAudioClip
+      value: 
+      objectReference: {fileID: 8300000, guid: 3c0337153e52f8c46a384f21ec1b97fe, type: 3}
     - target: {fileID: 8357056858735490677, guid: 53e0d0f9aeb5a5445bb4bf953b2a9879,
         type: 3}
       propertyPath: m_Name

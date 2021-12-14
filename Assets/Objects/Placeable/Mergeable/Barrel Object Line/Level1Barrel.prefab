@@ -80,6 +80,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7575690795873771539, guid: 15a09436f12cba44f9a7e54030bb78f3,
         type: 3}
+      propertyPath: fallingAudioClip
+      value: 
+      objectReference: {fileID: 8300000, guid: 3c0337153e52f8c46a384f21ec1b97fe, type: 3}
+    - target: {fileID: 7575690795873771539, guid: 15a09436f12cba44f9a7e54030bb78f3,
+        type: 3}
       propertyPath: uniquePrefabName
       value: Level1Barrel
       objectReference: {fileID: 0}

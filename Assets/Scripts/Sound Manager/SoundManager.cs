@@ -25,14 +25,11 @@ public class SoundManager : MonoBehaviour
     }
 
     // Объект для звуков
-    private static GameObject oneShotGameObject;
-    private static AudioSource oneShotAudioSource;
+    [SerializeField] private AudioSource _oneShotAudioSource;
     // Объект для зацикленного звука (очистка)
-    private static GameObject loopSoundGameObject;
-    private static AudioSource loopSoundAudioSource;
+    [SerializeField] private AudioSource _loopSoundAudioSource;
     // Объект для музыки
-    private static GameObject musicGameObject;
-    private static AudioSource musicAudioSource;
+    [SerializeField] private AudioSource _musicAudioSource;
 
     public static SoundManager instance;
 
@@ -42,13 +39,6 @@ public class SoundManager : MonoBehaviour
         if (!instance)
         {
             instance = this;
-            oneShotGameObject = GameObject.Find("OneShotSound");
-            loopSoundGameObject = GameObject.Find("LoopSound");
-            musicGameObject = GameObject.Find("Music");
-
-            oneShotAudioSource = oneShotGameObject.GetComponent<AudioSource>();
-            loopSoundAudioSource = loopSoundGameObject.GetComponent<AudioSource>();
-            musicAudioSource = musicGameObject.GetComponent<AudioSource>();
         }
 
         _musicOn = PlayerPrefs.GetInt("Music", 1);
@@ -59,43 +49,43 @@ public class SoundManager : MonoBehaviour
     public static void PlaySound(Sound sound)
     {
         if(_audioOn == 0) return;   
-        oneShotAudioSource.PlayOneShot(GetSound(sound));
+        instance._oneShotAudioSource.PlayOneShot(GetSound(sound));
     }
 
     public static void PlaySound(AudioClip clip)
     {
         if(_audioOn == 0) return;
-        oneShotAudioSource.PlayOneShot(clip);
+        instance._oneShotAudioSource.PlayOneShot(clip);
     }
 
     public static void PlayLoopSound(Sound sound)
     {
         if (_audioOn == 0) return;
-        if (oneShotAudioSource.clip == null || oneShotAudioSource.clip != GetSound(sound))
+        if (instance._oneShotAudioSource.clip == null || instance._oneShotAudioSource.clip != GetSound(sound))
         {
-            oneShotAudioSource.clip = GetSound(sound);
+            instance._oneShotAudioSource.clip = GetSound(sound);
         }
-        if (!oneShotAudioSource.isPlaying)
+        if (!instance._oneShotAudioSource.isPlaying)
         {
-            oneShotAudioSource.Play();
+            instance._oneShotAudioSource.Play();
         }
     }
 
     public static void StopLoopSound()
     {
-        oneShotAudioSource.Stop();
+        instance._oneShotAudioSource.Stop();
     }
 
     public static void PlayMusic(Music music)
     {
         if(_musicOn == 0) return;
-        if (musicAudioSource.isPlaying)
+        if (instance._musicAudioSource.isPlaying)
         {
-            musicAudioSource.Stop();
+            instance._musicAudioSource.Stop();
         }
 
-        musicAudioSource.clip = GetMusic(music);
-        musicAudioSource.Play();
+        instance._musicAudioSource.clip = GetMusic(music);
+        instance._musicAudioSource.Play();
     }
 
     private static AudioClip GetSound(Sound sound)
@@ -130,14 +120,14 @@ public class SoundManager : MonoBehaviour
         if (_audioOn == 0)
         {
             _audioOn = 1;
-            oneShotAudioSource.mute = false;
-            loopSoundAudioSource.mute = false;
+            instance._oneShotAudioSource.mute = false;
+            instance._loopSoundAudioSource.mute = false;
         }
         else
         {
             _audioOn = 0;
-            oneShotAudioSource.mute = true;
-            loopSoundAudioSource.mute = true;
+            instance._oneShotAudioSource.mute = true;
+            instance._loopSoundAudioSource.mute = true;
         }
         return _audioOn;
     }
@@ -150,12 +140,12 @@ public class SoundManager : MonoBehaviour
         if (_musicOn == 0)
         {
             _musicOn = 1;
-            musicAudioSource.mute = false;
+            instance._musicAudioSource.mute = false;
         }
         else
         {
             _musicOn = 0;
-            musicAudioSource.mute = true;
+            instance._musicAudioSource.mute = true;
         }
         return _musicOn;
     }

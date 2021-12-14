@@ -135,16 +135,6 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 636748534187160608, guid: 6cb243e6b063607438ec004280a5c37b,
         type: 3}
-      propertyPath: m_LocalScale.x
-      value: 1.4
-      objectReference: {fileID: 0}
-    - target: {fileID: 636748534187160608, guid: 6cb243e6b063607438ec004280a5c37b,
-        type: 3}
-      propertyPath: m_LocalScale.y
-      value: 1.4
-      objectReference: {fileID: 0}
-    - target: {fileID: 636748534187160608, guid: 6cb243e6b063607438ec004280a5c37b,
-        type: 3}
       propertyPath: m_LocalPosition.x
       value: 1.5095766
       objectReference: {fileID: 0}
@@ -366,7 +356,7 @@ MonoBehaviour:
   m_ScaleFactor: 1
   m_ReferenceResolution: {x: 900, y: 1600}
   m_ScreenMatchMode: 0
-  m_MatchWidthOrHeight: 0.5
+  m_MatchWidthOrHeight: 1
   m_PhysicalUnit: 3
   m_FallbackScreenDPI: 96
   m_DefaultSpriteDPI: 96
@@ -2414,16 +2404,6 @@ PrefabInstance:
       propertyPath: m_AnchorMin.x
       value: 1
       objectReference: {fileID: 0}
-    - target: {fileID: 6962220806988406770, guid: 44b0b1107db1b154fae20398aff637de,
-        type: 3}
-      propertyPath: m_AnchoredPosition.x
-      value: -80
-      objectReference: {fileID: 0}
-    - target: {fileID: 6962220806988406770, guid: 44b0b1107db1b154fae20398aff637de,
-        type: 3}
-      propertyPath: m_AnchoredPosition.y
-      value: -100
-      objectReference: {fileID: 0}
     - target: {fileID: 7782104156166070570, guid: 44b0b1107db1b154fae20398aff637de,
         type: 3}
       propertyPath: m_Name
@@ -3937,19 +3917,25 @@ PrefabInstance:
     - target: {fileID: 8456277525254744969, guid: 1c91fd094c51fb5409eabbdaf3ae8688,
         type: 3}
       propertyPath: _levelReward.Array.size
-      value: 2
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 8456277525254744969, guid: 1c91fd094c51fb5409eabbdaf3ae8688,
         type: 3}
       propertyPath: _levelReward.Array.data[0]
       value: 
-      objectReference: {fileID: 824355563503750707, guid: eb305066c4816c64aa126432af2a0b16,
+      objectReference: {fileID: 5639632587029705146, guid: 546d32d454222d749bd976ded7291946,
         type: 3}
     - target: {fileID: 8456277525254744969, guid: 1c91fd094c51fb5409eabbdaf3ae8688,
         type: 3}
       propertyPath: _levelReward.Array.data[1]
       value: 
-      objectReference: {fileID: 6939905431300602067, guid: d47cb2e345e339a45b03ce362dc21668,
+      objectReference: {fileID: 3153368516812024658, guid: d40985016255b9944aedfc27201a70c6,
+        type: 3}
+    - target: {fileID: 8456277525254744969, guid: 1c91fd094c51fb5409eabbdaf3ae8688,
+        type: 3}
+      propertyPath: _levelReward.Array.data[2]
+      value: 
+      objectReference: {fileID: 5639632587029705146, guid: 546d32d454222d749bd976ded7291946,
         type: 3}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 1c91fd094c51fb5409eabbdaf3ae8688, type: 3}

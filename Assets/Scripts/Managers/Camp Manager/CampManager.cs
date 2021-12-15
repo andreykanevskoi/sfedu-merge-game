@@ -7,7 +7,7 @@ using UnityEngine.SceneManagement;
 [System.Serializable]
 public class SmogedArea {
     public Placeable requiredObject;
-    public Tile smogTile;
+    public TileBase smogTile;
 }
 
 public class CampManager : MonoBehaviour, ISaveable {
@@ -37,7 +37,7 @@ public class CampManager : MonoBehaviour, ISaveable {
         string baseName = placeable.BaseName;
         if (_requirements.ContainsKey(baseName)) {
             // Тип тайла области
-            Tile tile = _requirements[baseName].smogTile;
+            TileBase tile = _requirements[baseName].smogTile;
 
             // Отметить область как завершенную
             _completed.Add(_requirements[baseName]);

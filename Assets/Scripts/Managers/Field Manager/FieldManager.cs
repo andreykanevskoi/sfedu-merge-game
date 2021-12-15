@@ -252,7 +252,7 @@ public class FieldManager : MonoBehaviour {
     /// Уничтожить область тумана.
     /// </summary>
     /// <param name="tile">Определитель области</param>
-    public void RemoveSmogedArea(Tile tile) {
+    public void RemoveSmogedArea(TileBase tile) {
         // Обновляем свободные позиции
         foreach(var position in smogManager.GetSmogedArea(tile)) {
             Vector3Int positionBelow = GetPositionBellow(position);

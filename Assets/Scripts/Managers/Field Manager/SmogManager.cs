@@ -13,7 +13,7 @@ public class SmogManager {
     /// Словарь позиций тайлов тумана по типу областей.
     /// Тип тайла определяет область.
     /// </summary>
-    private Dictionary<Tile, List<Vector3Int>> _smogedAreas;
+    private Dictionary<TileBase, List<Vector3Int>> _smogedAreas;
 
     /// <summary>
     /// Скорость исчезновения тумана.
@@ -23,7 +23,7 @@ public class SmogManager {
     public SmogManager(Tilemap smogTilemap) {
         if (!smogTilemap) return;
 
-        _smogedAreas = new Dictionary<Tile, List<Vector3Int>>();
+        _smogedAreas = new Dictionary<TileBase, List<Vector3Int>>();
         _smogMap = smogTilemap;
         GetSmogTiles();
     }
@@ -34,7 +34,7 @@ public class SmogManager {
     private void GetSmogTiles() {
         // Цикл по всем тайлам тайлмапа
         foreach (Vector3Int pos in _smogMap.cellBounds.allPositionsWithin) {
-            Tile tile = _smogMap.GetTile<Tile>(pos);
+            TileBase tile = _smogMap.GetTile<TileBase>(pos);
             if (!tile) continue;
 
             // Очистить флаги тайла
@@ -51,7 +51,7 @@ public class SmogManager {
         }
     }
 
-    public void DeleteInstantly(Tile tile) {
+    public void DeleteInstantly(TileBase tile) {
         if (!_smogedAreas.ContainsKey(tile)) {
             return;
         }
@@ -67,19 +67,21 @@ public class SmogManager {
     /// </summary>
     /// <param name="tile">Тип тайла тумана</param>
     /// <returns></returns>
-    public IEnumerator Fade(Tile tile) {
-        Debug.Log("Start");
-        if (!_smogMap || !_smogedAreas.ContainsKey(tile)) {
+    public IEnumerator Fade(TileBase tileBase) {
+        if (!_smogMap || !_smogedAreas.ContainsKey(tileBase)) {
             yield break;
         }
+
+        Vector3Int position = _smogedAreas[tileBase][0];
         // Цвет тайлов
-        Color color = new Color(tile.color.r, tile.color.g, tile.color.b, tile.color.a);
+        Color color = _smogMap.GetColor(position);
+        Debug.Log(color);
 
         while (color.a > 0) {
             // Новый цвет тайлов
             color.a -= Time.deltaTime * _fadeSpeed;
             // Для каждого тайла области
-            foreach (var pos in _smogedAreas[tile]) {
+            foreach (var pos in _smogedAreas[tileBase]) {
                 // Установить новый цвет
                 _smogMap.SetColor(pos, color);
             }
@@ -87,9 +89,9 @@ public class SmogManager {
         }
 
         // Удалить облась
-        _smogedAreas.Remove(tile);
+        _smogedAreas.Remove(tileBase);
         // Удалить все тайлы области
-        _smogMap.SwapTile(tile, null);
+        _smogMap.SwapTile(tileBase, null);
         GameEvents.current.TriggerSmogAreaDisappearance();
     }
 
@@ -126,7 +128,7 @@ public class SmogManager {
     /// </summary>
     /// <param name="tile">Определитель области</param>
     /// <returns></returns>
-    public List<Vector3Int> GetSmogedArea(Tile tile) {
+    public List<Vector3Int> GetSmogedArea(TileBase tile) {
         List<Vector3Int> positions = new List<Vector3Int>();
 
         if (_smogedAreas.ContainsKey(tile)) {

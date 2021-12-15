@@ -8,7 +8,7 @@ public class Chest : Placeable
     [SerializeField] private int _opTimeH = 0;
     [SerializeField] private int _opTimeM = 0;
     [SerializeField] private int _opTimeS = 0;
-    [SerializeField] private Sprite _openChest;
+    //[SerializeField] private Sprite _openChest;
     [SerializeField] private TimerView _timerView;
     [SerializeField] private List<Placeable> _itemsInChest;
     private Timer _timer = null;
@@ -48,7 +48,7 @@ public class Chest : Placeable
         if (!_timer.TimerPassed()) return;
         Debug.Log("Открыть сундук");
         Destroy(_timerView.gameObject);
-        GetComponent<SpriteRenderer>().sprite = _openChest;
+        //GetComponent<SpriteRenderer>().sprite = _openChest;
         //GiveItem();
     }
 

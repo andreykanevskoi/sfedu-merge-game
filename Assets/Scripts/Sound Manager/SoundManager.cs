@@ -147,9 +147,11 @@ public class SoundManager : MonoBehaviour
 
     private static void InitSoundSettings()
     {
-        if (!_initSoundSettings) return;
+        if (_initSoundSettings) return;
+        Debug.Log(_musicOn);
         _musicOn = PlayerPrefs.GetInt("Music", 1);
         _audioOn = PlayerPrefs.GetInt("Audio", 1);
+        Debug.Log(_musicOn);
         _initSoundSettings = true;
     }
 

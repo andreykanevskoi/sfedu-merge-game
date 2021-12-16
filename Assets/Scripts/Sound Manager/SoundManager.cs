@@ -7,6 +7,7 @@ public class SoundManager : MonoBehaviour
     //состояние настроек звука
     private static int _musicOn;
     private static int _audioOn;
+    private static bool _initSoundSettings = false;
 
     // Звуки
     public enum Sound
@@ -38,11 +39,10 @@ public class SoundManager : MonoBehaviour
     {
         if (!instance)
         {
+            Debug.Log("Init SoundManager");
+            InitSoundSettings();
             instance = this;
         }
-
-        _musicOn = PlayerPrefs.GetInt("Music", 1);
-        _audioOn = PlayerPrefs.GetInt("Audio", 1);
     }
 
     // Функция воспроизведения звука
@@ -78,14 +78,14 @@ public class SoundManager : MonoBehaviour
 
     public static void PlayMusic(Music music)
     {
-        if(_musicOn == 0) return;
         if (instance._musicAudioSource.isPlaying)
         {
             instance._musicAudioSource.Stop();
         }
-
+        
         instance._musicAudioSource.clip = GetMusic(music);
         instance._musicAudioSource.Play();
+        UpdateMusicStatus();
     }
 
     private static AudioClip GetSound(Sound sound)
@@ -117,18 +117,7 @@ public class SoundManager : MonoBehaviour
     /// </summary>
     public static int ChangeAudioSettings()
     {
-        if (_audioOn == 0)
-        {
-            _audioOn = 1;
-            instance._oneShotAudioSource.mute = false;
-            instance._loopSoundAudioSource.mute = false;
-        }
-        else
-        {
-            _audioOn = 0;
-            instance._oneShotAudioSource.mute = true;
-            instance._loopSoundAudioSource.mute = true;
-        }
+        _audioOn = _audioOn == 0 ? 1 : 0;
         return _audioOn;
     }
 
@@ -137,17 +126,31 @@ public class SoundManager : MonoBehaviour
     /// </summary>
     public static int ChangeMusicSettings()
     {
+        _musicOn = _musicOn == 0 ? 1 : 0;
+        UpdateMusicStatus();
+        return _musicOn;
+    }
+
+    private static void UpdateMusicStatus()
+    {
+        if (!instance)
+        {
+            return;
+        }
         if (_musicOn == 0)
         {
-            _musicOn = 1;
-            instance._musicAudioSource.mute = false;
-        }
-        else
-        {
-            _musicOn = 0;
             instance._musicAudioSource.mute = true;
+            return;
         }
-        return _musicOn;
+        instance._musicAudioSource.mute = false;
+    }
+
+    private static void InitSoundSettings()
+    {
+        if (!_initSoundSettings) return;
+        _musicOn = PlayerPrefs.GetInt("Music", 1);
+        _audioOn = PlayerPrefs.GetInt("Audio", 1);
+        _initSoundSettings = true;
     }
 
     /// <summary>
@@ -158,6 +161,15 @@ public class SoundManager : MonoBehaviour
         PlayerPrefs.SetInt("Audio", _audioOn);
     }
 
-    public static int GetAudioOn() => _audioOn;
-    public static int GetMusicOn() => _musicOn;
+    public static int GetAudioOn()
+    {
+        InitSoundSettings();
+        return _audioOn;
+    }
+
+    public static int GetMusicOn()
+    {
+        InitSoundSettings();
+        return _musicOn;
+    }
 }

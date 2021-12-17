@@ -117,7 +117,7 @@ public class TimerView : MonoBehaviour
     private void StartUpdateView()
     {
         UpdateTimerView();
-        InvokeRepeating(nameof(UpdateTimerView), 0f, 1f);
+        InvokeRepeating(nameof(UpdateTimerView), 0f, 0.5f);
     }
 
     private string Format(string s, bool prevV)

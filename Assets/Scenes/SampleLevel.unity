@@ -98,7 +98,7 @@ LightmapSettings:
     m_TrainingDataDestination: TrainingData
     m_LightProbeSampleCountMultiplier: 4
   m_LightingDataAsset: {fileID: 0}
-  m_UseShadowmask: 0
+  m_UseShadowmask: 1
 --- !u!196 &4
 NavMeshSettings:
   serializedVersion: 2
@@ -400,8 +400,8 @@ MonoBehaviour:
   _rightLimit: 7
   _upperLimit: 8
   _bottomLimit: -3
-  _zoomSpeed: 0.01
-  _maxSize: 200
+  _zoomSpeed: 0.03
+  _maxSize: 8
   _minSize: 3
 --- !u!4 &473500364 stripped
 Transform:

@@ -624,7 +624,7 @@ MonoBehaviour:
   _rightLimit: 12
   _upperLimit: 10
   _bottomLimit: -5
-  _zoomSpeed: 0.01
+  _zoomSpeed: 0.03
   _maxSize: 7
   _minSize: 3
 --- !u!224 &354513364 stripped

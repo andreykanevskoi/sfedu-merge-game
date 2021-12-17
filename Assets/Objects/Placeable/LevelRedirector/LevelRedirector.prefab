@@ -17,6 +17,7 @@ MonoBehaviour:
   fallingAudioClip: {fileID: 8300000, guid: 3c0337153e52f8c46a384f21ec1b97fe, type: 3}
   currentCell: {x: 0, y: 0, z: 0}
   returnSpeed: 10
+  _shadow: {fileID: 0}
   fieldManager: {fileID: 0}
   _lable: {fileID: 730499046617899659}
   _sceneName: 
@@ -244,22 +245,22 @@ PrefabInstance:
     - target: {fileID: 5134443446026647414, guid: 00120176e4dcc5b429917249f6afcbd6,
         type: 3}
       propertyPath: m_Size.x
-      value: 0.4554291
+      value: 0.6344947
       objectReference: {fileID: 0}
     - target: {fileID: 5134443446026647414, guid: 00120176e4dcc5b429917249f6afcbd6,
         type: 3}
       propertyPath: m_Size.y
-      value: 0.41951102
+      value: 0.6018927
       objectReference: {fileID: 0}
     - target: {fileID: 5134443446026647414, guid: 00120176e4dcc5b429917249f6afcbd6,
         type: 3}
       propertyPath: m_Offset.x
-      value: 0
+      value: 0.00663206
       objectReference: {fileID: 0}
     - target: {fileID: 5134443446026647414, guid: 00120176e4dcc5b429917249f6afcbd6,
         type: 3}
       propertyPath: m_Offset.y
-      value: 0.109755516
+      value: 0.20094633
       objectReference: {fileID: 0}
     - target: {fileID: 5134443446026647414, guid: 00120176e4dcc5b429917249f6afcbd6,
         type: 3}
@@ -269,12 +270,12 @@ PrefabInstance:
     - target: {fileID: 5134443446026647414, guid: 00120176e4dcc5b429917249f6afcbd6,
         type: 3}
       propertyPath: m_SpriteTilingProperty.oldSize.x
-      value: 0.512
+      value: 0.64
       objectReference: {fileID: 0}
     - target: {fileID: 5134443446026647414, guid: 00120176e4dcc5b429917249f6afcbd6,
         type: 3}
       propertyPath: m_SpriteTilingProperty.oldSize.y
-      value: 0.512
+      value: 0.64
       objectReference: {fileID: 0}
     - target: {fileID: 6010809510800815432, guid: 00120176e4dcc5b429917249f6afcbd6,
         type: 3}

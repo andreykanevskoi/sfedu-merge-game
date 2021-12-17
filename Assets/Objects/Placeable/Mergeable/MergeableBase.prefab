@@ -16,7 +16,8 @@ MonoBehaviour:
   prefabId: 0
   fallingAudioClip: {fileID: 0}
   currentCell: {x: 0, y: 0, z: 0}
-  returnSpeed: 10
+  returnSpeed: 15
+  _shadow: {fileID: 1431653722092266836}
   fieldManager: {fileID: 0}
   _line: {fileID: 0}
   _currentLevel: 0
@@ -108,6 +109,12 @@ PrefabInstance:
 --- !u!1 &8357056858735490677 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 573055513725341943, guid: 00120176e4dcc5b429917249f6afcbd6,
+    type: 3}
+  m_PrefabInstance: {fileID: 8361456193398777474}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &1431653722092266836 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 7482622354395939798, guid: 00120176e4dcc5b429917249f6afcbd6,
     type: 3}
   m_PrefabInstance: {fileID: 8361456193398777474}
   m_PrefabAsset: {fileID: 0}

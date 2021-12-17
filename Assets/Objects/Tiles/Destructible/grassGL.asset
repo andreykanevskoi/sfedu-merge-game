@@ -10,9 +10,9 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 9c57485a1c45eb94fa34cfed275ab0da, type: 3}
-  m_Name: grass 3
+  m_Name: grassGL
   m_EditorClassIdentifier: 
-  m_Sprite: {fileID: 21300000, guid: ea45134327a75a34db17f723a41c3661, type: 3}
+  m_Sprite: {fileID: 21300000, guid: a49640607acd474458a169a5a8997d16, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_Transform:
     e00: 1

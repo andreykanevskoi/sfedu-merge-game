@@ -653,7 +653,7 @@ MonoBehaviour:
   _toCampButton: {fileID: 3714582379532832605}
   _statisticElementPrefab: {fileID: 6080981248364203087, guid: f811dec27bade7b4bb03f7012f6f6a74,
     type: 3}
-  _statisticAnimationTime: 3
+  _statisticAnimationTime: 1
 --- !u!95 &6104301986321023305
 Animator:
   serializedVersion: 3

@@ -41,10 +41,6 @@ public class Placeable : MonoBehaviour, ISaveable {
     private float returnSpeed = 10f;
 
     /// <summary>
-    /// Точка возвращения позиции.
-    /// </summary>
-    private Vector3 _startPosition;
-    /// <summary>
     /// Последнее положение.
     /// </summary>
     private Vector3 _lastMousePosition;
@@ -111,13 +107,15 @@ public class Placeable : MonoBehaviour, ISaveable {
         _isDraggable = false;
         _shadow.SetActive(false);
 
-        while (Vector3.Distance(transform.position, _startPosition) > 0.01f) {
-            transform.position = Vector3.Lerp(transform.position, _startPosition, returnSpeed * Time.deltaTime);
+        Vector3 startPosition = fieldManager.GetCellWorldPosition(currentCell);
+
+        while (Vector3.Distance(transform.position, startPosition) > 0.01f) {
+            transform.position = Vector3.Lerp(transform.position, startPosition, returnSpeed * Time.deltaTime);
             yield return _waitForFixedUpdate;
         }
 
         // Объект вернулся на начальную позицию
-        transform.position = _startPosition;
+        Position = startPosition;
 
         _renderer.sortingOrder = _defaultSortingOrder;
         _shadow.SetActive(true);
@@ -155,7 +153,7 @@ public class Placeable : MonoBehaviour, ISaveable {
             return false;
         }
 
-        _startPosition = _lastMousePosition = transform.position;
+        _lastMousePosition = transform.position;
         // Изменить порядок сортировки объекта при рендеренге, для отрисовки поверх всех объектов
         _renderer.sortingOrder = _dragSortingOrder;
         _shadow.SetActive(false);

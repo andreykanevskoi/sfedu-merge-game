@@ -32,8 +32,7 @@ public class Mergeable : Placeable {
 
                 newMergeable.currentCell = currentCell;
                 newMergeable.fieldManager = fieldManager;
-                newMergeable.transform.position = Position;
-                newMergeable.fallingAudioClip = fallingAudioClip;
+                newMergeable.Position = fieldManager.GetCellWorldPosition(currentCell);
 
                 GameEvents.current.TriggerPlaceableMerge(newMergeable);
 

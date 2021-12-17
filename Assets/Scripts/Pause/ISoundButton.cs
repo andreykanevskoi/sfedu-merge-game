@@ -18,4 +18,17 @@ public class ISoundButton : MonoBehaviour
 
         _image.sprite = _spriteDisabled;
     }
+
+    protected void OnApplicationQuit()
+    {
+        SoundManager.SaveSoundSettings();
+    }
+    
+    protected void OnApplicationPause(bool pauseStatus)
+    {
+        if (pauseStatus)
+        {
+            SoundManager.SaveSoundSettings();
+        }
+    }
 }

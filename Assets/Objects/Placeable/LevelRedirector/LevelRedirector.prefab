@@ -18,7 +18,7 @@ MonoBehaviour:
   currentCell: {x: 0, y: 0, z: 0}
   returnSpeed: 10
   fieldManager: {fileID: 0}
-  _lable: {fileID: 0}
+  _lable: {fileID: 730499046617899659}
   _sceneName: 
   _levelReward: []
   _chestPrefab: {fileID: 0}

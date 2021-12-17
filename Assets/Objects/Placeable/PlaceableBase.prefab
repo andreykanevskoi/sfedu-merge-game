@@ -101,7 +101,7 @@ MonoBehaviour:
   prefabId: 0
   fallingAudioClip: {fileID: 8300000, guid: 3c0337153e52f8c46a384f21ec1b97fe, type: 3}
   currentCell: {x: 0, y: 0, z: 0}
-  returnSpeed: 10
+  returnSpeed: 20
   fieldManager: {fileID: 0}
 --- !u!331 &8646677724040241220
 SpriteMask:

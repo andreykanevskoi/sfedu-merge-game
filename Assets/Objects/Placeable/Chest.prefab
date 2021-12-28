@@ -17,7 +17,6 @@ MonoBehaviour:
   fallingAudioClip: {fileID: 8300000, guid: 3c0337153e52f8c46a384f21ec1b97fe, type: 3}
   currentCell: {x: 0, y: 0, z: 0}
   returnSpeed: 10
-  _shadow: {fileID: 2377073653986164566}
   fieldManager: {fileID: 0}
   _opTimeH: 0
   _opTimeM: 0
@@ -201,22 +200,22 @@ PrefabInstance:
     - target: {fileID: 5134443446026647414, guid: 00120176e4dcc5b429917249f6afcbd6,
         type: 3}
       propertyPath: m_Size.x
-      value: 0.8827683
+      value: 0.63338697
       objectReference: {fileID: 0}
     - target: {fileID: 5134443446026647414, guid: 00120176e4dcc5b429917249f6afcbd6,
         type: 3}
       propertyPath: m_Size.y
-      value: 0.8585281
+      value: 0.63742703
       objectReference: {fileID: 0}
     - target: {fileID: 5134443446026647414, guid: 00120176e4dcc5b429917249f6afcbd6,
         type: 3}
       propertyPath: m_Offset.x
-      value: -0.014140189
+      value: -0.007712841
       objectReference: {fileID: 0}
     - target: {fileID: 5134443446026647414, guid: 00120176e4dcc5b429917249f6afcbd6,
         type: 3}
       propertyPath: m_Offset.y
-      value: 0.22422275
+      value: 0.17280385
       objectReference: {fileID: 0}
     - target: {fileID: 5134443446026647414, guid: 00120176e4dcc5b429917249f6afcbd6,
         type: 3}
@@ -226,12 +225,12 @@ PrefabInstance:
     - target: {fileID: 5134443446026647414, guid: 00120176e4dcc5b429917249f6afcbd6,
         type: 3}
       propertyPath: m_SpriteTilingProperty.oldSize.x
-      value: 1
+      value: 0.73142856
       objectReference: {fileID: 0}
     - target: {fileID: 5134443446026647414, guid: 00120176e4dcc5b429917249f6afcbd6,
         type: 3}
       propertyPath: m_SpriteTilingProperty.oldSize.y
-      value: 1
+      value: 0.73142856
       objectReference: {fileID: 0}
     - target: {fileID: 5706130192123847022, guid: 00120176e4dcc5b429917249f6afcbd6,
         type: 3}
@@ -260,12 +259,6 @@ PrefabInstance:
 --- !u!1 &4672894122368937079 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 573055513725341943, guid: 00120176e4dcc5b429917249f6afcbd6,
-    type: 3}
-  m_PrefabInstance: {fileID: 5128072230489701504}
-  m_PrefabAsset: {fileID: 0}
---- !u!1 &2377073653986164566 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 7482622354395939798, guid: 00120176e4dcc5b429917249f6afcbd6,
     type: 3}
   m_PrefabInstance: {fileID: 5128072230489701504}
   m_PrefabAsset: {fileID: 0}

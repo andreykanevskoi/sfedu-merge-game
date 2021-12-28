@@ -1,0 +1,98 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!687078895 &4343727234628468602
+SpriteAtlas:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: ObjectsAtlas
+  m_EditorData:
+    serializedVersion: 2
+    textureSettings:
+      serializedVersion: 2
+      anisoLevel: 1
+      compressionQuality: 50
+      maxTextureSize: 2048
+      textureCompression: 0
+      filterMode: 1
+      generateMipMaps: 0
+      readable: 0
+      crunchedCompression: 0
+      sRGB: 1
+    platformSettings:
+    - serializedVersion: 3
+      m_BuildTarget: DefaultTexturePlatform
+      m_MaxTextureSize: 2048
+      m_ResizeAlgorithm: 0
+      m_TextureFormat: -1
+      m_TextureCompression: 3
+      m_CompressionQuality: 50
+      m_CrunchedCompression: 1
+      m_AllowsAlphaSplitting: 0
+      m_Overridden: 0
+      m_AndroidETC2FallbackOverride: 0
+      m_ForceMaximumCompressionQuality_BC6H_BC7: 0
+    packingSettings:
+      serializedVersion: 2
+      padding: 8
+      blockOffset: 1
+      allowAlphaSplitting: 0
+      enableRotation: 1
+      enableTightPacking: 0
+    variantMultiplier: 1
+    packables:
+    - {fileID: 2800000, guid: e58964d15c1b7dc46b09c7fd6ffeffae, type: 3}
+    - {fileID: 2800000, guid: 0a7b2c87a7af9b841adcca18ede5a20f, type: 3}
+    - {fileID: 2800000, guid: e940fc31cdff9424eae81deaac05f32c, type: 3}
+    - {fileID: 2800000, guid: 8e5d2e60f17c0b24084bd2f053dff13a, type: 3}
+    - {fileID: 2800000, guid: e003b1c448eb9de4f95bbcd26927feb8, type: 3}
+    - {fileID: 2800000, guid: 8e05499798bb1914486a784d0459a988, type: 3}
+    - {fileID: 2800000, guid: 511c99da121558e48864d2505bebb1cd, type: 3}
+    - {fileID: 2800000, guid: 37b8944dfc3d80441805634ee9be2420, type: 3}
+    - {fileID: 2800000, guid: 51d3200ab61426b41ba5c0da31e662eb, type: 3}
+    - {fileID: 2800000, guid: 37228673dfc78ca4f826df20a9b5b0c1, type: 3}
+    - {fileID: 2800000, guid: e73837cf82f305b43b0f9aa7d7c67ac3, type: 3}
+    - {fileID: 2800000, guid: d37df9c19ffa4504390bbb9b14e24e01, type: 3}
+    - {fileID: 2800000, guid: 1f26a08b04459f34291c83dbd514dc1f, type: 3}
+    - {fileID: 2800000, guid: 69a750d815a6a0e4280734b2368a2dd4, type: 3}
+    - {fileID: 2800000, guid: a6f96d183b7e02944aba0e78690005d1, type: 3}
+    - {fileID: 2800000, guid: 138aac13742957c49b1f3bcd8c4e3d1b, type: 3}
+    bindAsDefault: 1
+  m_MasterAtlas: {fileID: 0}
+  m_PackedSprites:
+  - {fileID: 21300000, guid: 8e5d2e60f17c0b24084bd2f053dff13a, type: 3}
+  - {fileID: 21300000, guid: e940fc31cdff9424eae81deaac05f32c, type: 3}
+  - {fileID: 21300000, guid: d37df9c19ffa4504390bbb9b14e24e01, type: 3}
+  - {fileID: 21300000, guid: e58964d15c1b7dc46b09c7fd6ffeffae, type: 3}
+  - {fileID: 21300000, guid: 138aac13742957c49b1f3bcd8c4e3d1b, type: 3}
+  - {fileID: 21300000, guid: 37228673dfc78ca4f826df20a9b5b0c1, type: 3}
+  - {fileID: 21300000, guid: e003b1c448eb9de4f95bbcd26927feb8, type: 3}
+  - {fileID: 21300000, guid: 0a7b2c87a7af9b841adcca18ede5a20f, type: 3}
+  - {fileID: 21300000, guid: 8e05499798bb1914486a784d0459a988, type: 3}
+  - {fileID: 21300000, guid: a6f96d183b7e02944aba0e78690005d1, type: 3}
+  - {fileID: 21300000, guid: 69a750d815a6a0e4280734b2368a2dd4, type: 3}
+  - {fileID: 21300000, guid: 51d3200ab61426b41ba5c0da31e662eb, type: 3}
+  - {fileID: 21300000, guid: 511c99da121558e48864d2505bebb1cd, type: 3}
+  - {fileID: 21300000, guid: 1f26a08b04459f34291c83dbd514dc1f, type: 3}
+  - {fileID: 21300000, guid: 37b8944dfc3d80441805634ee9be2420, type: 3}
+  - {fileID: 21300000, guid: e73837cf82f305b43b0f9aa7d7c67ac3, type: 3}
+  m_PackedSpriteNamesToIndex:
+  - blade shard
+  - axe
+  - shard
+  - armor
+  - map
+  - bust
+  - shield
+  - arrow
+  - helmet
+  - marker
+  - vase
+  - bust shard
+  - chest
+  - statue
+  - broken bust
+  - plate shard
+  m_Tag: ObjectsAtlas
+  m_IsVariant: 0

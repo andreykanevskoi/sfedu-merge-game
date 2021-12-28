@@ -49,8 +49,6 @@ public class Placeable : MonoBehaviour, ISaveable {
     /// </summary>
     private bool _isDraggable = true;
 
-    [SerializeField] private GameObject _shadow;
-
     /// <summary>
     /// Компонент отрисовки объекта.
     /// </summary>
@@ -105,7 +103,6 @@ public class Placeable : MonoBehaviour, ISaveable {
     private IEnumerator MoveBack() {
         _renderer.sortingOrder = _dragSortingOrder;
         _isDraggable = false;
-        _shadow.SetActive(false);
 
         Vector3 startPosition = fieldManager.GetCellWorldPosition(currentCell);
 
@@ -118,7 +115,6 @@ public class Placeable : MonoBehaviour, ISaveable {
         Position = startPosition;
 
         _renderer.sortingOrder = _defaultSortingOrder;
-        _shadow.SetActive(true);
         _isDraggable = true;
     }
 
@@ -156,7 +152,6 @@ public class Placeable : MonoBehaviour, ISaveable {
         _lastMousePosition = transform.position;
         // Изменить порядок сортировки объекта при рендеренге, для отрисовки поверх всех объектов
         _renderer.sortingOrder = _dragSortingOrder;
-        _shadow.SetActive(false);
         return true;
     }
 
@@ -178,7 +173,6 @@ public class Placeable : MonoBehaviour, ISaveable {
     public virtual void Drop(Vector3 currentMousePosition) {
         // Вернуть порядок 
         _renderer.sortingOrder = _defaultSortingOrder;
-        _shadow.SetActive(true);
     }
 
     public virtual void Save(GameDataWriter writer) {

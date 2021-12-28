@@ -13,6 +13,7 @@ public class PlaceableFactory : ScriptableObject {
         Debug.Log("Factory Init");
 
         foreach (var prefab in prefabs) {
+            if (!prefab) continue;
             if (!_prefabsDictionary.ContainsKey(prefab.prefabId)) {
                 _prefabsDictionary.Add(prefab.prefabId, prefab);
             }

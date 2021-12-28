@@ -44,3 +44,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _victoryRequirements: []
+  _requirementsUIPanel: {fileID: 0}
+  _requirementElementPrefab: {fileID: 8778622219144948299, guid: 5cbcc6f3a738f6e42aebdc0d0f489b4b,
+    type: 3}
+  _minigameObject: {fileID: 0}
+  _fieldManager: {fileID: 0}
+  _sceneLoader: {fileID: 0}

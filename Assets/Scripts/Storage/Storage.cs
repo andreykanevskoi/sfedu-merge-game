@@ -2,13 +2,16 @@
 using System.Collections.Generic;
 using System.IO;
 using UnityEngine;
+using System;
 
 public class Storage {
+    private string _version = "1v";
     private string _savePath;
 
+    private GameDataReader _gameDataReader;
+
     public Storage() {
-        _savePath = Application.persistentDataPath + "/saveFile";
-        Debug.Log(_savePath);
+        _savePath = Application.persistentDataPath + "/saveFile_v2";
     }
 
     public bool CheckFile() {
@@ -17,13 +20,20 @@ public class Storage {
 
     public void Save(ISaveable saveable) {
         using (var writer = new BinaryWriter(File.Open(_savePath, FileMode.Create))) {
-            saveable.Save(new GameDataWriter(writer));
+            var gameDataWriter = new GameDataWriter(writer);
+            gameDataWriter.Write(_version);
+            saveable.Save(gameDataWriter);
         }
     }
 
-    public void Load(ISaveable saveable, PlaceableFactory factory) {
+    public void Load(ISaveable saveable, PlaceableFactory factory, Action beforeLoad) {
         using ( var reader = new BinaryReader(File.Open(_savePath, FileMode.Open))) {
-            saveable.Load(new GameDataReader(reader), factory);
+            var gameDataReader = new GameDataReader(reader);
+            if (gameDataReader.ReadString() != _version) {
+                return;
+            }
+            beforeLoad?.Invoke();
+            saveable.Load(gameDataReader, factory);
         }
     }
 }

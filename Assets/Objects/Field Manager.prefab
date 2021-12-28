@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 7681024414262844921}
   - component: {fileID: 7681024414262844922}
   m_Layer: 0
-  m_Name: Drag Manager
+  m_Name: Field Manager
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -43,6 +43,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6b8277bc77a4be443bdfdc88a8ccca63, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _tileMap: {fileID: 0}
   _highlighter: {fileID: 0}
-  _draggablePrefab: {fileID: 0}
+  _destructedTilePrefab: {fileID: 2565896097642733894, guid: ff07fdcd51e5a354f8a3e1516f530e2f,
+    type: 3}

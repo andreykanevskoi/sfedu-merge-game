@@ -126,15 +126,19 @@ public class NewInputManager : MonoBehaviour {
     /// </summary>
     /// <returns></returns>
     private IEnumerator SelectTileToDestroy() {
+        Debug.Log("Start SelectTileToDestroy");
         while (_controls.Player.PrimaryTouchContact.ReadValue<float>() != 0) {
             if (_controls.Player.Hold.phase == InputActionPhase.Performed) {
+                Debug.Log("Stop SelectTileToDestroy");
+                Debug.Log("Hold happened");
                 StartCoroutine(Panning());
                 yield break;
             }
             yield return null;
         }
-
+        Debug.Log("Dig");
         GameEvents.current.TriggerFieldClick(GetWorldPosition());
+        Debug.Log("Stop SelectTileToDestroy");
     }
 
     /// <summary>
@@ -145,6 +149,8 @@ public class NewInputManager : MonoBehaviour {
     private void OnTouch() {
         if (EventSystem.current.IsPointerOverGameObject()) return;
 
+        Debug.Log(_state);
+        Debug.Log(_controls.Player.Hold.phase == InputActionPhase.Performed);
         Vector3 mousePosition = GetWorldPosition();
         if (_state == States.Digging) {
             StartCoroutine(SelectTileToDestroy());

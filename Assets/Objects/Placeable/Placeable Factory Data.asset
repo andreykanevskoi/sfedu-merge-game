@@ -13,9 +13,9 @@ MonoBehaviour:
   m_Name: Placeable Factory Data
   m_EditorClassIdentifier: 
   prefabs:
-  - {fileID: 824355563503750707, guid: eb305066c4816c64aa126432af2a0b16, type: 3}
-  - {fileID: 5528650211615756170, guid: 127e018c7408337498b304bbdb712aed, type: 3}
-  - {fileID: 6939905431300602067, guid: d47cb2e345e339a45b03ce362dc21668, type: 3}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
   - {fileID: 9124029982963506220, guid: c9c67ce9e92292a47a77d732b5b14f70, type: 3}
   - {fileID: 8456277525254744969, guid: 1c91fd094c51fb5409eabbdaf3ae8688, type: 3}
   - {fileID: 4011030197622428707, guid: 6c21c3d6653299a449ea42204a4e3c43, type: 3}
@@ -31,4 +31,12 @@ MonoBehaviour:
   - {fileID: 6133286168026133556, guid: 6cb243e6b063607438ec004280a5c37b, type: 3}
   - {fileID: 3074773605116581326, guid: 1a796882602712f49898ffd95c1989b5, type: 3}
   - {fileID: 2315302844185496168, guid: 0e1d968307614294db80506bdf753ca4, type: 3}
-  - {fileID: 4146689063823877815, guid: 5e53b70a0ad701b4a89f3a25462ab456, type: 3}
+  - {fileID: 721218824502471464, guid: c76ae24c9f1e4bc4fbce8468d2b447e8, type: 3}
+  - {fileID: 7598327087447901394, guid: 9fd75926d3dc1984fb734d67c960b028, type: 3}
+  - {fileID: 8125097672988499289, guid: 7dc788802f457bc46a3a7a766ed106a3, type: 3}
+  - {fileID: 7512787204099893372, guid: cb819a7300d4bc24798a8f35f08599c9, type: 3}
+  - {fileID: 4562200284533762484, guid: 5d986b73393416546ac7c50883892c64, type: 3}
+  - {fileID: 573809249775352078, guid: 817f4eaa8fc96fa49aa24f27f1109e71, type: 3}
+  - {fileID: 6425320946163994640, guid: b3881b927efd8604286eb477734c978c, type: 3}
+  - {fileID: 0}
+  - {fileID: 0}

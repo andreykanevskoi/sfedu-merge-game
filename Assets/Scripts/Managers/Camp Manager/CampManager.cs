@@ -51,8 +51,6 @@ public class CampManager : MonoBehaviour, ISaveable {
     private void Awake() {
         _completed = new List<SmogedArea>();
 
-        _factory.Init();
-
         _fieldManager.InitFreePositionStorage();
         _fieldManager.InitTileManager();
         _fieldManager.InitSmogManager();
@@ -66,12 +64,7 @@ public class CampManager : MonoBehaviour, ISaveable {
         }
         _areas = null;
 
-        if (_storage.CheckFile()) {
-            LoadSave();
-        }
-        else {
-            _fieldManager.LateInitObjectManager();
-        }
+        LoadCamp();
     }
 
     private void Start() {
@@ -125,16 +118,30 @@ public class CampManager : MonoBehaviour, ISaveable {
         Debug.LogError("No scene name");
     }
 
-    private void LoadSave() {
-        // Уничтожаем все объекты на игровом поле
-        Placeable[] placeables = FindObjectsOfType<Placeable>();
-        foreach (var placeable in placeables) {
-            Destroy(placeable.gameObject);
+    private void LoadCamp() {
+        if (!_storage.CheckFile()) {
+            _fieldManager.LateInitObjectManager();
+            return;
         }
 
-        _fieldManager.InitObjectManager();
+        LoadSave();
+    }
 
-        _storage.Load(this, _factory);
+    private void LoadSave() {
+        _fieldManager.InitObjectManager();
+        _factory.Init();
+
+        _storage.Load(this,
+            _factory,
+            () => {
+                // Уничтожаем все объекты на игровом поле
+                Placeable[] placeables = FindObjectsOfType<Placeable>();
+                foreach (var placeable in placeables) {
+                    Destroy(placeable.gameObject);
+                }
+            });
+
+        _factory = null;
     }
 
     /// <summary>

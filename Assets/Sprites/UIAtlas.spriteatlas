@@ -1,0 +1,84 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!687078895 &4343727234628468602
+SpriteAtlas:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: UIAtlas
+  m_EditorData:
+    serializedVersion: 2
+    textureSettings:
+      serializedVersion: 2
+      anisoLevel: 1
+      compressionQuality: 50
+      maxTextureSize: 2048
+      textureCompression: 0
+      filterMode: 1
+      generateMipMaps: 0
+      readable: 0
+      crunchedCompression: 0
+      sRGB: 1
+    platformSettings:
+    - serializedVersion: 3
+      m_BuildTarget: DefaultTexturePlatform
+      m_MaxTextureSize: 512
+      m_ResizeAlgorithm: 0
+      m_TextureFormat: -1
+      m_TextureCompression: 3
+      m_CompressionQuality: 50
+      m_CrunchedCompression: 1
+      m_AllowsAlphaSplitting: 0
+      m_Overridden: 0
+      m_AndroidETC2FallbackOverride: 0
+      m_ForceMaximumCompressionQuality_BC6H_BC7: 0
+    packingSettings:
+      serializedVersion: 2
+      padding: 8
+      blockOffset: 1
+      allowAlphaSplitting: 0
+      enableRotation: 0
+      enableTightPacking: 0
+    variantMultiplier: 1
+    packables:
+    - {fileID: 2800000, guid: bf1a5b3ad6e0950478cc656dc32a16db, type: 3}
+    - {fileID: 2800000, guid: 447b0b3c328556b4897c0820e6014c8f, type: 3}
+    - {fileID: 2800000, guid: e19d3230205e8264fb992f3de42aab8d, type: 3}
+    - {fileID: 2800000, guid: 1ba88791a547f684398db0b677e33423, type: 3}
+    - {fileID: 2800000, guid: 17705b769b4dc454f9147b879cb608df, type: 3}
+    - {fileID: 2800000, guid: ebb4ddffc65ba544f9b8cd2123e9cbe0, type: 3}
+    - {fileID: 2800000, guid: a4583f66d9727724080be77fd610c404, type: 3}
+    - {fileID: -4530426593466845105, guid: 95092a1a0e4eb0d40b0651ad12e296c7, type: 3}
+    - {fileID: 2800000, guid: 0e38ccd4b1b704e499419f69a6db4593, type: 3}
+    - {fileID: 10906, guid: 0000000000000000f000000000000000, type: 0}
+    - {fileID: 10907, guid: 0000000000000000f000000000000000, type: 0}
+    - {fileID: 2800000, guid: 1c7169085314d894382e89ebdf0497d4, type: 3}
+    bindAsDefault: 1
+  m_MasterAtlas: {fileID: 0}
+  m_PackedSprites:
+  - {fileID: 10907, guid: 0000000000000000f000000000000000, type: 0}
+  - {fileID: 21300000, guid: e19d3230205e8264fb992f3de42aab8d, type: 3}
+  - {fileID: 21300000, guid: 1ba88791a547f684398db0b677e33423, type: 3}
+  - {fileID: 21300000, guid: 0e38ccd4b1b704e499419f69a6db4593, type: 3}
+  - {fileID: 21300000, guid: a4583f66d9727724080be77fd610c404, type: 3}
+  - {fileID: 21300000, guid: 17705b769b4dc454f9147b879cb608df, type: 3}
+  - {fileID: 21300000, guid: 1c7169085314d894382e89ebdf0497d4, type: 3}
+  - {fileID: -4530426593466845105, guid: 95092a1a0e4eb0d40b0651ad12e296c7, type: 3}
+  - {fileID: 21300000, guid: bf1a5b3ad6e0950478cc656dc32a16db, type: 3}
+  - {fileID: 21300000, guid: 447b0b3c328556b4897c0820e6014c8f, type: 3}
+  - {fileID: 21300000, guid: ebb4ddffc65ba544f9b8cd2123e9cbe0, type: 3}
+  m_PackedSpriteNamesToIndex:
+  - Background
+  - hand_icon
+  - shovel_icon
+  - blue_panel
+  - musicOn
+  - pause
+  - blue_button10
+  - blueSheet_0
+  - audioOff
+  - audioOn
+  - musicOff
+  m_Tag: UIAtlas
+  m_IsVariant: 0

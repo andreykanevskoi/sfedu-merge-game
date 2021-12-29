@@ -8,7 +8,7 @@ public class ButtonInMainMenu : MonoBehaviour
 
     public void Play()
     {
-        SceneManager.LoadScene("Camp");
+        SceneManager.LoadScene(1);
     }
 
     public void Quit()
